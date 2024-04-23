@@ -2,7 +2,7 @@ import React from "react";
 
 const Ground = () => (
   <div>
-    <h1>Hello Ground</h1>
+    <h1>Ground</h1>
   </div>
 );
 
