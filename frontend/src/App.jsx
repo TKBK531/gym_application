@@ -1,9 +1,37 @@
-import React from "react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import BaseLayout from "./pages/BaseLayout";
+import Home from "./pages/Home";
+import Ground from "./pages/Ground";
 
-const App = () => (
-  <div>
-    <h1>Hello</h1>
-  </div>
-);
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <BaseLayout />,
+    children: [
+      {
+        index: true,
+        element: <Home />,
+      },
+    ],
+  },
+  {
+    path: "/ground",
+    element: <BaseLayout />,
+    children: [
+      {
+        index: true,
+        element: <Ground />,
+      },
+    ],
+  },
+]);
+
+function App() {
+  return (
+    <div>
+      <RouterProvider router={router} />
+    </div>
+  );
+}
 
 export default App;
