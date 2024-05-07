@@ -6,6 +6,11 @@ export default {
     extend: {
       colors: {
         primary: "#8B0000",
+        primary_shade_1: "#EB0000",
+        primary_shade_2: "#B30707",
+        primary_shade_3: "#8B0000",
+        primary_shade_4: "#7E0000",
+        primary_shade_5: "#560606",
         secondary: "#F6BC0C",
         info: "#002A3A",
         // dimWhite: "rgba(255, 255, 255, 0.7)",
