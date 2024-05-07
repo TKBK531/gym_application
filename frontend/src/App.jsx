@@ -1,9 +1,11 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import "./App.css";
 import BaseLayout from "./pages/BaseLayout";
 import Home from "./pages/Home";
-import Ground from "./pages/Ground";
-import Gym from "./pages/Gym";
-import Pool from "./pages/Pool";
+import Events from "./pages/Events";
+import Items from "./pages/Items";
+import Reservations from "./pages/Reservations";
+import Login from "./pages/Login"; // Import the Login component
 
 const router = createBrowserRouter([
   {
@@ -17,34 +19,38 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/ground",
+    path: "/events",
     element: <BaseLayout />,
     children: [
       {
         index: true,
-        element: <Ground />,
+        element: <Events />,
       },
     ],
   },
   {
-    path: "/gym",
+    path: "/items",
     element: <BaseLayout />,
     children: [
       {
         index: true,
-        element: <Gym />,
+        element: <Items />,
       },
     ],
   },
   {
-    path: "/pool",
+    path: "/reservations",
     element: <BaseLayout />,
     children: [
       {
         index: true,
-        element: <Pool />,
+        element: <Reservations />,
       },
     ],
+  },
+  {
+    path: "/login",
+    element: <Login />,
   },
 ]);
 
