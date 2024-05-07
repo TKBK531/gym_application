@@ -41,7 +41,11 @@ export default function AvatarOnline({ image }) {
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         variant="dot"
       >
-        <Avatar alt="Remy Sharp" src={image} />
+        <Avatar
+          alt="Remy Sharp"
+          style={{ width: 150, height: 150 }}
+          src={image}
+        />
       </StyledBadge>
     </Stack>
   );
