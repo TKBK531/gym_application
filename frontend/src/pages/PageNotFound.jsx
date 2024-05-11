@@ -17,8 +17,8 @@ const PageNotFound = () => {
           map.
         </p>
         <Link
-          to="/"
-          className="bg-fiery-depth bg-clip-text text-transparent hover:text-secondary-golden font-bold py-3 px-6 rounded-full shadow-md transition duration-300 ease-in-out transform hover:scale-105 font-poppins heading4"
+          to="/dashboard"
+          className="bg-clip-text text-transparent bg-gradient-to-br from-primary-shade-1 to-primary-shade-5 font-normal hover:text-secondary-golden py-3 px-6 rounded-full shadow-md transition duration-300 ease-in-out transform hover:scale-105 font-poppins heading4"
         >
           Lead Me Home
         </Link>
