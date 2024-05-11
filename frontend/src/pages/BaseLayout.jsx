@@ -1,7 +1,7 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import LeftBar from "./LeftBar";
-import NavBar from "./NavBar"; // Assuming it's "NavBar", not "RightBar"
+import LeftBar from "../components/LeftBar";
+import NavBar from "../components/NavBar";
 
 const BaseLayout = () => {
   return (
