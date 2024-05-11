@@ -1,16 +1,21 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
-import BaseLayout from "./pages/BaseLayout";
-import Home from "./pages/Home";
-import Events from "./pages/Events";
-import Items from "./pages/Items";
-import Reservations from "./pages/Reservations";
-import Login from "./pages/Login"; // Import the Login component
-import PageNotFound from "./pages/PageNotFound";
+import {
+  BaseLayout,
+  Home,
+  Events,
+  Items,
+  Reservations,
+  Members,
+  Sports,
+  Profile,
+  Login,
+  PageNotFound,
+} from "./pages";
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/dashboard",
     element: <BaseLayout />,
     children: [
       {
@@ -46,6 +51,36 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Reservations />,
+      },
+    ],
+  },
+  {
+    path: "/members",
+    element: <BaseLayout />,
+    children: [
+      {
+        index: true,
+        element: <Members />,
+      },
+    ],
+  },
+  {
+    path: "/sports",
+    element: <BaseLayout />,
+    children: [
+      {
+        index: true,
+        element: <Sports />,
+      },
+    ],
+  },
+  {
+    path: "/profile",
+    element: <BaseLayout />,
+    children: [
+      {
+        index: true,
+        element: <Profile />,
       },
     ],
   },
