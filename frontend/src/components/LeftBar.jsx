@@ -1,4 +1,4 @@
-import AvatarOnline from "./AvatarOnline";
+import AvatarOnline from "./NavComponents/AvatarOnline";
 import React from "react";
 
 const LeftBar = () => (
