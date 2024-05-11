@@ -21,6 +21,9 @@ const PageLink = ({ name, icon, href }) => {
         <div className="mr-auto m-1">
           <p>{name}</p>
         </div>
+        <div>
+          <p className={`font-black ${isActive ? "" : "hidden"}`}>|</p>
+        </div>
       </a>
     </div>
   );
