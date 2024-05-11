@@ -1,12 +1,12 @@
-import BaseLayout from "./BaseLayout";
-import Home from "./Home";
-import Events from "./Events";
-import Items from "./Items";
-import Reservations from "./Reservations";
+import BaseLayout from "./BaseLayout"; // Import the BaseLayout component
+import Home from "./Home"; // Import the Home component
+import Events from "./Events"; // Import the Events component
+import Items from "./Items"; // Import the Items component
+import Reservations from "./Reservations"; // Import the Reservations component
+import Login from "./Login"; // Import the Login component
 import Members from "./Members"; // Import the Members component
 import Sports from "./Sports"; // Import the Sports component
 import Profile from "./Profile"; // Import the Profile component
-import Login from "./Login"; // Import the Login component
 import Logout from "./Logout";
 import Register from "./Register";
 import PageNotFound from "./PageNotFound";
@@ -24,4 +24,4 @@ export {
   Logout,
   Register,
   PageNotFound,
-};
+}; // Export the components

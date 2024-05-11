@@ -6,7 +6,6 @@ import PageLink from "./NavComponents/PageLink";
 const LeftBar = () => (
   <div className=" w-[290px] bg-info-dark-blue h-screen">
     <div className="items-center text-center px-[70px] py-[40px]">
-      {/* <h1 className="font-poppins text-[30px]">University Gymnasium</h1> */}
       <div className="flex justify-center">
         <AvatarOnline image="https://picsum.photos/200/300" />
       </div>

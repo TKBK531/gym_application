@@ -9,9 +9,7 @@ const PageLink = ({ name, icon, href }) => {
   return (
     <div
       className={`pl-3 my-3 ${
-        isActive
-          ? "text-secondary-golden font-semibold"
-          : "text-white font-light"
+        isActive ? "text-secondary-golden font-medium" : "text-white font-light"
       }`}
     >
       <a href={href} className="flex">
