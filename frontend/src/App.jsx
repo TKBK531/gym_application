@@ -6,6 +6,7 @@ import Events from "./pages/Events";
 import Items from "./pages/Items";
 import Reservations from "./pages/Reservations";
 import Login from "./pages/Login"; // Import the Login component
+import PageNotFound from "./pages/PageNotFound";
 
 const router = createBrowserRouter([
   {
@@ -51,6 +52,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "*",
+    element: <PageNotFound />,
   },
 ]);
 
