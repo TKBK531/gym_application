@@ -1,5 +1,7 @@
-import AvatarOnline from "./NavComponents/AvatarOnline";
 import React from "react";
+import AvatarOnline from "./NavComponents/AvatarOnline";
+import { pageLinks } from "../constants";
+import PageLink from "./NavComponents/PageLink";
 
 const LeftBar = () => (
   <div className=" w-[290px]">
@@ -15,7 +17,14 @@ const LeftBar = () => (
         </h3>
       </div>
     </div>
-    <h1>LeftBar</h1>
+    {pageLinks.map((link) => (
+      <PageLink
+        key={link.index}
+        href={link.href}
+        icon={link.icon}
+        name={link.name}
+      />
+    ))}
   </div>
 );
 
