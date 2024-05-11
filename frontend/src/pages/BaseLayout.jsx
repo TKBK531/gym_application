@@ -1,22 +1,24 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import LeftBar from "./LeftBar";
-import NavBar from "./RightBar";
+import NavBar from "./NavBar"; // Assuming it's "NavBar", not "RightBar"
 
-const BaseLayout = () => (
-  <div className="flex flex-row">
-    <div className="hidden xs:block w-[290px]  bg-gray-200">
-      <LeftBar />
-    </div>
-    <div className="flex flex-col w-full sm:w-3/4">
-      <div className="w-full bg-gray-200">
-        <NavBar />
+const BaseLayout = () => {
+  return (
+    <div className="flex h-screen">
+      <div className="hidden xs:block w-[290px] bg-gray-200">
+        <LeftBar />
       </div>
-      <div className="w-full bg-gray-300">
-        <Outlet />
+      <div className="flex-1 flex flex-col">
+        <div className="w-full bg-gray-200">
+          <NavBar />
+        </div>
+        <div className="flex-1 bg-gray-300">
+          <Outlet />
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default BaseLayout;
