@@ -15,11 +15,14 @@ const Login = () => {
 
   const { mutate: login, isLoading } = useMutation({
     mutationFn: async (formData) => {
-      const response = await fetch("/your-api-endpoint", {
+      console.log("Sending data:", formData);
+      const response = await fetch("/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
+
+      console.log(response.body);
 
       if (!response.ok) {
         throw new Error("Login failed");
