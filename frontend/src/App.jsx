@@ -11,6 +11,7 @@ import {
   Sports,
   Profile,
   Login,
+  Logout,
   PageNotFound,
 } from "./pages";
 
@@ -23,7 +24,7 @@ const router = createBrowserRouter([
         index: true,
         element: (
           <ProtectedRoute>
-            <Home />,
+            <Home />
           </ProtectedRoute>
         ),
       },
@@ -35,7 +36,11 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Events />,
+        element: (
+          <ProtectedRoute>
+            <Events />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
@@ -45,7 +50,11 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Items />,
+        element: (
+          <ProtectedRoute>
+            <Items />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
@@ -55,7 +64,11 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Reservations />,
+        element: (
+          <ProtectedRoute>
+            <Reservations />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
@@ -65,7 +78,11 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Members />,
+        element: (
+          <ProtectedRoute>
+            <Members />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
@@ -75,7 +92,11 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Sports />,
+        element: (
+          <ProtectedRoute>
+            <Sports />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
@@ -85,18 +106,17 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Profile />,
+        element: (
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
-  {
-    path: "/login",
-    element: <Login />,
-  },
-  {
-    path: "*",
-    element: <PageNotFound />,
-  },
+  { path: "/login", element: <Login /> },
+  { path: "/logout", element: <Logout /> },
+  { path: "*", element: <PageNotFound /> },
 ]);
 
 function App() {
