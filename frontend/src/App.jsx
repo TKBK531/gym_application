@@ -24,9 +24,9 @@ const router = createBrowserRouter([
       {
         index: true,
         element: (
-          <ProtectedRoute>
-            <Home />
-          </ProtectedRoute>
+          // <ProtectedRoute>
+          <Home />
+          // </ProtectedRoute>
         ),
       },
     ],
@@ -38,9 +38,9 @@ const router = createBrowserRouter([
       {
         index: true,
         element: (
-          <ProtectedRoute>
-            <Events />
-          </ProtectedRoute>
+          // <ProtectedRoute>
+          <Events />
+          // </ProtectedRoute>
         ),
       },
     ],
@@ -52,9 +52,9 @@ const router = createBrowserRouter([
       {
         index: true,
         element: (
-          <ProtectedRoute>
-            <Items />
-          </ProtectedRoute>
+          // <ProtectedRoute>
+          <Items />
+          // </ProtectedRoute>
         ),
       },
     ],
@@ -66,9 +66,9 @@ const router = createBrowserRouter([
       {
         index: true,
         element: (
-          <ProtectedRoute>
-            <Reservations />
-          </ProtectedRoute>
+          // <ProtectedRoute>
+          <Reservations />
+          // </ProtectedRoute>
         ),
       },
     ],
@@ -80,9 +80,9 @@ const router = createBrowserRouter([
       {
         index: true,
         element: (
-          <ProtectedRoute>
-            <Members />
-          </ProtectedRoute>
+          // <ProtectedRoute>
+          <Members />
+          // </ProtectedRoute>
         ),
       },
     ],
@@ -94,9 +94,9 @@ const router = createBrowserRouter([
       {
         index: true,
         element: (
-          <ProtectedRoute>
-            <Sports />
-          </ProtectedRoute>
+          // <ProtectedRoute>
+          <Sports />
+          // </ProtectedRoute>
         ),
       },
     ],
@@ -108,9 +108,9 @@ const router = createBrowserRouter([
       {
         index: true,
         element: (
-          <ProtectedRoute>
-            <Profile />
-          </ProtectedRoute>
+          // <ProtectedRoute>
+          <Profile />
+          // </ProtectedRoute>
         ),
       },
     ],
