@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { formStyles } from "../styles";
-import { Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import Popup from "../components/Popup"; // Import the 'Popup' component
 
 const Register = () => {
   const BASE_URL = import.meta.env.VITE_API_URL;
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -16,93 +17,75 @@ const Register = () => {
     confirmPassword: "",
   });
 
-  const [errors, setErrors] = useState({}); // Add state for errors
+  const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
-
   const [showPopup, setShowPopup] = useState(false);
-  const [popupType, setPopupType] = useState("");
   const [popupMessage, setPopupMessage] = useState("");
+  const [popupType, setPopupType] = useState("");
 
-  const navigate = useNavigate();
-  const closePopup = () => {
-    setShowPopup(false);
-    if (popupType === "success") {
-      navigate("/login");
-    }
-  };
-
-  const handleChange = (e) => {
+  const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setPopupType("success");
 
-    // Form Validation (Example)
     const validationErrors = {};
     if (formData.password !== formData.confirmPassword) {
       validationErrors.confirmPassword = "Passwords do not match";
     }
 
-    // Add other validation rules (e.g., email format, password strength, etc.)
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
+      setPopupType("error");
       return;
     }
 
-    //Prepare Data for API
-    const requestData = {
-      user: {
-        first_name: formData.firstName,
-        last_name: formData.lastName,
-        username: formData.username,
-        email: formData.email,
-        password: formData.password,
-      },
-      contact: formData.contact,
-    };
-
-    //API Submission
     try {
       const response = await fetch(`${BASE_URL}/user/register/`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestData),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user: {
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            username: formData.username,
+            email: formData.email,
+            password: formData.password,
+          },
+          contact: formData.contact,
+        }),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        setErrors({ apiError: errorData.detail || "Registration failed" });
-        setPopupMessage(errorData.detail || "Registration failed");
-        setPopupType("error");
-        setShowPopup(true);
-      } else {
-        //Handle Successful Registration
-        setFormData({
-          firstName: "",
-          lastName: "",
-          username: "",
-          email: "",
-          contact: "",
-          password: "",
-          confirmPassword: "",
-        });
-        setErrors({});
+      const data = await response.json();
+
+      if (response.ok) {
         setPopupMessage("Successfully Registered");
-        setPopupType("success");
-        setShowPopup(true);
-        setTimeout(() => {
-          <Navigate to="/login" />; // Navigate after success
-        }, 1000);
+      } else {
+        setPopupType("error");
+        setPopupMessage(data.detail || "Registration failed");
       }
-    } catch (error) {
-      // Handle Network Errors
-      setErrors({ apiError: "Network error. Please try again." });
-      setPopupMessage("Network error. Please try again.");
-      setPopupType("error");
       setShowPopup(true);
+    } catch (error) {
+      setPopupMessage("Network error. Please try again.");
+      setShowPopup(true);
+    }
+  };
+
+  const closePopup = () => {
+    setShowPopup(false);
+    if (popupType === "success") {
+      setFormData({
+        firstName: "",
+        lastName: "",
+        username: "",
+        email: "",
+        contact: "",
+        password: "",
+        confirmPassword: "",
+      });
+      setErrors({});
+      navigate("/login");
     }
   };
 
