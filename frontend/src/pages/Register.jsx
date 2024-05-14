@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { formStyles } from "../styles";
+import { Navigate } from "react-router-dom";
 
 const Register = () => {
+  const BASE_URL = import.meta.env.VITE_API_URL;
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -20,19 +22,6 @@ const Register = () => {
   };
 
   const handleRegister = async (e) => {
-    alert(
-      formData.firstName +
-        " " +
-        formData.lastName +
-        " " +
-        formData.email +
-        " " +
-        formData.contact +
-        " " +
-        formData.password +
-        " " +
-        formData.confirmPassword
-    );
     e.preventDefault();
 
     // Form Validation (Example)
@@ -40,24 +29,62 @@ const Register = () => {
     if (formData.password !== formData.confirmPassword) {
       validationErrors.confirmPassword = "Passwords do not match";
     }
-    // Add other validation rules (e.g., email format, password strength, etc.)
 
+    // Add other validation rules (e.g., email format, password strength, etc.)
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
 
-    // // API Submission Logic (Placeholder)
-    // try {
-    //   const response = await fetch("/your-api-endpoint/", {
-    //     method: "POST",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify(formData),
-    //   });
-    //   // Handle API response (success/error)
-    // } catch (error) {
-    //   // Handle network or API errors
-    // }
+    //Prepare Data for API
+    const requestData = {
+      user: {
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+      },
+      contact: formData.contact,
+    };
+
+    //API Submission
+    try {
+      const response = await fetch(`${BASE_URL}/user/register/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
+      });
+
+      if (!response.ok) {
+        // Handle API Errors
+        const errorData = await response.json();
+        // Set errors from the API response or display a generic error message
+        setErrors({ apiError: errorData.detail || "Registration failed" });
+        alert(errorData);
+      } else {
+        //Handle Successful Registration
+        // Clear form data, redirect to login, etc.
+        setFormData({
+          firstName: "",
+          lastName: "",
+          username: "",
+          email: "",
+          contact: "",
+          password: "",
+          confirmPassword: "",
+        });
+        setErrors({}); // Clear errors
+        alert("Successfully Registered");
+        <Navigate to="/login" />;
+      }
+    } catch (error) {
+      // Handle Network Errors
+      console.error("Network error:", error);
+      setErrors({ apiError: "Network error. Please try again." });
+    }
   };
 
   return (
@@ -70,7 +97,6 @@ const Register = () => {
             Log in
           </a>
         </p>
-
         <form onSubmit={handleRegister} className="mt-10 space-y-4">
           <div className="flex space-x-4">
             {/* First and Last Name */}
@@ -103,7 +129,6 @@ const Register = () => {
               />
             </div>
           </div>
-
           {/* Username */}
           <div className="flex space-x-4">
             <div className="w-1/2">
@@ -151,7 +176,6 @@ const Register = () => {
               required
             />
           </div>
-
           {/* Password */}
           <div className="relative">
             <label htmlFor="password" className={`${formStyles.formLable}`}>
@@ -180,7 +204,6 @@ const Register = () => {
               {errors.password}
             </p>
           )}
-
           {/* Confirm Password */}
           <div>
             <label
@@ -208,7 +231,6 @@ const Register = () => {
           <p className="text-xs text-gray-500 mb-4">
             Use 8 or more characters with a mix of letters, numbers & symbols
           </p>
-
           <button type="submit" className={`${formStyles.formPrimaryButton}`}>
             Create an account
           </button>
