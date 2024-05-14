@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { formStyles } from "../styles";
 import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Popup from "../components/Popup"; // Import the 'Popup' component
 
 const Register = () => {
   const BASE_URL = import.meta.env.VITE_API_URL;
@@ -16,6 +18,18 @@ const Register = () => {
 
   const [errors, setErrors] = useState({}); // Add state for errors
   const [showPassword, setShowPassword] = useState(false);
+
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupType, setPopupType] = useState("");
+  const [popupMessage, setPopupMessage] = useState("");
+
+  const navigate = useNavigate();
+  const closePopup = () => {
+    setShowPopup(false);
+    if (popupType === "success") {
+      navigate("/login");
+    }
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -59,14 +73,13 @@ const Register = () => {
       });
 
       if (!response.ok) {
-        // Handle API Errors
         const errorData = await response.json();
-        // Set errors from the API response or display a generic error message
         setErrors({ apiError: errorData.detail || "Registration failed" });
-        alert(errorData);
+        setPopupMessage(errorData.detail || "Registration failed");
+        setPopupType("error");
+        setShowPopup(true);
       } else {
         //Handle Successful Registration
-        // Clear form data, redirect to login, etc.
         setFormData({
           firstName: "",
           lastName: "",
@@ -76,14 +89,20 @@ const Register = () => {
           password: "",
           confirmPassword: "",
         });
-        setErrors({}); // Clear errors
-        alert("Successfully Registered");
-        <Navigate to="/login" />;
+        setErrors({});
+        setPopupMessage("Successfully Registered");
+        setPopupType("success");
+        setShowPopup(true);
+        setTimeout(() => {
+          <Navigate to="/login" />; // Navigate after success
+        }, 1000);
       }
     } catch (error) {
       // Handle Network Errors
-      console.error("Network error:", error);
       setErrors({ apiError: "Network error. Please try again." });
+      setPopupMessage("Network error. Please try again.");
+      setPopupType("error");
+      setShowPopup(true);
     }
   };
 
@@ -237,6 +256,9 @@ const Register = () => {
         </form>
       </div>
       {/* <div className="w-1/4"></div> */}
+      {showPopup && (
+        <Popup message={popupMessage} type={popupType} onClose={closePopup} />
+      )}
     </section>
   );
 };
