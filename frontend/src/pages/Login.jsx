@@ -4,11 +4,16 @@ import api from "../api";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import { useNavigate } from "react-router-dom";
 import { formStyles } from "../styles";
+import Popup from "../components/Popup";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupType, setPopupType] = useState("");
+
   const navigate = useNavigate();
 
   const route = "/user/token/";
@@ -149,7 +154,34 @@ const Login = () => {
           </div>
         </div>
       </div>
-      <div className="w-1/2">Right Side</div>
+      <div className="w-1/2">
+        Right Side
+        <button
+          className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-normal py-2 px-4 rounded"
+          onClick={() => {
+            setPopupType("success");
+            setShowPopup(true);
+          }}
+        >
+          Open Popup
+        </button>
+        <button
+          className="mt-4 bg-red-500 hover:bg-red-700 text-white font-normal py-2 px-4 rounded"
+          onClick={() => {
+            setPopupType("error");
+            setShowPopup(true);
+          }}
+        >
+          Open Error Popup
+        </button>
+        {showPopup && (
+          <Popup
+            message="This is a test message for the popup."
+            type={popupType}
+            onClose={() => setShowPopup(false)}
+          />
+        )}
+      </div>
     </section>
   );
 };
