@@ -1,7 +1,7 @@
 import React from "react";
 import AvatarOnline from "./NavComponents/AvatarOnline";
 import PageLink from "./NavComponents/PageLink";
-import { pageLinks } from "../constants";
+import pageLinks from "../constants/index";
 
 const LeftBar = () => {
   return (
@@ -21,15 +21,15 @@ const LeftBar = () => {
       </div>
       <hr className="mb-10" />
       <div>
-        <PageLink name={"Hello"} href={"/events"} />
-        {/* {pageLinks.map((link) => (
+        {/* <PageLink name={"Hello"} href={"/events"} /> */}
+        {pageLinks.map((link) => (
           <PageLink
             key={link.index}
             href={link.href}
             icon={link.icon}
             name={link.name}
           />
-        ))} */}
+        ))}
       </div>
     </div>
   );
