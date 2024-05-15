@@ -1,7 +1,7 @@
 // import api from "../api";
 // import { useState, useEffect } from "react";
 import AvatarOnline from "./NavComponents/AvatarOnline";
-import { pageLinks } from "../constants";
+import pageLinks from "../constants/index";
 import PageLink from "./NavComponents/PageLink";
 
 const LeftBar = () => {
