@@ -25,8 +25,11 @@ class UserCreateView(generics.CreateAPIView):
         profile_serializer = UserProfileSerializer(profile)
 
         response_data = {
-            **serializer.data,
-            "profile": profile_serializer.data,
+            "status": "success",
+            "data": {
+                **serializer.data,
+                "profile": profile_serializer.data,
+            },
         }
         return Response(response_data, status=status.HTTP_201_CREATED, headers=headers)
 
@@ -57,7 +60,10 @@ class UserProfileDetailView(generics.RetrieveAPIView):
         }
 
         # Combine profile and user data
-        response_data = {**serializer.data, **user_data}
+        response_data = {
+            "status": "success",
+            "data": {**serializer.data, **user_data},
+        }
 
         return Response(response_data)
 
@@ -75,15 +81,28 @@ class UserLoginView(generics.GenericAPIView):
             refresh = RefreshToken.for_user(user)
             profile = UserProfile.objects.get(user=user)
             serializer = UserProfileSerializer(profile)
+            response_data = {
+                "id": user.id,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "username": user.username,
+                "email": user.email,
+                "profile": serializer.data,
+            }
+
             return Response(
                 {
-                    "user": serializer.data,
-                    "refresh": str(refresh),
-                    "access": str(refresh.access_token),
+                    "status": "success",
+                    "message": response_data,
+                    "auth_tokens": {
+                        "refresh": str(refresh),
+                        "access": str(refresh.access_token),
+                    },
                 },
                 status=status.HTTP_200_OK,
             )
         else:
             return Response(
-                {"error": "Invalid Credentials"}, status=status.HTTP_401_UNAUTHORIZED
+                {"status": "error", "message": "Invalid Credentials"},
+                status=status.HTTP_401_UNAUTHORIZED,
             )
