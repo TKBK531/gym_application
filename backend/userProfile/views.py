@@ -7,6 +7,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import UserSerializer, UserProfileSerializer
 from .models import UserProfile
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.exceptions import NotFound
 
 
 class UserCreateView(generics.CreateAPIView):
@@ -30,24 +31,35 @@ class UserCreateView(generics.CreateAPIView):
         return Response(response_data, status=status.HTTP_201_CREATED, headers=headers)
 
 
-class UserProfileListView(generics.ListAPIView):
-    queryset = UserProfile.objects.select_related("user")
+class UserProfileDetailView(generics.RetrieveAPIView):
     serializer_class = UserProfileSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
-    def list(self, request):
-        queryset = self.get_queryset()
-        serializer = UserProfileSerializer(queryset, many=True)
-        for user_profile_data in serializer.data:
-            user = UserProfile.objects.get(id=user_profile_data["id"]).user
-            user_profile_data["user"] = {
-                "id": user.id,
-                "username": user.username,
-                "first_name": user.first_name,
-                "last_name": user.last_name,
-                "email": user.email,
+    def get_object(self):
+        user = self.request.user
+        try:
+            profile = UserProfile.objects.get(user=user)
+            return profile
+        except UserProfile.DoesNotExist:
+            raise NotFound("User Profile not found")
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        user_data = {
+            "user": {
+                "id": instance.user.id,
+                "first_name": instance.user.first_name,
+                "last_name": instance.user.last_name,
+                "username": instance.user.username,
+                "email": instance.user.email,
             }
-        return Response(serializer.data)
+        }
+
+        # Combine profile and user data
+        response_data = {**serializer.data, **user_data}
+
+        return Response(response_data)
 
 
 class UserLoginView(generics.GenericAPIView):
