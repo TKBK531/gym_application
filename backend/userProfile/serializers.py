@@ -12,6 +12,13 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = ["id", "contact", "profile_picture"]
+        extra_kwargs = {
+            "profile_picture": {
+                "required": False,
+                "allow_null": True,
+                "default": "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png",
+            },
+        }
 
 
 class UserSerializer(serializers.ModelSerializer):
