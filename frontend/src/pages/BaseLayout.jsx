@@ -3,30 +3,38 @@ import api from "../api";
 import { Outlet } from "react-router-dom";
 import LeftBar from "../components/LeftBar";
 import NavBar from "../components/NavBar";
+import { ACCESS_TOKEN } from "../constants";
+import { jwtDecode } from "jwt-decode";
 
 const BaseLayout = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [profileData, setProfileData] = useState(null);
   const [error, setError] = useState(null);
 
+  const fetchUserDetails = async (userId) => {
+    try {
+      const response = await api.get(`/user/${userId}/`);
+      setProfileData(response.data.data);
+      console.log("Fetched Response ", response.data.data);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchProfile = async () => {
-      if (!localStorage.getItem("ACCESS_TOKEN")) {
-        setIsLoading(false);
-        return;
-      }
-
+    const token = localStorage.getItem(ACCESS_TOKEN);
+    if (token) {
       try {
-        const response = await api.get("/user/profile/");
-        setProfileData(response.data.data);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+        const decodedToken = jwtDecode(token);
+        const userId = decodedToken.user_id;
 
-    fetchProfile();
+        fetchUserDetails(userId);
+      } catch (error) {
+        console.error("Error decoding token:", error);
+      }
+    }
   }, []);
 
   if (isLoading) {
@@ -42,6 +50,7 @@ const BaseLayout = () => {
       <div className="hidden xs:block w-[290px] bg-gray-200">
         {/* {console.log(profileData)} */}
         {profileData && <LeftBar profileData={profileData} />}
+        {/* <LeftBar /> */}
       </div>
       <div className="flex-1 flex flex-col">
         <div className="w-full bg-gray-200">
