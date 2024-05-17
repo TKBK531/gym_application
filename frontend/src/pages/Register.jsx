@@ -2,9 +2,9 @@ import { useState } from "react";
 import { formStyles } from "../styles";
 import { useNavigate } from "react-router-dom";
 import Popup from "../components/Popup"; // Import the 'Popup' component
+import api from "../api";
 
 const Register = () => {
-  const BASE_URL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -26,49 +26,135 @@ const Register = () => {
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
+  // const handleRegister = async (e) => {
+  //   e.preventDefault();
+  //   setPopupType("success");
+
+  //   const validationErrors = {};
+  //   if (formData.password !== formData.confirmPassword) {
+  //     validationErrors.confirmPassword = "Passwords do not match";
+  //   }
+
+  //   if (Object.keys(validationErrors).length > 0) {
+  //     setErrors(validationErrors);
+  //     setPopupType("error");
+  //     return;
+  //   }
+
+  //   try {
+  //     const response = await api.post("/user/register/", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({
+  //         username: formData.username,
+  //         password: formData.password,
+  //         first_name: formData.firstName,
+  //         last_name: formData.lastName,
+  //         email: formData.email,
+  //         profile: {
+  //           contact: formData.contact,
+  //           profile_picture:
+  //             "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png",
+  //         },
+  //       }),
+  //     });
+
+  //     const data = await response.json();
+
+  //     if (response.ok) {
+  //       setPopupMessage("Successfully Registered");
+  //     } else {
+  //       setPopupType("error");
+  //       setPopupMessage(data.detail || "Registration failed");
+  //     }
+  //     setShowPopup(true);
+  //   } catch (error) {
+  //     console.error(error);
+  //     setPopupType("error");
+  //     setPopupMessage("Network error. Please try again.");
+  //     setShowPopup(true);
+  //   }
+  // };
+
   const handleRegister = async (e) => {
     e.preventDefault();
-    setPopupType("success");
 
-    const validationErrors = {};
+    // 1. Basic Form Validation (Add more as needed)
     if (formData.password !== formData.confirmPassword) {
-      validationErrors.confirmPassword = "Passwords do not match";
-    }
-
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      setPopupType("error");
+      setErrors({ confirmPassword: "Passwords do not match" });
       return;
     }
 
+    // Clear previous errors
+    setErrors({});
+
     try {
-      const response = await fetch(`${BASE_URL}/user/register/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          user: {
-            first_name: formData.firstName,
-            last_name: formData.lastName,
-            username: formData.username,
-            email: formData.email,
-            password: formData.password,
-          },
+      // 2. Prepare Data for Backend
+      const dataForBackend = {
+        username: formData.username,
+        password: formData.password, // Consider hashing for security
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        email: formData.email,
+        profile: {
+          profile_picture:
+            "https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=600",
           contact: formData.contact,
-        }),
-      });
+        },
+      };
 
-      const data = await response.json();
+      // 3. Send Registration Request using your api instance
+      const response = await api.post("/user/register/", dataForBackend);
 
-      if (response.ok) {
-        setPopupMessage("Successfully Registered");
-      } else {
-        setPopupType("error");
-        setPopupMessage(data.detail || "Registration failed");
+      // 4. Handle Success
+      if (response.status === 201) {
+        setShowPopup(true);
+        setPopupMessage("Registration successful!");
+        setPopupType("success");
+
+        // Optional: Reset form fields, redirect to login, etc.
+        setFormData({
+          firstName: "",
+          lastName: "",
+          username: "",
+          email: "",
+          contact: "",
+          password: "",
+          confirmPassword: "",
+        });
       }
-      setShowPopup(true);
     } catch (error) {
-      setPopupMessage("Network error. Please try again.");
+      // 5. Handle Errors (Specific & General)
+      console.error("Registration error:", error);
       setShowPopup(true);
+      setPopupType("error");
+
+      if (error.response) {
+        if (error.response.status === 400) {
+          // Validation errors
+          setPopupMessage(
+            "Validation errors: " + JSON.stringify(error.response.data)
+          );
+        } else if (error.response.status === 409) {
+          // Username or email already exists
+          setPopupMessage("Username or email already exists.");
+          setShowPopup(true);
+        } else {
+          // Other server errors (500, etc.)
+          setPopupMessage("Server error. Please try again later.");
+          setShowPopup(true);
+        }
+      } else if (error.request) {
+        // Network error
+        setPopupMessage(
+          "No response from server. Please check your connection."
+        );
+        setShowPopup(true);
+      } else {
+        // Other unexpected errors
+        setPopupMessage("An error occurred. Please try again.");
+        setShowPopup(true);
+      }
     }
   };
 
