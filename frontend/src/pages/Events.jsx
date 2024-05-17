@@ -15,7 +15,7 @@ const Events = () => (
           />
         ))} </div>
         
-      <div className="grid grid-cols-3 gap-6 mt-8 px-10cd "> {categoryCards.map((card) => (
+      <div className="grid grid-cols-3 gap-6 mt-8 px-10 "> {categoryCards.map((card) => (
           <CategoryCard
             key={card.id}
             categoryName={card.categoryName}
