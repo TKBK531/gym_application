@@ -5,7 +5,8 @@ import {
   faClipboardList, // Reservations
   faUsers, // Members
   faFutbol, // Sports
-  faUser, // Profile
+  faUser,
+  faSignOut, // Profile
 } from "@fortawesome/free-solid-svg-icons";
 
 const pageLinks = [
@@ -21,6 +22,7 @@ const pageLinks = [
   { index: 5, icon: faUsers, name: "Members", href: "/members" },
   { index: 6, icon: faFutbol, name: "Sports", href: "/sports" },
   { index: 7, icon: faUser, name: "Profile", href: "/profile" },
+  { index: 8, icon: faSignOut, name: "Logout", href: "/logout" },
 ];
 
 export default pageLinks;

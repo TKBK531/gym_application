@@ -8,7 +8,7 @@ const PageLink = ({ name, icon, href }) => {
 
   return (
     <div
-      className={`pl-3 my-3 ${
+      className={`pl-3 py-3 transition-all duration-500 ease-in-out hover:text-info-dark-blue hover:bg-secondary-golden hover:font-medium ${
         isActive ? "text-secondary-golden font-medium" : "text-white font-light"
       }`}
     >
@@ -19,9 +19,9 @@ const PageLink = ({ name, icon, href }) => {
         <div className="mr-auto m-1">
           <p>{name}</p>
         </div>
-        <div>
+        {/* <div>
           <p className={`font-black ${isActive ? "" : "hidden"}`}>|</p>
-        </div>
+        </div> */}
       </a>
     </div>
   );
