@@ -34,6 +34,49 @@ class UserCreateView(generics.CreateAPIView):
         return Response(response_data, status=status.HTTP_201_CREATED, headers=headers)
 
 
+class UserDetailView(generics.RetrieveAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = UserSerializer
+
+    def get_object(self):
+        user_id = self.kwargs["pk"]
+        try:
+            user = User.objects.get(pk=user_id)
+            return user
+        except User.DoesNotExist:
+            return None
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        if instance is None:
+            return Response(
+                {
+                    "status": "error",
+                    "message": "User not found",
+                },
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        serializer = self.get_serializer(instance)
+        profile = UserProfile.objects.get(user=instance)
+        profile_serializer = UserProfileSerializer(profile)
+
+        response_data = {
+            "status": "success",
+            "data": {
+                "id": serializer.data["id"],
+                "first_name": serializer.data["first_name"],
+                "last_name": serializer.data["last_name"],
+                "username": serializer.data["username"],
+                "email": serializer.data["email"],
+                "profile": profile_serializer.data,
+            },
+        }
+
+        return Response(response_data)
+
+
 class UserProfileDetailView(generics.RetrieveAPIView):
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
