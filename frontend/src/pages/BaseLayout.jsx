@@ -40,7 +40,10 @@ const BaseLayout = () => {
   return (
     <div className="flex h-screen">
       <div className="hidden xs:block w-[290px] bg-gray-200">
+<<<<<<< HEAD
         {/* {console.log(profileData)} */}
+=======
+>>>>>>> e62fabe (FIX: fixed the location where the user data is fetched)
         {profileData && <LeftBar profileData={profileData} />}
       </div>
       <div className="flex-1 flex flex-col">
