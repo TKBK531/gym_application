@@ -4,7 +4,7 @@ import { Outlet } from "react-router-dom";
 import LeftBar from "../components/LeftBar";
 import NavBar from "../components/NavBar";
 import { ACCESS_TOKEN } from "../constants";
-import jwt_decode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 const BaseLayout = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -13,8 +13,9 @@ const BaseLayout = () => {
 
   const fetchUserDetails = async (userId) => {
     try {
-      const response = await api.get(`/users/${userId}/`);
+      const response = await api.get(`/user/${userId}/`);
       setProfileData(response.data.data);
+      console.log("Fetched Response ", response.data.data);
     } catch (error) {
       setError(error.message);
     } finally {
@@ -26,7 +27,7 @@ const BaseLayout = () => {
     const token = localStorage.getItem(ACCESS_TOKEN);
     if (token) {
       try {
-        const decodedToken = jwt_decode(token);
+        const decodedToken = jwtDecode(token);
         const userId = decodedToken.user_id;
 
         fetchUserDetails(userId);
@@ -48,12 +49,8 @@ const BaseLayout = () => {
     <div className="flex h-screen">
       <div className="hidden xs:block w-[290px] bg-gray-200">
         {/* {console.log(profileData)} */}
-
-        {/* {console.log(profileData)} */}
-
         {profileData && <LeftBar profileData={profileData} />}
-        {/* {profileData && <LeftBar profileData={profileData} />} */}
-        <LeftBar />
+        {/* <LeftBar /> */}
       </div>
       <div className="flex-1 flex flex-col">
         <div className="w-full bg-gray-200">
