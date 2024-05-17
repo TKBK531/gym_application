@@ -99,7 +99,7 @@ const Register = () => {
         email: formData.email,
         profile: {
           profile_picture:
-            "https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=600",
+            "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png",
           contact: formData.contact,
         },
       };

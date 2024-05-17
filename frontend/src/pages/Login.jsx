@@ -37,7 +37,7 @@ const Login = () => {
 
   return (
     <section className="flex">
-      <div className="w-1/2 p-20">
+      <div className="w-full p-20">
         <div className="container mx-auto max-w-lg p-8 bg-white rounded-lg shadow-md">
           <div className="container">
             <h1 className="w-full flex flex-col uppercase items-center text-heading3 font-medium mb-3">
@@ -145,7 +145,7 @@ const Login = () => {
             <p className={`${formStyles.formLable}`}>
               Don&apos;t have an account?{" "}
               <a
-                href="#"
+                href="/register"
                 className={`ml-3 text-primary-shade-1 hover:underline`}
               >
                 Sign up here
@@ -153,34 +153,6 @@ const Login = () => {
             </p>
           </div>
         </div>
-      </div>
-      <div className="w-1/2">
-        Right Side
-        <button
-          className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-normal py-2 px-4 rounded"
-          onClick={() => {
-            setPopupType("success");
-            setShowPopup(true);
-          }}
-        >
-          Open Popup
-        </button>
-        <button
-          className="mt-4 bg-red-500 hover:bg-red-700 text-white font-normal py-2 px-4 rounded"
-          onClick={() => {
-            setPopupType("error");
-            setShowPopup(true);
-          }}
-        >
-          Open Error Popup
-        </button>
-        {showPopup && (
-          <Popup
-            message="This is a test message for the popup."
-            type={popupType}
-            onClose={() => setShowPopup(false)}
-          />
-        )}
       </div>
     </section>
   );

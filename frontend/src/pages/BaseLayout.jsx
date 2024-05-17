@@ -56,7 +56,7 @@ const BaseLayout = () => {
         <div className="w-full bg-gray-200">
           <NavBar />
         </div>
-        <div className="flex-1 bg-gray-300">
+        <div className="flex-1 bg-gray-300 pt-12 px-8">
           <Outlet />
         </div>
       </div>
