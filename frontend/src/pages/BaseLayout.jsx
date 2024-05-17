@@ -3,30 +3,37 @@ import api from "../api";
 import { Outlet } from "react-router-dom";
 import LeftBar from "../components/LeftBar";
 import NavBar from "../components/NavBar";
+import { ACCESS_TOKEN } from "../constants";
+import jwt_decode from "jwt-decode";
 
 const BaseLayout = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [profileData, setProfileData] = useState(null);
   const [error, setError] = useState(null);
 
+  const fetchUserDetails = async (userId) => {
+    try {
+      const response = await api.get(`/users/${userId}/`);
+      setProfileData(response.data.data);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchProfile = async () => {
-      if (!localStorage.getItem("ACCESS_TOKEN")) {
-        setIsLoading(false);
-        return;
-      }
-
+    const token = localStorage.getItem(ACCESS_TOKEN);
+    if (token) {
       try {
-        const response = await api.get("/user/profile/");
-        setProfileData(response.data.data);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+        const decodedToken = jwt_decode(token);
+        const userId = decodedToken.user_id;
 
-    fetchProfile();
+        fetchUserDetails(userId);
+      } catch (error) {
+        console.error("Error decoding token:", error);
+      }
+    }
   }, []);
 
   if (isLoading) {
