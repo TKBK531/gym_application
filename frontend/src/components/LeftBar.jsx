@@ -12,11 +12,11 @@ const LeftBar = ({ profileData }) => {
           {/* {profileData && (
             <AvatarOnline image={profileData.profile.profile_picture} />
           )} */}
+          {console.log(profileData)}
         </div>
         <div className="p-1">
           <h1 className="font-medium text-[16px] text-white">
             Tharindu Kasthuri
-            {console.log(profileData)}
             {/* {profileData.user.first_name} {profileData.user.last_name} */}
           </h1>
           <h3 className="font-semibold text-gray-500 text-[12px]">
