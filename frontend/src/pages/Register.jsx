@@ -78,6 +78,7 @@ const Register = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setPopupType("success");
 
     // 1. Basic Form Validation (Add more as needed)
     if (formData.password !== formData.confirmPassword) {
