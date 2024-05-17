@@ -8,7 +8,7 @@ import {
   faUser, // Profile
 } from "@fortawesome/free-solid-svg-icons";
 
-const pageLinks = [
+export const pageLinks = [
   { index: 1, icon: faChartLine, name: "Dashboard", href: "/dashboard" },
   { index: 2, icon: faCalendarAlt, name: "Events", href: "/events" },
   { index: 3, icon: faList, name: "Items", href: "/items" },
