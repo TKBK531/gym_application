@@ -34,7 +34,6 @@ class UserCreateView(generics.CreateAPIView):
         return Response(response_data, status=status.HTTP_201_CREATED, headers=headers)
 
 
-<<<<<<< HEAD
 class UserDetailView(generics.RetrieveAPIView):
     permission_classes = [AllowAny]
     serializer_class = UserSerializer
@@ -83,13 +82,6 @@ class UserProfileDetailView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
-=======
-class UserProfileDetailView(generics.RetrieveAPIView):
-    serializer_class = UserProfileSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_object(self):
->>>>>>> 226cf48 (FIX: Fixing the issue with the user profile view)
         user = self.request.user
         try:
             profile = UserProfile.objects.get(user=user)
@@ -111,14 +103,10 @@ class UserProfileDetailView(generics.RetrieveAPIView):
         }
 
         # Combine profile and user data
-<<<<<<< HEAD
         response_data = {
             "status": "success",
             "data": {**serializer.data, **user_data},
         }
-=======
-        response_data = {**serializer.data, **user_data}
->>>>>>> 226cf48 (FIX: Fixing the issue with the user profile view)
 
         return Response(response_data)
 
