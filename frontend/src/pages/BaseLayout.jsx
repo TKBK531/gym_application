@@ -45,6 +45,8 @@ const BaseLayout = () => {
         {/* {console.log(profileData)} */}
 
         {profileData && <LeftBar profileData={profileData} />}
+        {/* {profileData && <LeftBar profileData={profileData} />} */}
+        <LeftBar />
       </div>
       <div className="flex-1 flex flex-col">
         <div className="w-full bg-gray-200">
