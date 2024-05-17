@@ -5,8 +5,8 @@ import LeftBar from "../components/LeftBar";
 import NavBar from "../components/NavBar";
 
 const BaseLayout = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const [profileData, setProfileData] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -40,6 +40,7 @@ const BaseLayout = () => {
   return (
     <div className="flex h-screen">
       <div className="hidden xs:block w-[290px] bg-gray-200">
+        {/* {console.log(profileData)} */}
         {profileData && <LeftBar profileData={profileData} />}
       </div>
       <div className="flex-1 flex flex-col">
