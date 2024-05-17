@@ -12,10 +12,11 @@ const BaseLayout = () => {
   const [error, setError] = useState(null);
 
   const fetchUserDetails = async (userId) => {
+    console.log("Fetching user details");
     try {
       const response = await api.get(`/user/${userId}/`);
       setProfileData(response.data.data);
-      console.log("Fetched Response ", response.data.data);
+      // console.log("Fetched Response ", response.data.data);
     } catch (error) {
       setError(error.message);
     } finally {
@@ -25,7 +26,7 @@ const BaseLayout = () => {
 
   useEffect(() => {
     const token = localStorage.getItem(ACCESS_TOKEN);
-    if (token) {
+    if (token && !profileData) {
       try {
         const decodedToken = jwtDecode(token);
         const userId = decodedToken.user_id;
