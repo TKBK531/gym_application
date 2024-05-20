@@ -1,56 +1,17 @@
-import React, { useState, useEffect } from "react";
-import api from "../api";
+import React from "react";
 import { Outlet } from "react-router-dom";
 import LeftBar from "../components/LeftBar";
 import NavBar from "../components/NavBar";
-import { ACCESS_TOKEN } from "../constants";
-import { jwtDecode } from "jwt-decode";
+import { useUserData } from "../context/UserDataProvider";
 
 const BaseLayout = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [profileData, setProfileData] = useState(null);
-  const [error, setError] = useState(null);
-
-  const fetchUserDetails = async (userId) => {
-    console.log("Fetching user details");
-    try {
-      const response = await api.get(`/user/${userId}/`);
-      setProfileData(response.data.data);
-      // console.log("Fetched Response ", response.data.data);
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    const token = localStorage.getItem(ACCESS_TOKEN);
-    if (token && !profileData) {
-      try {
-        const decodedToken = jwtDecode(token);
-        const userId = decodedToken.user_id;
-
-        fetchUserDetails(userId);
-      } catch (error) {
-        console.error("Error decoding token:", error);
-      }
-    }
-  }, []);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  const { profileData } = useUserData();
 
   return (
     <div className="flex h-screen">
       <div className="hidden xs:block w-[290px] bg-gray-200">
         {/* {console.log(profileData)} */}
-        {profileData && <LeftBar profileData={profileData} />}
+        <LeftBar profileData={profileData} />
         {/* <LeftBar /> */}
       </div>
       <div className="flex-1 flex flex-col">

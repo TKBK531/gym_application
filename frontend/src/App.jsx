@@ -1,5 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { ProfileDataProvider } from "./context/ProfileDataContext";
+import { UserDataProvider } from "./context/UserDataProvider"; // Import the UserDataProvider component
 import "./App.css";
 import ProtectedRoute from "./components/ProtectedRoute";
 import {
@@ -125,9 +125,11 @@ const router = createBrowserRouter([
 function App() {
   return (
     <div>
-      <ProfileDataProvider>
+      <UserDataProvider>
+        {" "}
+        {/* Use the imported UserDataProvider component */}
         <RouterProvider router={router} />
-      </ProfileDataProvider>
+      </UserDataProvider>
     </div>
   );
 }

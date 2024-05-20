@@ -1,10 +1,11 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import api from "../api";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import { useNavigate } from "react-router-dom";
 import { formStyles } from "../styles";
 import Popup from "../components/Popup";
+import { UserContext, useContext } from "../context/UserDataProvider";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -14,6 +15,7 @@ const Login = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [popupType, setPopupType] = useState("");
 
+  const { setProfileData, isLoading } = useContext(UserContext);
   const navigate = useNavigate();
 
   const route = "/user/token/";
