@@ -16,7 +16,7 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  const route = "/user/token/";
+  const route = "/user/login/";
 
   const handleLogin = async (e) => {
     setLoading(true);
@@ -24,9 +24,11 @@ const Login = () => {
 
     try {
       const res = await api.post(route, { username, password });
-      localStorage.setItem(ACCESS_TOKEN, res.data.access);
-      localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
-      console.log(res.data);
+
+      localStorage.setItem("loginResponse", JSON.stringify(res.data));
+      localStorage.setItem(ACCESS_TOKEN, res.data.auth_tokens.access);
+      localStorage.setItem(REFRESH_TOKEN, res.data.auth_tokens.refresh);
+
       navigate("/dashboard");
     } catch (error) {
       alert(error.message);
@@ -48,18 +50,6 @@ const Login = () => {
             </p>
 
             <form onSubmit={handleLogin}>
-              {/* <div className="mb-4">
-                <label htmlFor="email" className={`${formStyles.formLable}`}>
-                  Email
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  className={`${formStyles.formTextInput}`}
-                  required
-                />
-              </div> */}
               <div className="mb-4">
                 <label htmlFor="username" className={`${formStyles.formLable}`}>
                   Username
@@ -89,18 +79,6 @@ const Login = () => {
                   required
                 />
               </div>
-              {/* <div className="mb-4">
-                <label htmlFor="password" className={`${formStyles.formLable}`}>
-                  Password
-                </label>
-                <input
-                  type="password"
-                  name="psw"
-                  id="psw"
-                  className={`${formStyles.formTextInput}`}
-                  required
-                />
-              </div> */}
 
               <div className="mb-4 flex h-auto items-baseline">
                 <input
