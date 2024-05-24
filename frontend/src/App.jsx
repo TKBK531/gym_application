@@ -1,5 +1,4 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-// import { UserDataProvider } from "./context/UserDataProvider"; // Import the UserDataProvider component
 import "./App.css";
 import ProtectedRoute from "./components/ProtectedRoute";
 import {
@@ -123,11 +122,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return (
-    // <UserDataProvider>
-    <RouterProvider router={router} />
-    // </UserDataProvider>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;

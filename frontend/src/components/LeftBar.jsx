@@ -8,15 +8,15 @@ const LeftBar = ({ profileData }) => {
     <div className=" w-[290px] bg-info-dark-blue h-screen">
       <div className="items-center text-center py-10">
         <div className="flex justify-center">
-          {profileData && <AvatarOnline image={profileData.profile_picture} />}
+          {profileData && (
+            <AvatarOnline image={profileData.profile.profile_picture} />
+          )}
         </div>
         <div className="p-1">
           <h1 className="font-medium text-[16px] text-white">
-            {/* Tharindu Kasthuri */}
             {profileData.first_name} {profileData.last_name}
           </h1>
           <h3 className="font-semibold text-gray-500 text-[12px]">
-            {/* tharindukasthurisinghe@gmail.com */}
             {profileData.email}
           </h3>
         </div>

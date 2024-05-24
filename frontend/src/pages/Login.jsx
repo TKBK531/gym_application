@@ -1,12 +1,10 @@
 import React from "react";
-import { useState, useContext } from "react";
+import { useState } from "react";
 import api from "../api";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import { useNavigate } from "react-router-dom";
 import { formStyles } from "../styles";
 import Popup from "../components/Popup";
-import { UserContext } from "../context/UserDataProvider";
-import { jwtDecode } from "jwt-decode";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -16,7 +14,6 @@ const Login = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [popupType, setPopupType] = useState("");
 
-  const { setProfileData, isLoading } = useContext(UserContext);
   const navigate = useNavigate();
 
   const route = "/user/login/";
@@ -27,9 +24,11 @@ const Login = () => {
 
     try {
       const res = await api.post(route, { username, password });
+
       localStorage.setItem("loginResponse", JSON.stringify(res.data));
-      console.log(res.data);
-      // console.log(localStorage.getItem("loginResponse"), "loginResponse");
+      localStorage.setItem(ACCESS_TOKEN, res.data.auth_tokens.access);
+      localStorage.setItem(REFRESH_TOKEN, res.data.auth_tokens.refresh);
+
       navigate("/dashboard");
     } catch (error) {
       alert(error.message);
@@ -51,18 +50,6 @@ const Login = () => {
             </p>
 
             <form onSubmit={handleLogin}>
-              {/* <div className="mb-4">
-                <label htmlFor="email" className={`${formStyles.formLable}`}>
-                  Email
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  className={`${formStyles.formTextInput}`}
-                  required
-                />
-              </div> */}
               <div className="mb-4">
                 <label htmlFor="username" className={`${formStyles.formLable}`}>
                   Username
