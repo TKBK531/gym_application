@@ -5,7 +5,8 @@ import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import { useNavigate } from "react-router-dom";
 import { formStyles } from "../styles";
 import Popup from "../components/Popup";
-import { UserContext, useContext } from "../context/UserDataProvider";
+import { UserContext } from "../context/UserDataProvider";
+import { jwtDecode } from "jwt-decode";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -18,7 +19,7 @@ const Login = () => {
   const { setProfileData, isLoading } = useContext(UserContext);
   const navigate = useNavigate();
 
-  const route = "/user/token/";
+  const route = "/user/login/";
 
   const handleLogin = async (e) => {
     setLoading(true);
@@ -26,9 +27,9 @@ const Login = () => {
 
     try {
       const res = await api.post(route, { username, password });
-      localStorage.setItem(ACCESS_TOKEN, res.data.access);
-      localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
+      localStorage.setItem("loginResponse", JSON.stringify(res.data));
       console.log(res.data);
+      // console.log(localStorage.getItem("loginResponse"), "loginResponse");
       navigate("/dashboard");
     } catch (error) {
       alert(error.message);
@@ -91,18 +92,6 @@ const Login = () => {
                   required
                 />
               </div>
-              {/* <div className="mb-4">
-                <label htmlFor="password" className={`${formStyles.formLable}`}>
-                  Password
-                </label>
-                <input
-                  type="password"
-                  name="psw"
-                  id="psw"
-                  className={`${formStyles.formTextInput}`}
-                  required
-                />
-              </div> */}
 
               <div className="mb-4 flex h-auto items-baseline">
                 <input

@@ -3,7 +3,7 @@ import api from "../api";
 import { ACCESS_TOKEN } from "../constants";
 import { jwtDecode } from "jwt-decode";
 
-const UserContext = createContext({
+export const UserContext = createContext({
   profileData: null,
   isLoading: true,
   error: null,
