@@ -116,9 +116,11 @@ class UserLoginView(generics.GenericAPIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        username = request.data.get("username")
+        email = request.data.get("email")
         password = request.data.get("password")
-        user = authenticate(username=username, password=password)
+        user = authenticate(
+            request, username=email, password=password
+        )  # Authenticate with email
 
         if user is not None:
             refresh = RefreshToken.for_user(user)
@@ -128,7 +130,6 @@ class UserLoginView(generics.GenericAPIView):
                 "id": user.id,
                 "first_name": user.first_name,
                 "last_name": user.last_name,
-                "username": user.username,
                 "email": user.email,
                 "profile": serializer.data,
             }
@@ -146,6 +147,9 @@ class UserLoginView(generics.GenericAPIView):
             )
         else:
             return Response(
-                {"status": "error", "message": "Invalid Credentials"},
+                {
+                    "status": "error",
+                    "message": "Invalid Credentials",
+                },
                 status=status.HTTP_401_UNAUTHORIZED,
             )

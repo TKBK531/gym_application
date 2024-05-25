@@ -9,4 +9,4 @@ class UserProfile(models.Model):
     profile_picture = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return self.user.username
+        return self.user.email
