@@ -26,56 +26,6 @@ const Register = () => {
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  // const handleRegister = async (e) => {
-  //   e.preventDefault();
-  //   setPopupType("success");
-
-  //   const validationErrors = {};
-  //   if (formData.password !== formData.confirmPassword) {
-  //     validationErrors.confirmPassword = "Passwords do not match";
-  //   }
-
-  //   if (Object.keys(validationErrors).length > 0) {
-  //     setErrors(validationErrors);
-  //     setPopupType("error");
-  //     return;
-  //   }
-
-  //   try {
-  //     const response = await api.post("/user/register/", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({
-  //         username: formData.username,
-  //         password: formData.password,
-  //         first_name: formData.firstName,
-  //         last_name: formData.lastName,
-  //         email: formData.email,
-  //         profile: {
-  //           contact: formData.contact,
-  //           profile_picture:
-  //             "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png",
-  //         },
-  //       }),
-  //     });
-
-  //     const data = await response.json();
-
-  //     if (response.ok) {
-  //       setPopupMessage("Successfully Registered");
-  //     } else {
-  //       setPopupType("error");
-  //       setPopupMessage(data.detail || "Registration failed");
-  //     }
-  //     setShowPopup(true);
-  //   } catch (error) {
-  //     console.error(error);
-  //     setPopupType("error");
-  //     setPopupMessage("Network error. Please try again.");
-  //     setShowPopup(true);
-  //   }
-  // };
-
   const handleRegister = async (e) => {
     e.preventDefault();
     setPopupType("success");
@@ -92,11 +42,10 @@ const Register = () => {
     try {
       // 2. Prepare Data for Backend
       const dataForBackend = {
-        username: formData.username,
-        password: formData.password, // Consider hashing for security
+        email: formData.email,
+        password: formData.password,
         first_name: formData.firstName,
         last_name: formData.lastName,
-        email: formData.email,
         profile: {
           profile_picture:
             "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png",
@@ -117,7 +66,6 @@ const Register = () => {
         setFormData({
           firstName: "",
           lastName: "",
-          username: "",
           email: "",
           contact: "",
           password: "",
@@ -162,15 +110,14 @@ const Register = () => {
   const closePopup = () => {
     setShowPopup(false);
     if (popupType === "success") {
-      setFormData({
-        firstName: "",
-        lastName: "",
-        username: "",
-        email: "",
-        contact: "",
-        password: "",
-        confirmPassword: "",
-      });
+      // setFormData({
+      //   firstName: "",
+      //   lastName: "",
+      //   email: "",
+      //   contact: "",
+      //   password: "",
+      //   confirmPassword: "",
+      // });
       setErrors({});
       navigate("/login");
     }
@@ -218,38 +165,23 @@ const Register = () => {
               />
             </div>
           </div>
-          {/* Username */}
-          <div className="flex space-x-4">
-            <div className="w-1/2">
-              <label htmlFor="username" className={`${formStyles.formLable}`}>
-                Username
-              </label>
-              <input
-                type="text"
-                id="usernmae"
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                className={`${formStyles.formTextInput}`}
-                required
-              />
-            </div>
-            {/* Email */}
-            <div className="w-1/2">
-              <label htmlFor="email" className={`${formStyles.formLable}`}>
-                Email address
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className={`${formStyles.formTextInput}`}
-                required
-              />
-            </div>
+
+          {/* Email */}
+          <div className="w-full">
+            <label htmlFor="email" className={`${formStyles.formLable}`}>
+              Email address
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className={`${formStyles.formTextInput}`}
+              required
+            />
           </div>
+
           {/* Contact Number */}
           <div>
             <label htmlFor="contact" className={`${formStyles.formLable}`}>
