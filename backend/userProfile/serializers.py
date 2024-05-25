@@ -30,7 +30,6 @@ class UserSerializer(serializers.ModelSerializer):
             "id",
             "first_name",
             "last_name",
-            "username",
             "email",
             "password",
             "profile",
@@ -42,8 +41,15 @@ class UserSerializer(serializers.ModelSerializer):
             "email": {"required": True},
         }
 
+    def validate_email(self, value):
+        # Check for unique email (case-insensitive)
+        if User.objects.filter(email__iexact=value).exists():
+            raise serializers.ValidationError("A user with that email already exists.")
+        return value
+
     def create(self, validated_data):
         profile_data = validated_data.pop("profile", None)
+        validated_data["username"] = validated_data["email"]  # Set email as username
         user = User.objects.create_user(**validated_data)
 
         if profile_data:

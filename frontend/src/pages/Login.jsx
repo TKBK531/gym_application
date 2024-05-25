@@ -7,12 +7,10 @@ import { formStyles } from "../styles";
 import Popup from "../components/Popup";
 
 const Login = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const [showPopup, setShowPopup] = useState(false);
-  const [popupType, setPopupType] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const navigate = useNavigate();
 
@@ -21,9 +19,10 @@ const Login = () => {
   const handleLogin = async (e) => {
     setLoading(true);
     e.preventDefault();
+    setErrorMessage(null);
 
     try {
-      const res = await api.post(route, { username, password });
+      const res = await api.post(route, { email, password });
 
       localStorage.setItem("loginResponse", JSON.stringify(res.data));
       localStorage.setItem(ACCESS_TOKEN, res.data.auth_tokens.access);
@@ -31,7 +30,24 @@ const Login = () => {
 
       navigate("/dashboard");
     } catch (error) {
-      alert(error.message);
+      if (error.response) {
+        switch (error.response.status) {
+          case 401:
+            setErrorMessage("Invalid credentials. Please try again.");
+            break;
+          case 404:
+            setErrorMessage("User not found.");
+            break;
+          default:
+            setErrorMessage("An error occurred during login.");
+        }
+      } else if (error.request) {
+        setErrorMessage(
+          "No response from server. Please check your connection."
+        );
+      } else {
+        setErrorMessage("An unexpected error occurred.");
+      }
     } finally {
       setLoading(false);
     }
@@ -48,18 +64,20 @@ const Login = () => {
             <p className="flex flex-col items-center text-sub mb-6">
               Please enter your details.
             </p>
-
+            {errorMessage && (
+              <p className="text-red-500 text-sm mb-2">{errorMessage}</p>
+            )}
             <form onSubmit={handleLogin}>
               <div className="mb-4">
-                <label htmlFor="username" className={`${formStyles.formLable}`}>
-                  Username
+                <label htmlFor="email" className={`${formStyles.formLable}`}>
+                  Email
                 </label>
                 <input
                   type="text"
-                  name="username"
-                  value={username}
-                  id="username"
-                  onChange={(e) => setUsername(e.target.value)}
+                  name="email"
+                  value={email}
+                  id="email"
+                  onChange={(e) => setEmail(e.target.value)}
                   className={`${formStyles.formTextInput}`}
                   required
                 />
