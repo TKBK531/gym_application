@@ -160,28 +160,22 @@ class UserProfileEditView(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        return self.request.user  # Get the User instance directly
+        return self.request.user
 
     def update(self, request, *args, **kwargs):
         user_instance = self.get_object()
         profile_instance = UserProfile.objects.get(user=user_instance)
 
-        # Handle User updates
         user_serializer = UserSerializer(
             instance=user_instance, data=request.data, partial=True
         )
-        user_serializer.is_valid(
-            raise_exception=True
-        )  # Raise exceptions for validation errors
+        user_serializer.is_valid(raise_exception=True)
         user_serializer.save()
 
-        # Handle UserProfile updates
         profile_serializer = UserProfileSerializer(
             instance=profile_instance, data=request.data, partial=True
         )
-        profile_serializer.is_valid(
-            raise_exception=True
-        )  # Raise exceptions for validation errors
+        profile_serializer.is_valid(raise_exception=True)
         profile_serializer.save()
 
         response_data = {
@@ -189,7 +183,7 @@ class UserProfileEditView(generics.UpdateAPIView):
             "message": "User profile updated successfully.",
             "data": {
                 **user_serializer.data,
-                "profile": profile_serializer.data,  # Include updated profile data
+                "profile": profile_serializer.data,
             },
         }
         return Response(response_data, status=status.HTTP_200_OK)
