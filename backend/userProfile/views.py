@@ -153,3 +153,37 @@ class UserLoginView(generics.GenericAPIView):
                 },
                 status=status.HTTP_401_UNAUTHORIZED,
             )
+
+
+class UserProfileEditView(generics.UpdateAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+    def update(self, request, *args, **kwargs):
+        user_instance = self.get_object()
+        profile_instance = UserProfile.objects.get(user=user_instance)
+
+        user_serializer = UserSerializer(
+            instance=user_instance, data=request.data, partial=True
+        )
+        user_serializer.is_valid(raise_exception=True)
+        user_serializer.save()
+
+        profile_serializer = UserProfileSerializer(
+            instance=profile_instance, data=request.data, partial=True
+        )
+        profile_serializer.is_valid(raise_exception=True)
+        profile_serializer.save()
+
+        response_data = {
+            "status": "success",
+            "message": "User profile updated successfully.",
+            "data": {
+                **user_serializer.data,
+                "profile": profile_serializer.data,
+            },
+        }
+        return Response(response_data, status=status.HTTP_200_OK)
