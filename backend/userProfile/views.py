@@ -156,39 +156,40 @@ class UserLoginView(generics.GenericAPIView):
 
 
 class UserProfileEditView(generics.UpdateAPIView):
-    serializer_class = UserProfileSerializer
-    permission_classes = [AllowAny]
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        return UserProfile.objects.get(user=self.request.user)
-
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data)
+        return self.request.user  # Get the User instance directly
 
     def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(
-            instance=instance, data=request.data, partial=True
-        )
+        user_instance = self.get_object()
+        profile_instance = UserProfile.objects.get(user=user_instance)
 
-        if serializer.is_valid():
-            serializer.save()
-            return Response(
-                {
-                    "status": "success",
-                    "message": "User profile updated successfully.",
-                    "data": serializer.data,
-                },
-                status=status.HTTP_200_OK,
-            )
-        else:
-            return Response(
-                {
-                    "status": "error",
-                    "message": "Failed to update user profile.",
-                    "errors": serializer.errors,
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        # Handle User updates
+        user_serializer = UserSerializer(
+            instance=user_instance, data=request.data, partial=True
+        )
+        user_serializer.is_valid(
+            raise_exception=True
+        )  # Raise exceptions for validation errors
+        user_serializer.save()
+
+        # Handle UserProfile updates
+        profile_serializer = UserProfileSerializer(
+            instance=profile_instance, data=request.data, partial=True
+        )
+        profile_serializer.is_valid(
+            raise_exception=True
+        )  # Raise exceptions for validation errors
+        profile_serializer.save()
+
+        response_data = {
+            "status": "success",
+            "message": "User profile updated successfully.",
+            "data": {
+                **user_serializer.data,
+                "profile": profile_serializer.data,  # Include updated profile data
+            },
+        }
+        return Response(response_data, status=status.HTTP_200_OK)
