@@ -34,18 +34,19 @@ const ProfileDashboard = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setProfileEdits({
-      ...profileEdits,
-      [name]: value,
-    });
 
     if (name === "contact") {
-      setProfileEdits({
-        ...profileEdits,
+      setProfileEdits((prevState) => ({
+        ...prevState,
         profile: {
-          ...profileEdits.profile,
+          ...(prevState.profile || {}),
           contact: value,
         },
+      }));
+    } else {
+      setProfileEdits({
+        ...profileEdits,
+        [name]: value,
       });
     }
   };
