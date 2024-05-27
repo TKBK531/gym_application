@@ -26,9 +26,10 @@ class UserCreateView(generics.CreateAPIView):
 
         response_data = {
             "status": "success",
+            "message": "User created successfully.",
             "data": {
                 **serializer.data,
-                "profile": profile_serializer.data,
+                **profile_serializer.data,
             },
         }
         return Response(response_data, status=status.HTTP_201_CREATED, headers=headers)
@@ -131,13 +132,14 @@ class UserLoginView(generics.GenericAPIView):
                 "first_name": user.first_name,
                 "last_name": user.last_name,
                 "email": user.email,
-                "profile": serializer.data,
+                **serializer.data,
             }
 
             return Response(
                 {
                     "status": "success",
-                    "message": response_data,
+                    "message": "User logged in successfully",
+                    "data": response_data,
                     "auth_tokens": {
                         "refresh": str(refresh),
                         "access": str(refresh.access_token),
@@ -183,7 +185,7 @@ class UserProfileEditView(generics.UpdateAPIView):
             "message": "User profile updated successfully.",
             "data": {
                 **user_serializer.data,
-                "profile": profile_serializer.data,
+                **profile_serializer.data,
             },
         }
         return Response(response_data, status=status.HTTP_200_OK)

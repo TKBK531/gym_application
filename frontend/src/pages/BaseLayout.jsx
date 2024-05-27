@@ -4,9 +4,7 @@ import LeftBar from "../components/LeftBar";
 import NavBar from "../components/NavBar";
 
 const BaseLayout = () => {
-  const userProfileData = JSON.parse(
-    localStorage.getItem("loginResponse")
-  ).message;
+  const userProfileData = JSON.parse(localStorage.getItem("userData"));
 
   return (
     <div className="flex h-screen">

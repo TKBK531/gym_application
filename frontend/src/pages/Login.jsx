@@ -24,7 +24,7 @@ const Login = () => {
     try {
       const res = await api.post(route, { email, password });
 
-      localStorage.setItem("loginResponse", JSON.stringify(res.data));
+      localStorage.setItem("userData", JSON.stringify(res.data.data));
       localStorage.setItem(ACCESS_TOKEN, res.data.auth_tokens.access);
       localStorage.setItem(REFRESH_TOKEN, res.data.auth_tokens.refresh);
 
