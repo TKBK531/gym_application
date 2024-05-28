@@ -5,7 +5,7 @@ import pageLinks from "../constants/index";
 
 const LeftBar = ({ profileData }) => {
   return (
-    <div className=" w-[290px] bg-info-dark-blue h-screen">
+    <div className=" w-[290px] bg-info-dark-blue h-full">
       <div className="items-center text-center py-10">
         <div className="flex justify-center">
           {profileData && <AvatarOnline image={profileData.profile_picture} />}
