@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../../api";
 import { formStyles } from "../../styles";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../constants";
+import PrimaryButton from "../Buttons/PrimaryButton";
 
 const LoginForm = ({ setErrorMessage, setLoading, setLoggedInUser }) => {
   const [email, setEmail] = useState("");
@@ -101,12 +102,7 @@ const LoginForm = ({ setErrorMessage, setLoading, setLoggedInUser }) => {
         </a>
       </div>
 
-      <button
-        type="submit"
-        className="bg-primary-red text-white py-3 rounded-md transition-colors duration-300 ease-in-out hover:bg-primary-shade-2 w-full text-sub mb-3"
-      >
-        Login
-      </button>
+      <PrimaryButton type="submit" text="Login" onClick={handleLogin} />
 
       <button className="bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 py-2 px-4 rounded-md w-full flex items-center justify-center text-sub">
         <img

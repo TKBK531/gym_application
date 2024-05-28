@@ -7,4 +7,5 @@ export const formStyles = {
   formSubtitle: "flex flex-col items-center text-sub mb-6",
   formPrimaryButton:
     "bg-primary-red text-white py-3 rounded-md transition-colors duration-300 ease-in-out hover:bg-primary-shade-2 w-full text-sub mb-3",
+  formError: "text-red-500 text-xs mt-1",
 };
