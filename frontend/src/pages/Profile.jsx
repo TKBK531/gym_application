@@ -8,15 +8,20 @@ const ProfileDashboard = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    // Fetch initial profile data from localStorage (or your API)
     const storedData = JSON.parse(localStorage.getItem("userData"));
     if (storedData) {
       setProfileData(storedData);
-      setProfileEdits({ ...storedData }); // Clone for editing
     } else {
       setError("User data not found in local storage.");
-      // Optionally, redirect to login page or show an error.
     }
-  }, []); // Empty dependency array ensures this runs only once on mount
+  }, []);
+
+  useEffect(() => {
+    if (profileData) {
+      setProfileEdits({ ...profileData });
+    }
+  }, [profileData]);
 
   useEffect(() => {
     const isDifferent =
@@ -24,29 +29,12 @@ const ProfileDashboard = () => {
     setHasChanges(isDifferent && editMode);
   }, [profileData, profileEdits, editMode]);
 
-  const handleClick = () => {
-    setEditMode(!editMode);
-  };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    // Ensure name is a string before splitting
-    if (typeof name !== "string") {
-      return;
-    }
-
-    const keys = name.split(".");
-    const lastKey = keys.pop();
-    let currentObject = profileEdits;
-
-    for (const key of keys) {
-      currentObject = currentObject[key] = { ...currentObject[key] };
-    }
-
-    currentObject[lastKey] = value;
-
-    setProfileEdits({ ...profileEdits });
+    setProfileEdits((prevEdits) => ({
+      ...prevEdits,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -70,6 +58,10 @@ const ProfileDashboard = () => {
       console.error("Error updating profile:", error);
       // Handle the error (e.g., display an error message to the user)
     }
+  };
+
+  const handleClick = () => {
+    // setEditMode(!editMode);
   };
 
   return (
