@@ -1,101 +1,88 @@
 import React, { useState, useEffect } from "react";
 
 const ProfileDashboard = () => {
-  const [profileData, setProfileData] = useState({
-    profile: {
-      profile_picture: "https://via.placeholder.com/150",
-      contact: "",
-    },
-  });
+  const [profileData, setProfileData] = useState(null);
+  const [profileEdits, setProfileEdits] = useState(null);
   const [editMode, setEditMode] = useState(false);
-  const [profileEdits, setProfileEdits] = useState({});
   const [hasChanges, setHasChanges] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const storedData = JSON.parse(localStorage.getItem("loginResponse"));
+    const storedData = JSON.parse(localStorage.getItem("userData"));
     if (storedData) {
-      setProfileData(storedData.message);
-      setProfileEdits(storedData.message); // Initialize profileEdits
+      setProfileData(storedData);
+      setProfileEdits({ ...storedData }); // Clone for editing
     } else {
-      // Handle case where loginResponse is not in local storage
+      setError("User data not found in local storage.");
+      // Optionally, redirect to login page or show an error.
     }
-  }, []);
+  }, []); // Empty dependency array ensures this runs only once on mount
 
   useEffect(() => {
-    // Check for changes in profileEdits and update hasChanges
-    const hasModifications = Object.keys(profileEdits).some(
-      (key) =>
-        profileEdits[key] !== profileData[key] ||
-        (key === "profile" &&
-          profileEdits.profile.contact !== profileData.profile.contact)
-    );
-    setHasChanges(hasModifications);
-  }, [profileEdits, profileData]);
+    const isDifferent =
+      JSON.stringify(profileData) !== JSON.stringify(profileEdits);
+    setHasChanges(isDifferent && editMode);
+  }, [profileData, profileEdits, editMode]);
+
+  const handleClick = () => {
+    setEditMode(!editMode);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    if (name === "contact") {
-      setProfileEdits((prevState) => ({
-        ...prevState,
-        profile: {
-          ...(prevState.profile || {}),
-          contact: value,
-        },
-      }));
-    } else {
-      setProfileEdits({
-        ...profileEdits,
-        [name]: value,
-      });
+    // Ensure name is a string before splitting
+    if (typeof name !== "string") {
+      return;
     }
-  };
 
-  const handleClick = () => {
-    setEditMode(true);
+    const keys = name.split(".");
+    const lastKey = keys.pop();
+    let currentObject = profileEdits;
+
+    for (const key of keys) {
+      currentObject = currentObject[key] = { ...currentObject[key] };
+    }
+
+    currentObject[lastKey] = value;
+
+    setProfileEdits({ ...profileEdits });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      // Send updated profileEdits to your backend
       const response = await fetch("/api/update-profile", {
-        method: "POST",
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(profileEdits),
+        body: JSON.stringify(profileEdits), // Send the edited data
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to update profile");
+      if (response.ok) {
+        const updatedData = await response.json();
+        setProfileData(updatedData); // Update with the data from the server
+        setEditMode(false);
+      } else {
+        console.error("Error updating profile:", response.statusText);
+        // Handle the error (e.g., display an error message to the user)
       }
-
-      const updatedData = await response.json();
-
-      // Update localStorage and component state
-      localStorage.setItem("loginResponse", JSON.stringify(updatedData));
-      setProfileData(updatedData.message);
-      setProfileEdits(updatedData.message); // Reset profileEdits after save
     } catch (error) {
       console.error("Error updating profile:", error);
-      // Handle errors appropriately (e.g., display an error message to the user)
-    } finally {
-      setEditMode(false);
-      setHasChanges(false); // Reset hasChanges after save
+      // Handle the error (e.g., display an error message to the user)
     }
   };
 
   return (
     <section className="bg-gradient-to-br from-blue-100 to-purple-100 shadow-lg rounded-lg p-8 md:p-12 lg:p-16 max-w-screen-md">
-      <h1 className="text-3xl font-medium text-left text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 mb-8">
+      {/* <h1 className="text-3xl font-medium text-left text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 mb-8">
         Hi {profileData.last_name} <span className="text-white">👋🏻</span>,
-      </h1>
-
+      </h1> */}
+      {console.log(profileData)}
       <div className="flex flex-col lg:flex-row lg:items-center space-y-8 lg:space-y-0 lg:space-x-8">
         {/* Profile Picture */}
         <div className="w-full lg:w-1/3 flex justify-center">
           <img
-            src={profileData.profile.profile_picture}
+            src={profileData.profile_picture}
             alt="Profile"
             className="h-full object-cover w-full rounded-lg shadow-md"
           />
@@ -156,7 +143,7 @@ const ProfileDashboard = () => {
               type="contact"
               id="contact"
               name="contact"
-              value={profileEdits.profile.contact || ""}
+              value={profileEdits.contact || ""}
               onChange={handleChange}
               disabled={!editMode}
               className="mt-1 p-2 block w-full rounded-md border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
@@ -174,10 +161,10 @@ const ProfileDashboard = () => {
             </button>
             <button
               type="submit"
-              disabled={!hasChanges} // Disable if no changes
+              disabled={!hasChanges}
               className={`bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white font-bold py-2 px-6 rounded shadow-md ${
                 !hasChanges ? "opacity-50 cursor-not-allowed" : ""
-              }`} // Conditional styling
+              }`}
             >
               Save Changes
             </button>
