@@ -66,12 +66,8 @@ class UserDetailView(generics.RetrieveAPIView):
         response_data = {
             "status": "success",
             "data": {
-                "id": serializer.data["id"],
-                "first_name": serializer.data["first_name"],
-                "last_name": serializer.data["last_name"],
-                "username": serializer.data["username"],
-                "email": serializer.data["email"],
-                "profile": profile_serializer.data,
+                **serializer.data,
+                **profile_serializer.data,
             },
         }
 
