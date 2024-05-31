@@ -3,6 +3,11 @@ from rest_framework import serializers
 from .models import UserProfile
 
 
+class AuthSerializer(serializers.Serializer):
+    code = serializers.CharField(required=False)
+    error = serializers.CharField(required=False)
+
+
 class UserProfileSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(
         source="pk",
