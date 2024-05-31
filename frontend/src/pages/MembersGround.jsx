@@ -92,7 +92,9 @@ const MembersGround = () => {
                           <option value="">--Select Type--</option>
                           <option value="outsider">Outsider</option>
                           <option value="staff">Staff Member</option>
-                          <option value="postGraduate">Post Graduate Student</option>
+                          <option value="postGraduate">
+                            Post Graduate Student
+                          </option>
                         </select>
                       </div>
                       {selectedForm === "outsider" && <MemberOutside />}
