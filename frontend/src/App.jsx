@@ -17,6 +17,9 @@ import {
 } from "./pages";
 import Register from "./pages/Register";
 import BaseLayout from "./components/Layouts/BaseLayout";
+import MembersGym from "./pages/MembersGym";
+import MembersGround from "./pages/MembersGround";
+import MembersPool from "./pages/MembersPool";
 
 const router = createBrowserRouter([
   // Dashboard route
@@ -89,6 +92,30 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <Members />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "membersGym",
+        element: (
+          <ProtectedRoute>
+            <MembersGym />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "membersGround",
+        element: (
+          <ProtectedRoute>
+            <MembersGround />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "membersPool",
+        element: (
+          <ProtectedRoute>
+            <MembersPool />
           </ProtectedRoute>
         ),
       },

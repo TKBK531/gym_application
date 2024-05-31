@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import Card from "../components/Members/Card";
 import StatWidge from "../components/Members/StatWidge";
 import {
@@ -6,6 +7,12 @@ import {
   faUsers,
   faRunning,
 } from "@fortawesome/free-solid-svg-icons";
+=======
+import Card from '../components/Members/Card'
+import StatWidge from '../components/Members/StatWidge';
+import { faSwimmer, faWalking, faUsers, faRunning  } from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router-dom'
+>>>>>>> b6f2999 (WIP : created the relavent pages for cards)
 
 const Members = () => {
   const imageUrlPool =
@@ -50,6 +57,7 @@ const Members = () => {
         </p>
       </div>
       <div className="display: flex flex-row gap-4">
+<<<<<<< HEAD
         <Card
           content="High-tech gym for customized workouts"
           backgroundImage={imageUrlGym}
@@ -62,6 +70,11 @@ const Members = () => {
           content="refreshing pool for aquatic exercise or relaxation"
           backgroundImage={imageUrlPool}
         />
+=======
+        <Link to='/members/membersGym'><Card content="High-tech gym for customized workouts" backgroundImage={imageUrlGym}/></Link>
+        <Link to='/members/membersGround'><Card content="serene grounds for outdoor workouts" backgroundImage={imageUrlGround}/></Link>
+        <Link to='/members/membersPool'><Card content="refreshing pool for aquatic exercise or relaxation" backgroundImage={imageUrlPool}/></Link>
+>>>>>>> b6f2999 (WIP : created the relavent pages for cards)
       </div>
       <div className="container mx-auto px-4 py-8">
         <p className="text-gray-700 text-lg text-center leading-relaxed font-semibold">
