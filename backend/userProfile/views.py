@@ -109,7 +109,7 @@ class UserProfileDetailView(generics.RetrieveAPIView):
                 "username": instance.user.username,
                 "email": instance.user.email,
                 "profile_picture": instance.profile_picture,
-                # "user_type": instance.user_type,
+                "user_type": instance.user_type.name,
             }
         }
 

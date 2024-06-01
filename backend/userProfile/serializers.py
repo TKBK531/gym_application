@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import UserProfile
+from .models import UserProfile, UserType
 
 
 class AuthSerializer(serializers.Serializer):
@@ -9,14 +9,11 @@ class AuthSerializer(serializers.Serializer):
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(
-        source="pk",
-        read_only=True,
-    )
+    id = serializers.IntegerField(source="pk", read_only=True)
 
     class Meta:
         model = UserProfile
-        fields = ["id", "contact", "profile_picture"]
+        fields = ["id", "contact", "profile_picture", "user_type"]  # Include user_type
         extra_kwargs = {
             "profile_picture": {
                 "required": False,
@@ -24,6 +21,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
                 "default": "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png",
             },
         }
+
+    def create(self, validated_data):
+        user_type_name = validated_data.pop("user_type")
+        user_type = UserType.objects.get(name=user_type_name)
+        validated_data["user_type"] = user_type
+        return super().create(validated_data)
 
 
 class UserSerializer(serializers.ModelSerializer):
