@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../constants";
 
-function Loading() {
+function GoogleLoginLoading() {
   const [loggedInUser, setLoggedInUser] = useState(null);
   const BASE_API_URL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
@@ -55,4 +55,4 @@ function Loading() {
   );
 }
 
-export default Loading;
+export default GoogleLoginLoading;

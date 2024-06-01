@@ -108,6 +108,8 @@ class UserProfileDetailView(generics.RetrieveAPIView):
                 "last_name": instance.user.last_name,
                 "username": instance.user.username,
                 "email": instance.user.email,
+                "profile_picture": instance.profile_picture,
+                # "user_type": instance.user_type,
             }
         }
 
@@ -209,7 +211,7 @@ class GoogleLoginApi(APIView):
         auth_serializer.is_valid(raise_exception=True)
 
         validated_data = auth_serializer.validated_data
-        user_data, new_user = get_user_data(validated_data)
+        user_data = get_user_data(validated_data)
         print(f"User Data: {user_data}")
 
         user = User.objects.get(email=user_data["email"])

@@ -8,6 +8,8 @@ from typing import Dict, Any
 import requests
 import jwt
 
+from .models import UserProfile
+
 GOOGLE_ACCESS_TOKEN_OBTAIN_URL = "https://oauth2.googleapis.com/token"
 GOOGLE_USER_INFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo"
 LOGIN_URL = f"{settings.BASE_APP_URL}/internal/login"
@@ -57,19 +59,21 @@ def get_user_data(validated_data):
     access_token = google_get_access_token(code=code, redirect_uri=redirect_uri)
     user_data = google_get_user_info(access_token=access_token)
 
-    user = User.objects.get(email=user_data["email"])
-    if not user:
-        user = User.objects.create(
-            username=user_data["email"],
-            email=user_data["email"],
-            first_name=user_data.get("given_name"),
-            last_name=user_data.get("family_name"),
-        )
-        user_creation = True
+    user, created = User.objects.get_or_create(
+        email=user_data["email"],
+        defaults={
+            "username": user_data["email"],
+            "first_name": user_data.get("given_name"),
+            "last_name": user_data.get("family_name"),
+        },
+    )
+    if created:
+        # Create the user profile for the new user
+        UserProfile.objects.create(user=user, profile_picture=user_data.get("picture"))
 
     profile_data = {
         "email": user_data["email"],
         "first_name": user_data.get("given_name"),
         "last_name": user_data.get("family_name"),
     }
-    return profile_data, user_creation
+    return profile_data
