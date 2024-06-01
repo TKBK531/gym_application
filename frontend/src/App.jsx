@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Loading from "./components/Loading/Loading";
+import GoogleLoginLoading from "./components/Loading/GoogleLoginLoading";
 import {
   BaseLayout,
   Home,
@@ -116,7 +116,7 @@ const router = createBrowserRouter([
       },
     ],
   },
-  { path: "/loading", element: <Loading /> },
+  { path: "/loading", element: <GoogleLoginLoading /> },
   { path: "/login", element: <Login /> },
   { path: "/logout", element: <Logout /> },
   { path: "/register", element: <Register /> },

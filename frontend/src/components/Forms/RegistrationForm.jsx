@@ -247,12 +247,14 @@ const RegistrationForm = () => {
             />
 
             {/* (Submit Button) */}
-            <PrimaryButton
-              type="submit"
-              text="Create an account"
-              onClick={handleRegister}
-            />
-            <GoogleLoginButton />
+            <div className="flex flex-col justify-center items-center">
+              <PrimaryButton
+                type="submit"
+                text="Create an account"
+                onClick={handleRegister}
+              />
+              <GoogleLoginButton />
+            </div>
           </Form>
         )}
       </Formik>
