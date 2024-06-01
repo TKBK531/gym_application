@@ -89,7 +89,7 @@ const router = createBrowserRouter([
   // Members route
   {
     path: "/members",
-    element: <BaseLayout />,
+    element: <BaseLayout />, 
     children: [
       {
         index: true,
