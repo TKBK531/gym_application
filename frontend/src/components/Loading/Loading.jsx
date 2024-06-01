@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../constants";
 
 function Loading() {
   const [loggedInUser, setLoggedInUser] = useState(null);
@@ -10,22 +11,25 @@ function Loading() {
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const accessToken = queryParams.get("access_token");
+    const refreshToken = queryParams.get("refresh_token");
 
-    // Simulate API call to fetch user data with the token
+    localStorage.setItem(ACCESS_TOKEN, accessToken);
+    localStorage.setItem(REFRESH_TOKEN, refreshToken);
+
     const fetchUserData = async () => {
       try {
-        // Replace with your actual API endpoint
         const response = await fetch(`${BASE_API_URL}/user/profile/`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
 
         if (response.ok) {
-          const userData = await response.json();
+          const responseData = await response.json();
+          const userData = responseData.data.user;
           localStorage.setItem("userData", JSON.stringify(userData));
-          console.log(userData);
-          console.log(localStorage.getItem("userData"));
-          setLoggedInUser(userData);
           navigate("/dashboard");
+        } else {
+          console.error("Failed to fetch user data: ", response.statusText);
+          navigate("/login");
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -36,9 +40,10 @@ function Loading() {
     if (accessToken) {
       fetchUserData();
     } else {
-      navigate("/login"); // If no token, redirect to login
+      console.error("No access token found");
+      navigate("/login");
     }
-  });
+  }, [location.search, BASE_API_URL, navigate]);
 
   return (
     <div className="loading-screen flex flex-col items-center justify-center min-h-screen">

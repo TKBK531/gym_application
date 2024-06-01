@@ -114,8 +114,10 @@ class UserProfileDetailView(generics.RetrieveAPIView):
         # Combine profile and user data
         response_data = {
             "status": "success",
-            "data": {**serializer.data, **user_data},
+            "message": "User profile retrieved successfully.",
+            "data": user_data,
         }
+        print(response_data)
 
         return Response(response_data)
 
@@ -218,7 +220,7 @@ class GoogleLoginApi(APIView):
         access_token = str(refresh.access_token)
         refresh_token = str(refresh)
 
-        redirect_url = f"{settings.BASE_APP_URL}/loading?access_token={access_token}"
+        redirect_url = f"{settings.BASE_APP_URL}/loading?access_token={access_token}&refresh_token={refresh_token}"
 
         response_data = {
             "status": "success",

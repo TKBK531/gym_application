@@ -27,56 +27,8 @@ const GoogleLoginButton = () => {
     };
 
     const urlParams = new URLSearchParams(params).toString();
-    try {
-      window.location.href = `${GOOGLE_AUTH_URL}?${urlParams}`;
-      const response = await fetch(`${GOOGLE_AUTH_URL}?${urlParams}`);
-
-      if (response.ok) {
-        const data = await response.json();
-
-        // Securely store tokens in localStorage
-        localStorage.setItem("accessToken", data.auth_tokens.access);
-        localStorage.setItem("refreshToken", data.auth_tokens.refresh);
-        console.log(data);
-        // Fetch user data and store in localStorage
-        const userDataResponse = await fetch(`${BASE_API_URL}/user/profile/`, {
-          // Replace with your user data endpoint
-          headers: {
-            Authorization: `Bearer ${data.auth_tokens.access}`,
-          },
-        });
-
-        if (userDataResponse.ok) {
-          const userData = await userDataResponse.json();
-          console.log(userData);
-          localStorage.setItem("userData", JSON.stringify(userData));
-          navigate("/dashboard");
-        }
-
-        // Redirect to dashboard
-        window.location.href = data.redirect_url;
-      } else {
-        // Handle error response from Google OAuth or your backend
-        console.error("Error logging in with Google:", response.statusText);
-        // Consider showing an error message to the user
-      }
-    } catch (error) {
-      console.error("Error logging in with Google:", error);
-      // Consider showing an error message to the user
-    }
+    window.location.href = `${GOOGLE_AUTH_URL}?${urlParams}`;
   };
-
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const authTokensParam = urlParams.get("auth_tokens");
-    if (authTokensParam) {
-      const tokens = JSON.parse(authTokensParam);
-      setAuthTokens(tokens);
-
-      window.history.replaceState({}, document.title, window.location.pathname);
-      console.log(authTokens);
-    }
-  }, [authTokens]);
 
   return (
     <GoogleButton onClick={onGoogleLoginSuccess} label="Sign in with Google" />
