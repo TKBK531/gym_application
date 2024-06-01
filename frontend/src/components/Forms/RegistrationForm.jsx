@@ -7,7 +7,7 @@ import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import PrimaryButton from "../Buttons/PrimaryButton";
 import GoogleLoginButton from "../Buttons/GoogleLoginButton";
-
+import { userTypes } from "../../constants/index";
 const initialValues = {
   firstName: "",
   lastName: "",
@@ -15,6 +15,7 @@ const initialValues = {
   contact: "",
   password: "",
   confirmPassword: "",
+  userType: 2,
 };
 
 const validationSchema = Yup.object({
@@ -57,7 +58,7 @@ const RegistrationForm = () => {
           profile_picture:
             "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png",
           contact: values.contact,
-          user_type: "external",
+          user_type: 2,
         },
       };
 
@@ -169,24 +170,42 @@ const RegistrationForm = () => {
               </div>
             </div>
 
-            {/* Email and Contact (full width) */}
-            <div>
-              <label htmlFor="email" className={formStyles.formLabel}>
-                Email address
-              </label>
-              <Field
-                type="email"
-                id="email"
-                name="email"
-                className={`${formStyles.formTextInput} ${
-                  touched.email && errors.email ? "border-red-500" : ""
-                }`}
-              />
-              <ErrorMessage
-                name="email"
-                component="div"
-                className={`${formStyles.formError}`}
-              />
+            <div className="flex flex-col md:flex-row md:space-x-4">
+              {/* Email and Contact (full width) */}
+              <div className="w-1/2">
+                <label htmlFor="email" className={formStyles.formLabel}>
+                  Email address
+                </label>
+                <Field
+                  type="email"
+                  id="email"
+                  name="email"
+                  className={`${formStyles.formTextInput} ${
+                    touched.email && errors.email ? "border-red-500" : ""
+                  }`}
+                />
+                <ErrorMessage
+                  name="email"
+                  component="div"
+                  className={`${formStyles.formError}`}
+                />
+              </div>
+
+              <div className="w-1/2">
+                <label htmlFor="userType" className={formStyles.formLabel}>
+                  User Type
+                </label>
+                <input
+                  type="text"
+                  id="userType"
+                  name="userType"
+                  value="External"
+                  disabled
+                  className={`${formStyles.formTextInput} ${
+                    touched.userType && errors.userType ? "border-red-500" : ""
+                  }`}
+                />
+              </div>
             </div>
             <div>
               <label htmlFor="contact" className={formStyles.formLabel}>

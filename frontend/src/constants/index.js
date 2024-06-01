@@ -25,4 +25,11 @@ const pageLinks = [
   { index: 8, icon: faSignOut, name: "Logout", href: "/logout" },
 ];
 
+export const userTypes = [
+  { value: "internal", pk: 1, label: "Internal" },
+  { value: "external", pk: 2, label: "External" },
+  { value: "staff", pk: 3, label: "staff" },
+  { value: "admin", pk: 4, label: "admin" },
+];
+
 export default pageLinks;

@@ -16,5 +16,8 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 @admin.register(UserType)
 class UserTypeAdmin(admin.ModelAdmin):
-    list_display = ("name",)
+    list_display = (
+        "id",
+        "name",
+    )
     search_fields = ("name",)
