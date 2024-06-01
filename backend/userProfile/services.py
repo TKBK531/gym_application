@@ -45,6 +45,7 @@ def google_get_user_info(access_token: str) -> Dict[str, Any]:
 def get_user_data(validated_data):
     domain = settings.BASE_API_URL
     redirect_uri = f"{domain}/auth/api/login/google/"
+    user_creation = False
 
     code = validated_data.get("code")
     error = validated_data.get("error")
@@ -56,17 +57,19 @@ def get_user_data(validated_data):
     access_token = google_get_access_token(code=code, redirect_uri=redirect_uri)
     user_data = google_get_user_info(access_token=access_token)
 
-    # Creates user in DB if first time login
-    User.objects.get_or_create(
-        username=user_data["email"],
-        email=user_data["email"],
-        first_name=user_data.get("given_name"),
-        last_name=user_data.get("family_name"),
-    )
+    user = User.objects.get(email=user_data["email"])
+    if not user:
+        user = User.objects.create(
+            username=user_data["email"],
+            email=user_data["email"],
+            first_name=user_data.get("given_name"),
+            last_name=user_data.get("family_name"),
+        )
+        user_creation = True
 
     profile_data = {
         "email": user_data["email"],
         "first_name": user_data.get("given_name"),
         "last_name": user_data.get("family_name"),
     }
-    return profile_data
+    return profile_data, user_creation

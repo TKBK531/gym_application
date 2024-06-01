@@ -1,6 +1,8 @@
+from urllib.parse import urlencode
 from django.db import transaction
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from django.http import HttpResponseRedirect, JsonResponse
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -42,7 +44,7 @@ class UserCreateView(generics.CreateAPIView):
 
 
 class UserDetailView(generics.RetrieveAPIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     serializer_class = UserSerializer
 
     def get_object(self):
@@ -205,14 +207,28 @@ class GoogleLoginApi(APIView):
         auth_serializer.is_valid(raise_exception=True)
 
         validated_data = auth_serializer.validated_data
-        user_data = get_user_data(validated_data)
+        user_data, new_user = get_user_data(validated_data)
         print(f"User Data: {user_data}")
 
         user = User.objects.get(email=user_data["email"])
         login(request, user)
 
+        # Generate tokens for the user
+        refresh = RefreshToken.for_user(user)
+        access_token = str(refresh.access_token)
+        refresh_token = str(refresh)
+
+        redirect_url = f"{settings.BASE_APP_URL}/loading?access_token={access_token}"
+
         response_data = {
             "status": "success",
             "message": "User logged in successfully",
+            "data": user_data,
+            "auth_tokens": {
+                "refresh": refresh_token,
+                "access": access_token,
+            },
+            "redirect_url": f"{settings.BASE_APP_URL}/dashboard",
         }
-        return redirect(f"{settings.BASE_APP_URL}/dashboard")
+
+        return redirect(redirect_url)
