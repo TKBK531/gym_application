@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api";
 import { formStyles } from "../../styles";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../constants";
 import PrimaryButton from "../Buttons/PrimaryButton";
 import GoogleLoginButton from "../Buttons/GoogleLoginButton";
+import PropTypes from "prop-types";
 
 const LoginForm = ({ setErrorMessage, setLoading, setLoggedInUser }) => {
   const [email, setEmail] = useState("");
@@ -119,6 +120,12 @@ const LoginForm = ({ setErrorMessage, setLoading, setLoggedInUser }) => {
       <div className="text-center mt-4"></div>
     </form>
   );
+};
+
+LoginForm.propTypes = {
+  setErrorMessage: PropTypes.func.isRequired,
+  setLoading: PropTypes.func.isRequired,
+  setLoggedInUser: PropTypes.func.isRequired,
 };
 
 export default LoginForm;
