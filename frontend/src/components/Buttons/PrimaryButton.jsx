@@ -1,4 +1,4 @@
-import React from "react";
+import PropTypes from "prop-types";
 
 const PrimaryButton = ({ type, text, onClick }) => {
   return (
@@ -10,6 +10,12 @@ const PrimaryButton = ({ type, text, onClick }) => {
       {text}
     </button>
   );
+};
+
+PrimaryButton.propTypes = {
+  type: PropTypes.string.isRequired,
+  text: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
 };
 
 export default PrimaryButton;
