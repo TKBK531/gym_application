@@ -3,6 +3,7 @@ import { formStyles } from "../../styles";
 import FamilyDetails from "../Table/FamilyDetails";
 
 const MemberStaff = () => {
+
   const [formData, setFormData] = useState({
     name: "",
     faculty: "",
@@ -42,6 +43,12 @@ const MemberStaff = () => {
     console.log(jsonData);
     // You can also send jsonData to your server here
   };
+
+
+  const [familyDetails, setFamilyDetails] = useState([
+    { name: "", age: "", relation: "", occupation: "" },
+  ]);
+
 
   return (
     <div className="bg-cream text-charcoal min-h-screen font-sans leading-normal overflow-x-hidden lg:overflow-auto">
