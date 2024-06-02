@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
-const MemberStaff = () => {
-
+const MemberOutside = () => {
   const [category, setCategory] = useState("");
 
   const handleCategoryChange = (event) => {
@@ -37,7 +36,7 @@ const MemberStaff = () => {
         <section className="bg-cream-lighter p-4 shadow">
           <div className="md:flex">
             <h2 className="md:w-1/3 uppercase tracking-wide text-sm sm:text-lg mb-6">
-              University Staff Category
+              Non University Category
             </h2>
           </div>
           <form>
@@ -51,7 +50,18 @@ const MemberStaff = () => {
               <div className="md:flex-1 mt-2 mb:mt-0 md:px-3">
                 <div className="mb-4">
                   <label className="block tracking-wide text-xs font-bold">
-                    Name(Mr./Mrs./Miss)
+                    Name(Mr./Ms.)
+                  </label>
+                  <input
+                    className="w-full shadow-inner p-4 border-0"
+                    type="text"
+                    name="name"
+                    placeholder="Acme Mfg. Co."
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block tracking-wide text-xs font-bold">
+                    National Identity Card No.
                   </label>
                   <input
                     className="w-full shadow-inner p-4 border-0"
@@ -63,31 +73,7 @@ const MemberStaff = () => {
                 <div className="md:flex mb-4">
                   <div className="md:flex-1 md:pr-3">
                     <label className="block tracking-wide text-charcoal-darker text-xs font-bold">
-                      Faculty/Dept./Division
-                    </label>
-                    <input
-                      className="w-full shadow-inner p-4 border-0"
-                      type="text"
-                      name="faculty"
-                      placeholder="Faculty of Science"
-                    />
-                  </div>
-                  <div className="md:flex-1 md:pl-3">
-                    <label className="block tracking-wide text-charcoal-darker text-xs font-bold">
-                      Designation
-                    </label>
-                    <input
-                      className="w-full shadow-inner p-4 border-0"
-                      type="text"
-                      name="designation"
-                      placeholder="Professor"
-                    />
-                  </div>
-                </div>
-                <div className="md:flex mb-4">
-                  <div className="md:flex-1 md:pr-3">
-                    <label className="block tracking-wide text-charcoal-darker text-xs font-bold">
-                      Date of Appointment
+                      Date of Birth
                     </label>
                     <input
                       className="w-full shadow-inner p-4 border-0"
@@ -98,7 +84,7 @@ const MemberStaff = () => {
                   </div>
                   <div className="md:flex-1 md:pl-3">
                     <label className="block tracking-wide text-charcoal-darker text-xs font-bold">
-                      Period of Apt.(if temporary)
+                      Age
                     </label>
                     <input
                       className="w-full shadow-inner p-4 border-0"
@@ -108,17 +94,7 @@ const MemberStaff = () => {
                     />
                   </div>
                 </div>
-                <div className="mb-4">
-                  <label className="block tracking-wide text-xs font-bold">
-                    UPF No.
-                  </label>
-                  <input
-                    className="w-full shadow-inner p-4 border-0"
-                    type="text"
-                    name="upf"
-                    placeholder="000 000"
-                  />
-                </div>
+
                 <div className="mb-4">
                   <label className="block tracking-wide text-xs font-bold">
                     Category
@@ -130,35 +106,13 @@ const MemberStaff = () => {
                   >
                     <option value="">Select Category</option>
                     <option value="individual">Individual</option>
+                    <option value="couple">Couple</option>
                     <option value="family">Family</option>
                   </select>
                 </div>
-                <div className="md:flex mb-4">
-                  <div className="md:flex-1 md:pr-3">
-                    <label className="block tracking-wide text-charcoal-darker text-xs font-bold">
-                      Form Category
-                    </label>
-                    <input
-                      className="w-full shadow-inner p-4 border-0"
-                      type="text"
-                      name="category"
-                      placeholder="Auto filled"
-                    />
-                  </div>
-                  <div className="md:flex-1 md:pl-3">
-                    <label className="block tracking-wide text-charcoal-darker text-xs font-bold">
-                      Membership Type
-                    </label>
-                    <input
-                      className="w-full shadow-inner p-4 border-0"
-                      type="text"
-                      name="membership"
-                      placeholder="Auto filled"
-                    />
-                  </div>
-                </div>
               </div>
             </div>
+
             <div className="md:flex mb-8">
               <div className="md:w-1/3">
                 <legend className="tracking-wide text-sm">Contact</legend>
@@ -213,53 +167,57 @@ const MemberStaff = () => {
               </div>
             </div>
 
-            {category !== 'individual' && (
+            {category !== "individual" && (
               <div>
-              <h2 className="py-3 tracking-wide text-sm">Family Details</h2>
-              <table className="min-w-full bg-white border border-gray-200">
-                <thead>
-                  <tr>
-                    <th className=" tracking-wide text-charcoal-darker text-xs font-bold">
-                      Name
-                    </th>
-                    <th className=" tracking-wide text-charcoal-darker text-xs font-bold">
-                      Age
-                    </th>
-                    <th className=" tracking-wide text-charcoal-darker text-xs font-bold">
-                      Relationship
-                    </th>
-                    <th className=" tracking-wide text-charcoal-darker text-xs font-bold">
-                      NIC No.
-                    </th>
-                    <th className=" tracking-wide text-charcoal-darker text-xs font-bold">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {familyDetails.map((member, index) => (
-                    <tr key={index}>
-                      <td className="shadow-inner p-4 border-0">
-                        <input
-                          type="text"
-                          name="name"
-                          value={member.name}
-                          onChange={(event) => handleInputChange(index, event)}
-                          className="w-full px-2 py-1 border border-gray-300 rounded"
-                          placeholder="Name"
-                        />
-                      </td>
-                      <td className="shadow-inner p-4 border-0">
-                        <input
-                          type="number"
-                          name="age"
-                          value={member.age}
-                          onChange={(event) => handleInputChange(index, event)}
-                          className="w-full px-2 py-1 border border-gray-300 rounded"
-                          placeholder="Age"
-                        />
-                      </td>
-                      <td className="shadow-inner p-4 border-0">
+                <h2 className="py-3 tracking-wide text-sm">Family Details</h2>
+                <table className="min-w-full bg-white border border-gray-200">
+                  <thead>
+                    <tr>
+                      <th className=" tracking-wide text-charcoal-darker text-xs font-bold">
+                        Name
+                      </th>
+                      <th className=" tracking-wide text-charcoal-darker text-xs font-bold">
+                        Age
+                      </th>
+                      <th className=" tracking-wide text-charcoal-darker text-xs font-bold">
+                        Relationship
+                      </th>
+                      <th className=" tracking-wide text-charcoal-darker text-xs font-bold">
+                        NIC No.
+                      </th>
+                      <th className=" tracking-wide text-charcoal-darker text-xs font-bold">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {familyDetails.map((member, index) => (
+                      <tr key={index}>
+                        <td className="shadow-inner p-4 border-0">
+                          <input
+                            type="text"
+                            name="name"
+                            value={member.name}
+                            onChange={(event) =>
+                              handleInputChange(index, event)
+                            }
+                            className="w-full px-2 py-1 border border-gray-300 rounded"
+                            placeholder="Name"
+                          />
+                        </td>
+                        <td className="shadow-inner p-4 border-0">
+                          <input
+                            type="number"
+                            name="age"
+                            value={member.age}
+                            onChange={(event) =>
+                              handleInputChange(index, event)
+                            }
+                            className="w-full px-2 py-1 border border-gray-300 rounded"
+                            placeholder="Age"
+                          />
+                        </td>
+                        <td className="shadow-inner p-4 border-0">
                           <select
                             name="relation"
                             value={member.relation}
@@ -277,53 +235,54 @@ const MemberStaff = () => {
                             <option value="Child">Child</option>
                           </select>
                         </td>
-                      <td className="shadow-inner p-4 border-0">
-                        <input
-                          type="number"
-                          name="nic"
-                          value={member.occupation}
-                          onChange={(event) => handleInputChange(index, event)}
-                          className="w-full px-2 py-1 border border-gray-300 rounded"
-                          placeholder="NIC Number"
-                        />
-                      </td>
-                      <td className="shadow-inner p-4 border-0">
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveMember(index)}
-                          className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-                        >
-                          Remove
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <button
-                type="button"
-                onClick={handleAddMember}
-                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-              >
-                Add Member
-              </button>
-            </div>
+                        <td className="shadow-inner p-4 border-0">
+                          <input
+                            type="text"
+                            name="nic"
+                            value={member.nic}
+                            onChange={(event) =>
+                              handleInputChange(index, event)
+                            }
+                            className="w-full px-2 py-1 border border-gray-300 rounded"
+                            placeholder="NIC Number"
+                          />
+                        </td>
+                        <td className="shadow-inner p-4 border-0">
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveMember(index)}
+                            className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                          >
+                            Remove
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <button
+                  type="button"
+                  onClick={handleAddMember}
+                  className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                >
+                  Add Member
+                </button>
+              </div>
             )}
-            
 
             <div className="py-5 md:flex mb-8">
               <div className="md:w-1/3">
                 <legend className="tracking-wide text-sm">Total Price</legend>
               </div>
               <div className="mb-4">
-                  <input
-                    className="w-full shadow-inner p-4 border-0"
-                    type="text"
-                    name="name"
-                    placeholder="Auto filled"
-                  />
+                <input
+                  className="w-full shadow-inner p-4 border-0"
+                  type="text"
+                  name="name"
+                  placeholder="Auto filled"
+                />
               </div>
-              </div>
+            </div>
 
             <div className="py-4 md:flex mb-6">
               <div className="md:w-1/3">
@@ -358,4 +317,4 @@ const MemberStaff = () => {
   );
 };
 
-export default MemberStaff;
+export default MemberOutside;

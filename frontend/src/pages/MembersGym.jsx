@@ -38,6 +38,8 @@ const MembersGym = () => {
               </div>
             </div>
           </div>
+
+
       </section>
     </div>
   );
