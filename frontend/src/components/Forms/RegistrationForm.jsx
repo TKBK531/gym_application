@@ -6,6 +6,8 @@ import Popup from "../../components/Popup";
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import PrimaryButton from "../Buttons/PrimaryButton";
+import GoogleLoginButton from "../Buttons/GoogleLoginButton";
+import { userTypes } from "../../constants/index";
 
 const initialValues = {
   firstName: "",
@@ -14,6 +16,7 @@ const initialValues = {
   contact: "",
   password: "",
   confirmPassword: "",
+  userType: 2,
 };
 
 const validationSchema = Yup.object({
@@ -45,85 +48,6 @@ const RegistrationForm = () => {
   const [popupMessage, setPopupMessage] = useState("");
   const [popupType, setPopupType] = useState("");
 
-  //   const handleRegister = async (e) => {
-  //     e.preventDefault();
-
-  //     if (formData.password !== formData.confirmPassword) {
-  //       setErrors({ confirmPassword: "Passwords do not match" });
-  //       return;
-  //     }
-
-  //     // Clear previous errors
-  //     setErrors({});
-
-  //     try {
-  //       // 2. Prepare Data for Backend
-  //       const dataForBackend = {
-  //         email: formData.email,
-  //         password: formData.password,
-  //         first_name: formData.firstName,
-  //         last_name: formData.lastName,
-  //         profile: {
-  //           profile_picture:
-  //             "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png",
-  //           contact: formData.contact,
-  //         },
-  //       };
-
-  //       // 3. Send Registration Request using your api instance
-  //       const response = await api.post("/user/register/", dataForBackend);
-
-  //       // 4. Handle Success
-  //       if (response.status === 201) {
-  //         setPopupMessage("Registration successful!");
-  //         setPopupType("success");
-  //         setShowPopup(true);
-
-  //         // Optional: Reset form fields, redirect to login, etc.
-  //         setFormData({
-  //           firstName: "",
-  //           lastName: "",
-  //           email: "",
-  //           contact: "",
-  //           password: "",
-  //           confirmPassword: "",
-  //         });
-  //       }
-  //     } catch (error) {
-  //       // 5. Handle Errors (Specific & General)
-  //       console.error("Registration error:", error);
-  //       setShowPopup(true);
-  //       setPopupType("error");
-
-  //       if (error.response) {
-  //         if (error.response.status === 400) {
-  //           // Validation errors
-  //           setPopupMessage(
-  //             "Validation errors: " + JSON.stringify(error.response.data)
-  //           );
-  //         } else if (error.response.status === 409) {
-  //           // Username or email already exists
-  //           setPopupMessage("Username or email already exists.");
-  //           setShowPopup(true);
-  //         } else {
-  //           // Other server errors (500, etc.)
-  //           setPopupMessage("Server error. Please try again later.");
-  //           setShowPopup(true);
-  //         }
-  //       } else if (error.request) {
-  //         // Network error
-  //         setPopupMessage(
-  //           "No response from server. Please check your connection."
-  //         );
-  //         setShowPopup(true);
-  //       } else {
-  //         // Other unexpected errors
-  //         setPopupMessage("An error occurred. Please try again.");
-  //         setShowPopup(true);
-  //       }
-  //     }
-  //   };
-
   const handleRegister = async (values) => {
     try {
       const dataForBackend = {
@@ -135,6 +59,7 @@ const RegistrationForm = () => {
           profile_picture:
             "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png",
           contact: values.contact,
+          user_type: 2,
         },
       };
 
@@ -246,24 +171,42 @@ const RegistrationForm = () => {
               </div>
             </div>
 
-            {/* Email and Contact (full width) */}
-            <div>
-              <label htmlFor="email" className={formStyles.formLabel}>
-                Email address
-              </label>
-              <Field
-                type="email"
-                id="email"
-                name="email"
-                className={`${formStyles.formTextInput} ${
-                  touched.email && errors.email ? "border-red-500" : ""
-                }`}
-              />
-              <ErrorMessage
-                name="email"
-                component="div"
-                className={`${formStyles.formError}`}
-              />
+            <div className="flex flex-col md:flex-row md:space-x-4">
+              {/* Email and Contact (full width) */}
+              <div className="w-1/2">
+                <label htmlFor="email" className={formStyles.formLabel}>
+                  Email address
+                </label>
+                <Field
+                  type="email"
+                  id="email"
+                  name="email"
+                  className={`${formStyles.formTextInput} ${
+                    touched.email && errors.email ? "border-red-500" : ""
+                  }`}
+                />
+                <ErrorMessage
+                  name="email"
+                  component="div"
+                  className={`${formStyles.formError}`}
+                />
+              </div>
+
+              <div className="w-1/2">
+                <label htmlFor="userType" className={formStyles.formLabel}>
+                  User Type
+                </label>
+                <input
+                  type="text"
+                  id="userType"
+                  name="userType"
+                  value="External"
+                  disabled
+                  className={`${formStyles.formTextInput} ${
+                    touched.userType && errors.userType ? "border-red-500" : ""
+                  }`}
+                />
+              </div>
             </div>
             <div>
               <label htmlFor="contact" className={formStyles.formLabel}>
@@ -325,11 +268,10 @@ const RegistrationForm = () => {
             />
 
             {/* (Submit Button) */}
-            <PrimaryButton
-              type="submit"
-              text="Create an account"
-              onClick={handleRegister}
-            />
+            <div className="flex flex-col justify-center items-center">
+              <PrimaryButton type="submit" text="Create Account" />
+              <GoogleLoginButton />
+            </div>
           </Form>
         )}
       </Formik>

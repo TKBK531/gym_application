@@ -1,0 +1,30 @@
+[
+    {
+        "model": "userProfile.usertype",
+        "pk": 1,
+        "fields": {
+            "name": "internal"
+        }
+    },
+    {
+        "model": "userProfile.usertype",
+        "pk": 2,
+        "fields": {
+            "name": "external"
+        }
+    },
+    {
+        "model": "userProfile.usertype",
+        "pk": 3,
+        "fields": {
+            "name": "staff"
+        }
+    },
+    {
+        "model": "userProfile.usertype",
+        "pk": 4,
+        "fields": {
+            "name": "admin"
+        }
+    }
+]

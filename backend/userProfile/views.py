@@ -1,6 +1,8 @@
+from urllib.parse import urlencode
 from django.db import transaction
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from django.http import HttpResponseRedirect, JsonResponse
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -8,6 +10,12 @@ from .serializers import UserSerializer, UserProfileSerializer
 from .models import UserProfile
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.exceptions import NotFound
+from .services import get_user_data
+from django.shortcuts import redirect
+from django.conf import settings
+from django.contrib.auth import login
+from rest_framework.views import APIView
+from .serializers import AuthSerializer
 
 
 class UserCreateView(generics.CreateAPIView):
@@ -36,7 +44,7 @@ class UserCreateView(generics.CreateAPIView):
 
 
 class UserDetailView(generics.RetrieveAPIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     serializer_class = UserSerializer
 
     def get_object(self):
@@ -100,14 +108,18 @@ class UserProfileDetailView(generics.RetrieveAPIView):
                 "last_name": instance.user.last_name,
                 "username": instance.user.username,
                 "email": instance.user.email,
+                "profile_picture": instance.profile_picture,
+                "user_type": instance.user_type.name,
             }
         }
 
         # Combine profile and user data
         response_data = {
             "status": "success",
-            "data": {**serializer.data, **user_data},
+            "message": "User profile retrieved successfully.",
+            "data": user_data,
         }
+        # print(response_data)
 
         return Response(response_data)
 
@@ -189,3 +201,45 @@ class UserProfileEditView(generics.UpdateAPIView):
             },
         }
         return Response(response_data, status=status.HTTP_200_OK)
+
+
+class GoogleLoginApi(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        auth_serializer = AuthSerializer(data=request.GET)
+        auth_serializer.is_valid(raise_exception=True)
+
+        validated_data = auth_serializer.validated_data
+
+        try:
+            user_data = get_user_data(validated_data)
+        except Exception as e:
+            params = urlencode({"error": e.message})
+            redirect_url = f"{settings.BASE_APP_URL}/login?{params}"
+
+            return redirect(redirect_url)
+
+        user = User.objects.get(email=user_data["email"])
+        print(f"User: {user}")
+        login(request, user)
+
+        # Generate tokens for the user
+        refresh = RefreshToken.for_user(user)
+        access_token = str(refresh.access_token)
+        refresh_token = str(refresh)
+
+        redirect_url = f"{settings.BASE_APP_URL}/loading?access_token={access_token}&refresh_token={refresh_token}"
+
+        response_data = {
+            "status": "success",
+            "message": "User logged in successfully",
+            "data": user_data,
+            "auth_tokens": {
+                "refresh": refresh_token,
+                "access": access_token,
+            },
+            "redirect_url": f"{settings.BASE_APP_URL}/dashboard",
+        }
+
+        return redirect(redirect_url)
