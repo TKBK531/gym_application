@@ -1,9 +1,11 @@
 import { useState } from "react";
 import MemberStaff from "../components/Forms/MemberStaff";
 import MemberOutside from "../components/Forms/MemberOutside";
+import MemberPostG from "../components/Forms/MemberPostG";
 
 const MembersGround = () => {
   const [openTab, setOpenTab] = useState(1);
+  const [nestedTab, setNestedTab] = useState(1);
 
   return (
     <div>
@@ -32,54 +34,88 @@ const MembersGround = () => {
           <div className="-mt-16 mb-8 px-8 ">
             <div className="container mx-auto">
               <div className="py-3 justify-center rounded-xl border border-white bg-white shadow-md shadow-black/5 saturate-200">
-                  <div className="p-4">
-                      <div className="mb-4 flex space-x-4 p-2 bg-white rounded-lg shadow-md">
-                        <button
-                          onClick={() => setOpenTab(1)}
-                          className={`w-1/4 py-2 px-4 rounded-md focus:outline-none focus:shadow-outline-blue transition-all duration-300 ${
-                            openTab === 1 ? "bg-blue-600 text-white" : ""
-                          }`}
-                        >
-                          Guidelines
-                        </button>
-                        <button
-                          onClick={() => setOpenTab(2)}
-                          className={`w-1/4 py-2 px-4 rounded-md focus:outline-none focus:shadow-outline-blue transition-all duration-300 ${
-                            openTab === 2 ? "bg-blue-600 text-white" : ""
-                          }`}
-                        >
-                          Form
-                        </button>
-                      </div>
+                <div className="p-4">
+                  <div className="mb-4 flex space-x-4 p-2 bg-white rounded-lg shadow-md">
+                    <button
+                      onClick={() => setOpenTab(1)}
+                      className={`w-1/4 py-2 px-4 rounded-md focus:outline-none focus:shadow-outline-blue transition-all duration-300 ${
+                        openTab === 1 ? "bg-blue-600 text-white" : ""
+                      }`}
+                    >
+                      Guidelines
+                    </button>
+                    <button
+                      onClick={() => setOpenTab(2)}
+                      className={`w-1/4 py-2 px-4 rounded-md focus:outline-none focus:shadow-outline-blue transition-all duration-300 ${
+                        openTab === 2 ? "bg-blue-600 text-white" : ""
+                      }`}
+                    >
+                      Forms
+                    </button>
+                  </div>
 
-                      {openTab === 1 && (
-                        <div className="my-2 grid gap-6 px-4">
-                        <div className="p-6 px-2 sm:pr-6 sm:pl-4">
-                          <h4 className="block antialiased tracking-normal font-sans text-xl font-semibold leading-snug text-blue-gray-900 mb-2 normal-case transition-colors">
-                            Guidelines for Swimming Pool Membership
-                          </h4>
-                          <div className="block antialiased font-sans text-base leading-relaxed text-inherit mb-8 font-normal !text-gray-500">
-                            <p>
-                              1. Find out how our investment in sustainable practices
-                              is driving us towards a greener future, showcasing our
-                              commitment to environmental responsibility.
-                            </p>
-                            <p>
-                              2. Find out how our investment in sustainable practices
-                              is driving us towards a greener future, showcasing our
-                              commitment to environmental responsibility.
-                            </p>
-                          </div>
+                  {openTab === 1 && (
+                    <div className="my-2 grid gap-6 px-4">
+                      <div className="p-6 px-2 sm:pr-6 sm:pl-4">
+                        <h4 className="block antialiased tracking-normal font-sans text-xl font-semibold leading-snug text-blue-gray-900 mb-2 normal-case transition-colors">
+                          Guidelines for Ground Membership
+                        </h4>
+                        <div className="block antialiased font-sans text-base leading-relaxed text-inherit mb-8 font-normal !text-gray-500">
+                          <p>
+                            1. Find out how our investment in sustainable
+                            practices is driving us towards a greener future,
+                            showcasing our commitment to environmental
+                            responsibility.
+                          </p>
+                          <p>
+                            2. Find out how our investment in sustainable
+                            practices is driving us towards a greener future,
+                            showcasing our commitment to environmental
+                            responsibility.
+                          </p>
                         </div>
                       </div>
-                      )}
-
-                      {openTab === 2 && (
-                        // <MemberStaff />
-                        <MemberOutside />
-                      )}
                     </div>
+                  )}
+
+                  {openTab === 2 && (
+                    <div className="py-3 justify-center rounded-xl border border-white bg-white shadow-md shadow-black/5 saturate-200">
+                      <div className="p-4">
+                        <div className="mb-4 flex space-x-4 p-2 bg-white rounded-lg shadow-md">
+                          <button
+                            onClick={() => setNestedTab(1)}
+                            className={`w-1/6 py-2 px-4 rounded-md focus:outline-none focus:shadow-outline-blue transition-all duration-300 ${
+                              nestedTab === 1 ? "bg-blue-600 text-white" : ""
+                            }`}
+                          >
+                            Outsiders
+                          </button>
+                          <button
+                            onClick={() => setNestedTab(2)}
+                            className={`w-1/6 py-2 px-4 rounded-md focus:outline-none focus:shadow-outline-blue transition-all duration-300 ${
+                              nestedTab === 2 ? "bg-blue-600 text-white" : ""
+                            }`}
+                          >
+                            Staff
+                          </button>
+                          <button
+                            onClick={() => setNestedTab(3)}
+                            className={`w-1/6 py-2 px-4 rounded-md focus:outline-none focus:shadow-outline-blue transition-all duration-300 ${
+                              nestedTab === 3 ? "bg-blue-600 text-white" : ""
+                            }`}
+                          >
+                            Postgraduate
+                          </button>
+                        </div>
+
+                        {nestedTab === 1 && <MemberOutside />}
+                        {nestedTab === 2 && <MemberStaff />}
+                        {nestedTab === 3 && <MemberPostG />}
+                      </div>
+                    </div>
+                  )}
                 </div>
+              </div>
             </div>
           </div>
         </section>
@@ -89,3 +125,54 @@ const MembersGround = () => {
 };
 
 export default MembersGround;
+
+// <div className="-mt-16 mb-8 px-8 ">
+//                         <div className="container mx-auto">
+//                         <div className="py-3 justify-center rounded-xl border border-white bg-white shadow-md shadow-black/5 saturate-200">
+//                           <div className="p-4">
+//                       <div className="mb-4 flex space-x-4 p-2 bg-white rounded-lg shadow-md">
+
+//                         <div>
+//                         <button
+//                           onClick={() => setOpenTab(3)}
+//                           className={`w-1/4 py-2 px-4 rounded-md focus:outline-none focus:shadow-outline-blue transition-all duration-300 ${
+//                             openTab === 3 ? "bg-blue-600 text-white" : ""
+//                           }`}
+//                         >
+//                           Outsiders
+//                         </button>
+//                         <button
+//                           onClick={() => setOpenTab(4)}
+//                           className={`w-1/4 py-2 px-4 rounded-md focus:outline-none focus:shadow-outline-blue transition-all duration-300 ${
+//                             openTab === 4 ? "bg-blue-600 text-white" : ""
+//                           }`}
+//                         >
+//                           Staff
+//                         </button>
+//                         <button
+//                           onClick={() => setOpenTab(5)}
+//                           className={`w-1/4 py-2 px-4 rounded-md focus:outline-none focus:shadow-outline-blue transition-all duration-300 ${
+//                             openTab === 5 ? "bg-blue-600 text-white" : ""
+//                           }`}
+//                         >
+//                           Post Graduate
+//                         </button>
+//                         </div>
+
+//                         <div>
+//                         {openTab === 3 && (
+//                           <MemberOutside />
+//                         )}
+//                         {openTab === 4 && (
+//                           <MemberStaff />
+//                         )}
+//                         {openTab === 5 && (
+//                           <MemberPostG />
+//                         )}
+//                         </div>
+
+//                         </div>
+//                         </div>
+//                         </div>
+//                         </div>
+//                         </div>

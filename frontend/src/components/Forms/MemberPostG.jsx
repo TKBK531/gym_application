@@ -6,7 +6,7 @@ const MemberPostG = () => {
           <section className="bg-cream-lighter p-4 shadow">
             <div className="md:flex">
               <h2 className="md:w-1/2 uppercase tracking-wide text-sm sm:text-lg mb-6">
-                University Post Graduate Category
+                University Post Graduate Form
               </h2>
             </div>
             <form>
