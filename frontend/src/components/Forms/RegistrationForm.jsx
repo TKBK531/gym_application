@@ -8,6 +8,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import PrimaryButton from "../Buttons/PrimaryButton";
 import GoogleLoginButton from "../Buttons/GoogleLoginButton";
 import { userTypes } from "../../constants/index";
+
 const initialValues = {
   firstName: "",
   lastName: "",
@@ -268,11 +269,7 @@ const RegistrationForm = () => {
 
             {/* (Submit Button) */}
             <div className="flex flex-col justify-center items-center">
-              <PrimaryButton
-                type="submit"
-                text="Create an account"
-                onClick={handleRegister}
-              />
+              <PrimaryButton type="submit" text="Create Account" />
               <GoogleLoginButton />
             </div>
           </Form>
