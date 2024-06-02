@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { formStyles } from "../../styles";
 
 const MemberOutside = () => {
   const [category, setCategory] = useState("");
@@ -50,7 +51,7 @@ const MemberOutside = () => {
                     Name(Mr./Ms.)
                   </label>
                   <input
-                    className="w-full shadow-inner p-4 border-0"
+                    className={`${formStyles.formTextInput}`}
                     type="text"
                     name="name"
                     placeholder="Acme Mfg. Co."
@@ -61,7 +62,7 @@ const MemberOutside = () => {
                     National Identity Card No.
                   </label>
                   <input
-                    className="w-full shadow-inner p-4 border-0"
+                    className={`${formStyles.formTextInput}`}
                     type="text"
                     name="name"
                     placeholder="Acme Mfg. Co."
@@ -73,7 +74,7 @@ const MemberOutside = () => {
                       Date of Birth
                     </label>
                     <input
-                      className="w-full shadow-inner p-4 border-0"
+                      className={`${formStyles.formTextInput}`}
                       type="date"
                       name="appointment"
                       placeholder="2000/01/01"
@@ -84,7 +85,7 @@ const MemberOutside = () => {
                       Age
                     </label>
                     <input
-                      className="w-full shadow-inner p-4 border-0"
+                      className={`${formStyles.formTextInput}`}
                       type="text"
                       name="tempory"
                       placeholder="1 year"
@@ -121,7 +122,7 @@ const MemberOutside = () => {
                       Mobile
                     </label>
                     <input
-                      className="w-full shadow-inner p-4 border-0"
+                      className={`${formStyles.formTextInput}`}
                       type="tel"
                       name="mobile"
                       placeholder="0771122333"
@@ -132,7 +133,7 @@ const MemberOutside = () => {
                       Office
                     </label>
                     <input
-                      className="w-full shadow-inner p-4 border-0"
+                      className={`${formStyles.formTextInput}`}
                       type="tel"
                       name="office"
                       placeholder="0912233444"
@@ -144,7 +145,7 @@ const MemberOutside = () => {
                     Address
                   </label>
                   <input
-                    className="w-full shadow-inner p-4 border-0"
+                    className={`${formStyles.formTextInput}`}
                     type="text"
                     name="address"
                     placeholder="425 Galaha Lane, Peradeniya"
@@ -155,7 +156,7 @@ const MemberOutside = () => {
                     Email
                   </label>
                   <input
-                    className="w-full shadow-inner p-4 border-0"
+                    className={`${formStyles.formTextInput}`}
                     type="email"
                     name="email"
                     placeholder="contact@acme.co"
