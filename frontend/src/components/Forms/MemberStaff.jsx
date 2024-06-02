@@ -37,16 +37,13 @@ const MemberStaff = () => {
         <section className="bg-cream-lighter p-4 shadow">
           <div className="md:flex">
             <h2 className="md:w-1/3 uppercase tracking-wide text-sm sm:text-lg mb-6">
-              University Staff Category
+              University Staff Form
             </h2>
           </div>
           <form>
             <div className="md:flex mb-8">
               <div className="md:w-1/3">
                 <legend className="tracking-wide text-sm">Personal</legend>
-                <p className="text-xs font-light text-red">
-                  This entire section is required.
-                </p>
               </div>
               <div className="md:flex-1 mt-2 mb:mt-0 md:px-3">
                 <div className="mb-4">
