@@ -12,7 +12,7 @@ from .models import UserProfile
 
 GOOGLE_ACCESS_TOKEN_OBTAIN_URL = "https://oauth2.googleapis.com/token"
 GOOGLE_USER_INFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo"
-LOGIN_URL = f"{settings.BASE_APP_URL}/internal/login"
+LOGIN_URL = f"{settings.BASE_APP_URL}/login"
 
 
 # Exchange authorization token with access token
@@ -47,7 +47,6 @@ def google_get_user_info(access_token: str) -> Dict[str, Any]:
 def get_user_data(validated_data):
     domain = settings.BASE_API_URL
     redirect_uri = f"{domain}/auth/api/login/google/"
-    user_creation = False
 
     code = validated_data.get("code")
     error = validated_data.get("error")
@@ -59,21 +58,51 @@ def get_user_data(validated_data):
     access_token = google_get_access_token(code=code, redirect_uri=redirect_uri)
     user_data = google_get_user_info(access_token=access_token)
 
-    user, created = User.objects.get_or_create(
-        email=user_data["email"],
-        defaults={
-            "username": user_data["email"],
+    if not user_data:
+        params = urlencode(
+            {
+                "error": "Invalid domain. Only pdn.ac.lk domains are allowed for Google Authentication."
+            }
+        )
+        return redirect(f"{LOGIN_URL}?{params}")
+
+    print(f"\n\nUser Data: {user_data}")
+
+    email = user_data["email"]
+    print(f"Email: {email}")
+
+    domain = email.split("@")[-1]
+    print(f"Domain: {domain}\n\n")
+
+    allowed_domains = settings.ALLOWED_DOMAINS
+    print(f"Allowed Domains: {allowed_domains}")
+    if domain not in allowed_domains:
+        params = urlencode(
+            {
+                "error": "Invalid domain. Only pdn.ac.lk domains are allowed for Google Authentication."
+            }
+        )
+        print(f"Params: {params}\n")
+        print(f"{LOGIN_URL}?{params}\n\n")
+        return redirect(f"{LOGIN_URL}?{params}")
+    else:
+        user, created = User.objects.get_or_create(
+            email=user_data["email"],
+            defaults={
+                "username": user_data["email"],
+                "first_name": user_data.get("given_name"),
+                "last_name": user_data.get("family_name"),
+            },
+        )
+        if created:
+            # Create the user profile for the new user
+            UserProfile.objects.create(
+                user=user, profile_picture=user_data.get("picture")
+            )
+
+        profile_data = {
+            "email": user_data["email"],
             "first_name": user_data.get("given_name"),
             "last_name": user_data.get("family_name"),
-        },
-    )
-    if created:
-        # Create the user profile for the new user
-        UserProfile.objects.create(user=user, profile_picture=user_data.get("picture"))
-
-    profile_data = {
-        "email": user_data["email"],
-        "first_name": user_data.get("given_name"),
-        "last_name": user_data.get("family_name"),
-    }
-    return profile_data
+        }
+        return profile_data

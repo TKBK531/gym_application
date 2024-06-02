@@ -119,7 +119,7 @@ class UserProfileDetailView(generics.RetrieveAPIView):
             "message": "User profile retrieved successfully.",
             "data": user_data,
         }
-        print(response_data)
+        # print(response_data)
 
         return Response(response_data)
 
@@ -212,7 +212,7 @@ class GoogleLoginApi(APIView):
 
         validated_data = auth_serializer.validated_data
         user_data = get_user_data(validated_data)
-        print(f"User Data: {user_data}")
+        # print(f"User Data: {user_data}")
 
         user = User.objects.get(email=user_data["email"])
         login(request, user)

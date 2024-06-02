@@ -148,7 +148,23 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWS_CREDENTIALS = True
 
-BASE_APP_URL = os.getenv("BASE_APP_URL", "http://localhost:5173")
-BASE_API_URL = os.getenv("BASE_API_URL", "http://127.0.0.1:8000")
+BASE_APP_URL = os.getenv("BASE_APP_URL")
+BASE_API_URL = os.getenv("BASE_API_URL")
+
+GOOGLE_REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI")
+REDIRECT_URI = f"{BASE_API_URL}/{GOOGLE_REDIRECT_URI}"
+
 GOOGLE_OAUTH2_CLIENT_ID = os.getenv("GOOGLE_OAUTH2_CLIENT_ID")
 GOOGLE_OAUTH2_CLIENT_SECRET = os.getenv("GOOGLE_OAUTH2_CLIENT_SECRET")
+
+ALLOWED_DOMAINS = [
+    "pdn.ac.lk",
+    "sci.pdn.ac.lk",
+    "eng.pdn.ac.lk",
+    "arts.pdn.ac.lk",
+    "med.pdn.ac.lk",
+    "mgt.pdn.ac.lk",
+    "vet.pdn.ac.lk",
+    "dental.pdn.ac.lk",
+    "agri.pdn.ac.lk",
+]

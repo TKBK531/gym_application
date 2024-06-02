@@ -31,6 +31,16 @@ const LoginForm = ({ setErrorMessage, setLoading, setLoggedInUser }) => {
     } catch (error) {
       if (error.response) {
         switch (error.response.status) {
+          case 400:
+            if (
+              error.response.data.error ===
+              "Invalid domain. Only pdn.ac.lk domain is allowed for Google login."
+            ) {
+              setErrorMessage(error.response.data.error);
+            } else {
+              setErrorMessage("An error occurred during login.");
+            }
+            break;
           case 401:
             setErrorMessage("Invalid credentials. Please try again.");
             break;
