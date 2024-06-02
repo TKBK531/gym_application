@@ -1,4 +1,29 @@
+import React, { useState } from "react";
+
 const MemberStaff = () => {
+  const [familyDetails, setFamilyDetails] = useState([
+    { name: "", age: "", relation: "", occupation: "" },
+  ]);
+
+  const handleInputChange = (index, event) => {
+    const values = [...familyDetails];
+    values[index][event.target.name] = event.target.value;
+    setFamilyDetails(values);
+  };
+
+  const handleAddMember = () => {
+    setFamilyDetails([
+      ...familyDetails,
+      { name: "", age: "", relation: "", occupation: "" },
+    ]);
+  };
+
+  const handleRemoveMember = (index) => {
+    const values = [...familyDetails];
+    values.splice(index, 1);
+    setFamilyDetails(values);
+  };
+
   return (
     <div className="bg-cream text-charcoal min-h-screen font-sans leading-normal overflow-x-hidden lg:overflow-auto">
       <main className="flex-1 md:p-0 lg:pt-8 lg:px-8 md:ml-24 flex flex-col">
@@ -11,9 +36,7 @@ const MemberStaff = () => {
           <form>
             <div className="md:flex mb-8">
               <div className="md:w-1/3">
-                <legend className="tracking-wide text-sm">
-                  Personal
-                </legend>
+                <legend className="tracking-wide text-sm">Personal</legend>
                 <p className="text-xs font-light text-red">
                   This entire section is required.
                 </p>
@@ -38,8 +61,8 @@ const MemberStaff = () => {
                     <input
                       className="w-full shadow-inner p-4 border-0"
                       type="text"
-                      name="address_street"
-                      placeholder="555 Roadrunner Lane"
+                      name="faculty"
+                      placeholder="Faculty of Science"
                     />
                   </div>
                   <div className="md:flex-1 md:pl-3">
@@ -49,8 +72,8 @@ const MemberStaff = () => {
                     <input
                       className="w-full shadow-inner p-4 border-0"
                       type="text"
-                      name="address_number"
-                      placeholder="#3"
+                      name="designation"
+                      placeholder="Professor"
                     />
                   </div>
                 </div>
@@ -61,9 +84,9 @@ const MemberStaff = () => {
                     </label>
                     <input
                       className="w-full shadow-inner p-4 border-0"
-                      type="text"
-                      name="lat"
-                      placeholder="30.0455542"
+                      type="date"
+                      name="appointment"
+                      placeholder="2000/01/01"
                     />
                   </div>
                   <div className="md:flex-1 md:pl-3">
@@ -73,8 +96,8 @@ const MemberStaff = () => {
                     <input
                       className="w-full shadow-inner p-4 border-0"
                       type="text"
-                      name="lon"
-                      placeholder="-99.1405168"
+                      name="tempory"
+                      placeholder="1 year"
                     />
                   </div>
                 </div>
@@ -85,29 +108,51 @@ const MemberStaff = () => {
                   <input
                     className="w-full shadow-inner p-4 border-0"
                     type="text"
-                    name="name"
-                    placeholder="Acme Mfg. Co."
+                    name="upf"
+                    placeholder="000 000"
                   />
+                </div>
+                <div className="md:flex mb-4">
+                  <div className="md:flex-1 md:pr-3">
+                    <label className="block tracking-wide text-charcoal-darker text-xs font-bold">
+                      Form Category
+                    </label>
+                    <input
+                      className="w-full shadow-inner p-4 border-0"
+                      type="text"
+                      name="category"
+                      placeholder="Auto filled"
+                    />
+                  </div>
+                  <div className="md:flex-1 md:pl-3">
+                    <label className="block tracking-wide text-charcoal-darker text-xs font-bold">
+                      Membership Type
+                    </label>
+                    <input
+                      className="w-full shadow-inner p-4 border-0"
+                      type="text"
+                      name="membership"
+                      placeholder="Auto filled"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
             <div className="md:flex mb-8">
               <div className="md:w-1/3">
-                <legend className="tracking-wide text-sm">
-                  Contact
-                </legend>
+                <legend className="tracking-wide text-sm">Contact</legend>
               </div>
               <div className="md:flex-1 mt-2 mb:mt-0 md:px-3">
                 <div className="md:flex mb-4">
                   <div className="md:flex-1 md:pr-3">
                     <label className="block tracking-wide text-xs font-bold">
-                      Phone
+                      Mobile
                     </label>
                     <input
                       className="w-full shadow-inner p-4 border-0"
                       type="tel"
-                      name="phone"
-                      placeholder="(555) 555-5555"
+                      name="mobile"
+                      placeholder="0771122333"
                     />
                   </div>
                   <div className="md:flex-1 md:pr-3">
@@ -117,8 +162,8 @@ const MemberStaff = () => {
                     <input
                       className="w-full shadow-inner p-4 border-0"
                       type="tel"
-                      name="phone"
-                      placeholder="(555) 555-5555"
+                      name="office"
+                      placeholder="0912233444"
                     />
                   </div>
                 </div>
@@ -128,9 +173,9 @@ const MemberStaff = () => {
                   </label>
                   <input
                     className="w-full shadow-inner p-4 border-0"
-                    type="url"
-                    name="url"
-                    placeholder="acme.co"
+                    type="text"
+                    name="address"
+                    placeholder="425 Galaha Lane, Peradeniya"
                   />
                 </div>
                 <div className="mb-4">
@@ -146,25 +191,111 @@ const MemberStaff = () => {
                 </div>
               </div>
             </div>
-            <div className="md:flex mb-6">
-              <div className="md:w-1/3">
-                <legend className="tracking-wide text-sm">
-                  Description
-                </legend>
-              </div>
-              <div className="md:flex-1 mt-2 mb:mt-0 md:px-3">
-                <textarea
-                  className="w-full shadow-inner p-4 border-0"
-                  placeholder="We build fine acmes."
-                  rows="6"
-                ></textarea>
-              </div>
+
+            <div>
+              <h2 className="py-3 tracking-wide text-sm">Family Details</h2>
+              <table className="min-w-full bg-white border border-gray-200">
+                <thead>
+                  <tr>
+                    <th className=" tracking-wide text-charcoal-darker text-xs font-bold">
+                      Name
+                    </th>
+                    <th className=" tracking-wide text-charcoal-darker text-xs font-bold">
+                      Age
+                    </th>
+                    <th className=" tracking-wide text-charcoal-darker text-xs font-bold">
+                      Relationship
+                    </th>
+                    <th className=" tracking-wide text-charcoal-darker text-xs font-bold">
+                      NIC No.
+                    </th>
+                    <th className=" tracking-wide text-charcoal-darker text-xs font-bold">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {familyDetails.map((member, index) => (
+                    <tr key={index}>
+                      <td className="shadow-inner p-4 border-0">
+                        <input
+                          type="text"
+                          name="name"
+                          value={member.name}
+                          onChange={(event) => handleInputChange(index, event)}
+                          className="w-full px-2 py-1 border border-gray-300 rounded"
+                          placeholder="Name"
+                        />
+                      </td>
+                      <td className="shadow-inner p-4 border-0">
+                        <input
+                          type="number"
+                          name="age"
+                          value={member.age}
+                          onChange={(event) => handleInputChange(index, event)}
+                          className="w-full px-2 py-1 border border-gray-300 rounded"
+                          placeholder="Age"
+                        />
+                      </td>
+                      <td className="shadow-inner p-4 border-0">
+                        <input
+                          type="text"
+                          name="relationship"
+                          value={member.relation}
+                          onChange={(event) => handleInputChange(index, event)}
+                          className="w-full px-2 py-1 border border-gray-300 rounded"
+                          placeholder="Relationship"
+                        />
+                      </td>
+                      <td className="shadow-inner p-4 border-0">
+                        <input
+                          type="number"
+                          name="nic"
+                          value={member.occupation}
+                          onChange={(event) => handleInputChange(index, event)}
+                          className="w-full px-2 py-1 border border-gray-300 rounded"
+                          placeholder="NIC Number"
+                        />
+                      </td>
+                      <td className="shadow-inner p-4 border-0">
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveMember(index)}
+                          className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                        >
+                          Remove
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <button
+                type="button"
+                onClick={handleAddMember}
+                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                Add Member
+              </button>
             </div>
-            <div className="md:flex mb-6">
+
+            <div className="py-5 md:flex mb-8">
               <div className="md:w-1/3">
-                <legend className="tracking-wide text-sm">
-                  Cover Image
-                </legend>
+                <legend className="tracking-wide text-sm">Total Price</legend>
+              </div>
+              <div className="mb-4">
+                  <input
+                    className="w-full shadow-inner p-4 border-0"
+                    type="text"
+                    name="name"
+                    placeholder="Auto filled"
+                  />
+              </div>
+              </div>
+
+            <div className="py-4 md:flex mb-6">
+              <div className="md:w-1/3">
+                <legend className="tracking-wide text-sm">Cover Image</legend>
               </div>
               <div className="md:flex-1 px-3 text-center">
                 <div className="button bg-gold hover:bg-gold-dark text-cream mx-auto cursor-pointer relative">
@@ -177,13 +308,14 @@ const MemberStaff = () => {
                 </div>
               </div>
             </div>
+
             <div className="md:flex mb-6 border border-t-1 border-b-0 border-x-0 border-cream-dark">
               <div className="md:flex-1 px-3 text-center md:text-right">
                 <input type="hidden" name="sponsor" value="0" />
                 <input
                   className="button text-cream-lighter bg-brick hover:bg-brick-dark"
                   type="submit"
-                  value="Create Location"
+                  value="Submit"
                 />
               </div>
             </div>
