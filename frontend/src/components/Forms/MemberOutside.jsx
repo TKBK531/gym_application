@@ -59,9 +59,7 @@ const MemberOutside = () => {
                     />
                   </div>
                   <div className="md:flex-1 md:pl-3 mt-4 md:mt-0">
-                    <label className={`${formStyles.formLable}`}>
-                      Age
-                    </label>
+                    <label className={`${formStyles.formLable}`}>Age</label>
                     <input
                       className={`${formStyles.formTextInput}`}
                       type="text"
@@ -72,9 +70,7 @@ const MemberOutside = () => {
                 </div>
 
                 <div className="mb-4">
-                  <label className={`${formStyles.formLable}`}>
-                    Category
-                  </label>
+                  <label className={`${formStyles.formLable}`}>Category</label>
                   <select
                     value={category}
                     onChange={handleCategoryChange}
@@ -96,9 +92,7 @@ const MemberOutside = () => {
               <div className="md:flex-1 mt-2 md:mt-0 md:px-3">
                 <div className="flex flex-col md:flex-row mb-4">
                   <div className="md:flex-1 md:pr-3">
-                    <label className={`${formStyles.formLable}`}>
-                      Mobile
-                    </label>
+                    <label className={`${formStyles.formLable}`}>Mobile</label>
                     <input
                       className={`${formStyles.formTextInput}`}
                       type="tel"
@@ -119,9 +113,7 @@ const MemberOutside = () => {
                   </div>
                 </div>
                 <div className="mb-4">
-                  <label className={`${formStyles.formLable}`}>
-                    Address
-                  </label>
+                  <label className={`${formStyles.formLable}`}>Address</label>
                   <input
                     className={`${formStyles.formTextInput}`}
                     type="text"
@@ -130,9 +122,7 @@ const MemberOutside = () => {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className={`${formStyles.formLable}`}>
-                    Email
-                  </label>
+                  <label className={`${formStyles.formLable}`}>Email</label>
                   <input
                     className={`${formStyles.formTextInput}`}
                     type="email"
@@ -161,7 +151,9 @@ const MemberOutside = () => {
 
             <div className="py-4 flex flex-col md:flex-row mb-6">
               <div className="md:w-1/3">
-                <legend className="tracking-wide text-sm">Add Your Image</legend>
+                <legend className="tracking-wide text-sm">
+                  Add Your Image
+                </legend>
               </div>
               <div className="md:flex-1 px-3 text-center">
                 <div className="button bg-gold hover:bg-gold-dark text-cream mx-auto cursor-pointer relative">

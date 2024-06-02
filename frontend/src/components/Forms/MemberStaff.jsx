@@ -3,7 +3,20 @@ import { formStyles } from "../../styles";
 import FamilyDetails from "../Table/FamilyDetails";
 
 const MemberStaff = () => {
+<<<<<<< HEAD
   const [category, setCategory] = useState("");
+=======
+
+  const [category, setCategory] = useState("");
+
+  const handleCategoryChange = (event) => {
+    setCategory(event.target.value);
+  };
+
+  const [familyDetails, setFamilyDetails] = useState([
+    { name: "", age: "", relation: "", occupation: "" },
+  ]);
+>>>>>>> ced44ca (FIX : Create Outsiders membership form)
 
   const handleCategoryChange = (event) => {
     setCategory(event.target.value);
