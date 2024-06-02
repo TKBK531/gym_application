@@ -1,6 +1,6 @@
-import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useLocation } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const PageLink = ({ name, icon, href }) => {
   const location = useLocation();
@@ -19,12 +19,15 @@ const PageLink = ({ name, icon, href }) => {
         <div className="mr-auto m-1">
           <p>{name}</p>
         </div>
-        {/* <div>
-          <p className={`font-black ${isActive ? "" : "hidden"}`}>|</p>
-        </div> */}
       </a>
     </div>
   );
+};
+
+PageLink.propTypes = {
+  name: PropTypes.string.isRequired,
+  icon: PropTypes.string.isRequired,
+  href: PropTypes.string.isRequired,
 };
 
 export default PageLink;

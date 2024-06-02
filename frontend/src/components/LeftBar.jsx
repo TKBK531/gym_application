@@ -1,7 +1,7 @@
-import React from "react";
 import AvatarOnline from "./NavComponents/AvatarOnline";
 import PageLink from "./NavComponents/PageLink";
 import pageLinks from "../constants/index";
+import PropTypes from "prop-types";
 
 const LeftBar = ({ profileData }) => {
   return (
@@ -32,6 +32,10 @@ const LeftBar = ({ profileData }) => {
       </div>
     </div>
   );
+};
+
+LeftBar.propTypes = {
+  profileData: PropTypes.object.isRequired,
 };
 
 export default LeftBar;

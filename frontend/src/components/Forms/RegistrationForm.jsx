@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api";
 import { formStyles } from "../../styles";
@@ -7,7 +7,8 @@ import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import PrimaryButton from "../Buttons/PrimaryButton";
 import GoogleLoginButton from "../Buttons/GoogleLoginButton";
-import { userTypes } from "../../constants/index";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 const initialValues = {
   firstName: "",
@@ -115,6 +116,10 @@ const RegistrationForm = () => {
     if (popupType === "success") {
       navigate("/login");
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -239,6 +244,13 @@ const RegistrationForm = () => {
                   touched.password && errors.password ? "border-red-500" : ""
                 }`}
               />
+              <button
+                type="button"
+                onClick={togglePasswordVisibility}
+                className="absolute inset-y-0 right-0 flex items-center pr-3 mt-6 text-gray-600"
+              >
+                <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+              </button>
             </div>
             <ErrorMessage
               name="password"
@@ -260,6 +272,13 @@ const RegistrationForm = () => {
                     : ""
                 }`}
               />
+              <button
+                type="button"
+                onClick={togglePasswordVisibility}
+                className="absolute inset-y-0 right-0 flex items-center pr-3 mt-6 text-gray-600" // adjusted the mt to 1 from 6
+              >
+                <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+              </button>
             </div>
             <ErrorMessage
               name="confirmPassword"

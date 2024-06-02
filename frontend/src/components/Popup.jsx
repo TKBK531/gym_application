@@ -1,4 +1,4 @@
-import React from "react";
+import PropTypes from "prop-types";
 
 const Popup = ({ message, type, onClose }) => {
   const typeStyles = {
@@ -36,6 +36,12 @@ const Popup = ({ message, type, onClose }) => {
       </div>
     </div>
   );
+};
+
+Popup.propTypes = {
+  message: PropTypes.string.isRequired,
+  type: PropTypes.oneOf(["success", "error"]).isRequired,
+  onClose: PropTypes.func,
 };
 
 export default Popup;

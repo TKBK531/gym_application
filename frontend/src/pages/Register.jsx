@@ -1,4 +1,3 @@
-import React from "react";
 import { formStyles } from "../styles";
 import RegistrationForm from "../components/Forms/RegistrationForm";
 
