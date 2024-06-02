@@ -12,7 +12,7 @@ function ProtectedRoutes({ children }) {
     auth().catch(() => {
       setIsAuthorized(false);
     });
-  }, []);
+  }, [auth]);
 
   const refreshtoken = async () => {
     const refreshToken = localStorage.getItem(REFRESH_TOKEN);
