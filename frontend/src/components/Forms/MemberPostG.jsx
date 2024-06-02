@@ -52,9 +52,7 @@ const MemberPostG = () => {
                       />
                     </div>
                     <div className="w-full md:w-1/2">
-                      <label className={`${formStyles.formLable}`}>
-                        Age
-                      </label>
+                      <label className={`${formStyles.formLable}`}>Age</label>
                       <input
                         className={`${formStyles.formTextInput}`}
                         type="number"
@@ -96,9 +94,7 @@ const MemberPostG = () => {
                     </div>
                   </div>
                   <div className="mb-4">
-                    <label className={`${formStyles.formLable}`}>
-                      Address
-                    </label>
+                    <label className={`${formStyles.formLable}`}>Address</label>
                     <input
                       className={`${formStyles.formTextInput}`}
                       type="text"
@@ -107,9 +103,7 @@ const MemberPostG = () => {
                     />
                   </div>
                   <div className="mb-4">
-                    <label className={`${formStyles.formLable}`}>
-                      Email
-                    </label>
+                    <label className={`${formStyles.formLable}`}>Email</label>
                     <input
                       className={`${formStyles.formTextInput}`}
                       type="email"
@@ -204,7 +198,9 @@ const MemberPostG = () => {
 
               <div className="py-4 flex flex-col md:flex-row mb-6">
                 <div className="w-full md:w-1/3">
-                  <legend className="tracking-wide text-sm">Add Your Image</legend>
+                  <legend className="tracking-wide text-sm">
+                    Add Your Image
+                  </legend>
                 </div>
                 <div className="w-full md:w-2/3 text-center md:text-left">
                   <div className="button bg-gold hover:bg-gold-dark text-cream mx-auto cursor-pointer relative">
