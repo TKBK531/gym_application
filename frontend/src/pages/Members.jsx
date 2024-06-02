@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom'
 >>>>>>> b6f2999 (WIP : created the relavent pages for cards)
 
 const Members = () => {
+<<<<<<< HEAD
   const imageUrlPool =
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-l9mhhOz1sK8P9IdEkk7seHj4APH_dRKQlg&s";
   const imageUrlGround =
@@ -22,6 +23,13 @@ const Members = () => {
   const imageUrlGym =
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKDWg1zq64xccwiMYVtHxmAty40QKKBxIahw&s";
 
+=======
+
+  const imageUrlPool = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-l9mhhOz1sK8P9IdEkk7seHj4APH_dRKQlg&s"
+  const imageUrlGround = "https://site.pdn.ac.lk/student/sprtpdn/data1/images/cricketground.jpg"
+  const imageUrlGym = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKDWg1zq64xccwiMYVtHxmAty40QKKBxIahw&s"
+  
+>>>>>>> 75cbaf5 (WIP : designing the membership type pages)
   return (
     <div>
       <div>
