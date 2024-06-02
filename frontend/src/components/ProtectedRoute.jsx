@@ -6,15 +6,33 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 function ProtectedRoutes({ children }) {
-  const [isAuthenticated, setIsAuthorized] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
 
   useEffect(() => {
-    auth().catch(() => {
-      setIsAuthorized(false);
-    });
-  }, [auth]);
+    const auth = async () => {
+      const token = localStorage.getItem(ACCESS_TOKEN);
+      if (!token) {
+        setIsAuthenticated(false);
+        return;
+      }
 
-  const refreshtoken = async () => {
+      const decoded = jwtDecode(token);
+      const tokenExpiration = decoded.exp;
+      const now = Date.now() / 1000;
+
+      if (tokenExpiration < now) {
+        await refreshToken();
+      } else {
+        setIsAuthenticated(true);
+      }
+    };
+
+    auth().catch(() => {
+      setIsAuthenticated(false);
+    });
+  }, []);
+
+  const refreshToken = async () => {
     const refreshToken = localStorage.getItem(REFRESH_TOKEN);
 
     try {
@@ -23,42 +41,25 @@ function ProtectedRoutes({ children }) {
       });
       if (res.status === 200) {
         localStorage.setItem(ACCESS_TOKEN, res.data.access);
-        setIsAuthorized(true);
+        setIsAuthenticated(true);
       } else {
-        setIsAuthorized(false);
+        setIsAuthenticated(false);
       }
     } catch (error) {
-      console.log(error);
-      setIsAuthorized(false);
-    }
-  };
-
-  const auth = async () => {
-    const token = localStorage.getItem(ACCESS_TOKEN);
-    if (!token) {
-      setIsAuthorized(false);
-      return;
-    }
-
-    const decoded = jwtDecode(token);
-    const tokenExperation = decoded.exp;
-    const now = Date.now() / 1000;
-
-    if (tokenExperation < now) {
-      await refreshtoken();
-    } else {
-      setIsAuthorized(true);
+      console.error(error);
+      setIsAuthenticated(false);
     }
   };
 
   if (isAuthenticated === null) {
     return <div>Loading...</div>;
   }
+
   return isAuthenticated ? children : <Navigate to="/login" />;
 }
 
 ProtectedRoutes.propTypes = {
-  children: PropTypes.node,
+  children: PropTypes.node.isRequired,
 };
 
 export default ProtectedRoutes;
