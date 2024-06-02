@@ -211,10 +211,17 @@ class GoogleLoginApi(APIView):
         auth_serializer.is_valid(raise_exception=True)
 
         validated_data = auth_serializer.validated_data
-        user_data = get_user_data(validated_data)
-        # print(f"User Data: {user_data}")
+
+        try:
+            user_data = get_user_data(validated_data)
+        except Exception as e:
+            params = urlencode({"error": e.message})
+            redirect_url = f"{settings.BASE_APP_URL}/login?{params}"
+
+            return redirect(redirect_url)
 
         user = User.objects.get(email=user_data["email"])
+        print(f"User: {user}")
         login(request, user)
 
         # Generate tokens for the user

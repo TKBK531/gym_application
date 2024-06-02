@@ -1,16 +1,24 @@
-import React from "react";
-import { useState } from "react";
-import api from "../api";
-import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { formStyles } from "../styles";
-import Popup from "../components/Popup";
 import LoginForm from "../components/Forms/LoginForm";
 
 const Login = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState(null);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const error = params.get("error");
+    if (error) {
+      setErrorMessage(decodeURIComponent(error.replace(/\+/g, " ")));
+      // Remove the URL parameters
+      navigate(location.pathname, { replace: true });
+    }
+  }, [location, navigate]);
 
   return (
     <section className="flex">

@@ -52,39 +52,20 @@ def get_user_data(validated_data):
     error = validated_data.get("error")
 
     if error or not code:
-        params = urlencode({"error": error})
-        return redirect(f"{LOGIN_URL}?{params}")
+        raise ValidationError("Invalid code. Try Again.")
 
     access_token = google_get_access_token(code=code, redirect_uri=redirect_uri)
     user_data = google_get_user_info(access_token=access_token)
 
     if not user_data:
-        params = urlencode(
-            {
-                "error": "Invalid domain. Only pdn.ac.lk domains are allowed for Google Authentication."
-            }
-        )
-        return redirect(f"{LOGIN_URL}?{params}")
+        raise ValidationError("Could not get user data from Google.")
 
-    print(f"\n\nUser Data: {user_data}")
-
-    email = user_data["email"]
-    print(f"Email: {email}")
-
+    email = user_data.get("email")
     domain = email.split("@")[-1]
-    print(f"Domain: {domain}\n\n")
-
     allowed_domains = settings.ALLOWED_DOMAINS
-    print(f"Allowed Domains: {allowed_domains}")
+
     if domain not in allowed_domains:
-        params = urlencode(
-            {
-                "error": "Invalid domain. Only pdn.ac.lk domains are allowed for Google Authentication."
-            }
-        )
-        print(f"Params: {params}\n")
-        print(f"{LOGIN_URL}?{params}\n\n")
-        return redirect(f"{LOGIN_URL}?{params}")
+        raise ValidationError("Invalid domain. Only pdn.ac.lk emails are allowed.")
     else:
         user, created = User.objects.get_or_create(
             email=user_data["email"],
@@ -95,7 +76,6 @@ def get_user_data(validated_data):
             },
         )
         if created:
-            # Create the user profile for the new user
             UserProfile.objects.create(
                 user=user, profile_picture=user_data.get("picture")
             )
