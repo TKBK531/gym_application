@@ -1,21 +1,9 @@
-<<<<<<< HEAD
-import Card from "../components/Members/Card";
-import StatWidge from "../components/Members/StatWidge";
-import {
-  faSwimmer,
-  faWalking,
-  faUsers,
-  faRunning,
-} from "@fortawesome/free-solid-svg-icons";
-=======
 import Card from '../components/Members/Card'
 import StatWidge from '../components/Members/StatWidge';
 import { faSwimmer, faWalking, faUsers, faRunning  } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom'
->>>>>>> b6f2999 (WIP : created the relavent pages for cards)
 
 const Members = () => {
-<<<<<<< HEAD
   const imageUrlPool =
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-l9mhhOz1sK8P9IdEkk7seHj4APH_dRKQlg&s";
   const imageUrlGround =
@@ -23,13 +11,6 @@ const Members = () => {
   const imageUrlGym =
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKDWg1zq64xccwiMYVtHxmAty40QKKBxIahw&s";
 
-=======
-
-  const imageUrlPool = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-l9mhhOz1sK8P9IdEkk7seHj4APH_dRKQlg&s"
-  const imageUrlGround = "https://site.pdn.ac.lk/student/sprtpdn/data1/images/cricketground.jpg"
-  const imageUrlGym = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKDWg1zq64xccwiMYVtHxmAty40QKKBxIahw&s"
-  
->>>>>>> 75cbaf5 (WIP : designing the membership type pages)
   return (
     <div>
       <div>
@@ -65,24 +46,9 @@ const Members = () => {
         </p>
       </div>
       <div className="display: flex flex-row gap-4">
-<<<<<<< HEAD
-        <Card
-          content="High-tech gym for customized workouts"
-          backgroundImage={imageUrlGym}
-        />
-        <Card
-          content="serene grounds for outdoor workouts"
-          backgroundImage={imageUrlGround}
-        />
-        <Card
-          content="refreshing pool for aquatic exercise or relaxation"
-          backgroundImage={imageUrlPool}
-        />
-=======
         <Link to='/members/membersGym'><Card content="High-tech gym for customized workouts" backgroundImage={imageUrlGym}/></Link>
         <Link to='/members/membersGround'><Card content="serene grounds for outdoor workouts" backgroundImage={imageUrlGround}/></Link>
         <Link to='/members/membersPool'><Card content="refreshing pool for aquatic exercise or relaxation" backgroundImage={imageUrlPool}/></Link>
->>>>>>> b6f2999 (WIP : created the relavent pages for cards)
       </div>
       <div className="container mx-auto px-4 py-8">
         <p className="text-gray-700 text-lg text-center leading-relaxed font-semibold">
