@@ -168,3 +168,54 @@ const MembersGround = () => {
 };
 
 export default MembersGround;
+
+// <div className="-mt-16 mb-8 px-8 ">
+//                         <div className="container mx-auto">
+//                         <div className="py-3 justify-center rounded-xl border border-white bg-white shadow-md shadow-black/5 saturate-200">
+//                           <div className="p-4">
+//                       <div className="mb-4 flex space-x-4 p-2 bg-white rounded-lg shadow-md">
+
+//                         <div>
+//                         <button
+//                           onClick={() => setOpenTab(3)}
+//                           className={`w-1/4 py-2 px-4 rounded-md focus:outline-none focus:shadow-outline-blue transition-all duration-300 ${
+//                             openTab === 3 ? "bg-blue-600 text-white" : ""
+//                           }`}
+//                         >
+//                           Outsiders
+//                         </button>
+//                         <button
+//                           onClick={() => setOpenTab(4)}
+//                           className={`w-1/4 py-2 px-4 rounded-md focus:outline-none focus:shadow-outline-blue transition-all duration-300 ${
+//                             openTab === 4 ? "bg-blue-600 text-white" : ""
+//                           }`}
+//                         >
+//                           Staff
+//                         </button>
+//                         <button
+//                           onClick={() => setOpenTab(5)}
+//                           className={`w-1/4 py-2 px-4 rounded-md focus:outline-none focus:shadow-outline-blue transition-all duration-300 ${
+//                             openTab === 5 ? "bg-blue-600 text-white" : ""
+//                           }`}
+//                         >
+//                           Post Graduate
+//                         </button>
+//                         </div>
+
+//                         <div>
+//                         {openTab === 3 && (
+//                           <MemberOutside />
+//                         )}
+//                         {openTab === 4 && (
+//                           <MemberStaff />
+//                         )}
+//                         {openTab === 5 && (
+//                           <MemberPostG />
+//                         )}
+//                         </div>
+
+//                         </div>
+//                         </div>
+//                         </div>
+//                         </div>
+//                         </div>
