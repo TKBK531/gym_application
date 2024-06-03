@@ -93,7 +93,7 @@ const FamilyDetails = () => {
                 <button
                   type="button"
                   onClick={() => handleRemoveMember(index)}
-                  className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                  className="px-2 py-1 bg-red-300 text-white rounded hover:bg-red-400"
                 >
                   Remove
                 </button>
@@ -105,7 +105,7 @@ const FamilyDetails = () => {
       <button
         type="button"
         onClick={handleAddMember}
-        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        className="mt-4 px-2 py-1 bg-blue-300 text-white rounded hover:bg-blue-400"
       >
         Add Member
       </button>
