@@ -5,7 +5,7 @@ import MemberPostG from "../components/Forms/MemberPostG";
 
 const MembersPool = () => {
   const [openTab, setOpenTab] = useState(1);
-  const [nestedTab, setNestedTab] = useState(1);
+  const [selectedForm, setSelectedForm] = useState("");
 
   return (
     <div>
@@ -81,36 +81,28 @@ const MembersPool = () => {
                   {openTab === 2 && (
                     <div className="py-3 justify-center rounded-xl border border-white bg-white shadow-md shadow-black/5 saturate-200">
                       <div className="p-4">
-                        <div className="mb-4 flex space-x-4 p-2 bg-white rounded-lg shadow-md">
-                          <button
-                            onClick={() => setNestedTab(1)}
-                            className={`w-1/6 py-2 px-4 rounded-md focus:outline-none focus:shadow-outline-blue transition-all duration-300 ${
-                              nestedTab === 1 ? "bg-blue-600 text-white" : ""
-                            }`}
+                        <div className="mb-4 flex">
+                          <label className="mb-2 text-md font-medium text-gray-700 pr-2">
+                            I am a
+                          </label>
+                          <select
+                            id="form"
+                            name="form"
+                            value={selectedForm}
+                            onChange={(e) => setSelectedForm(e.target.value)}
+                            className="w-1/4 px-2 pb-2 shadow appearance-none text-md text-gray-700 font-medium border leading-tight focus:outline-none focus:ring-2 focus:ring-secondary-golden focus:border-transparent rounded-md"
                           >
-                            Outsiders
-                          </button>
-                          <button
-                            onClick={() => setNestedTab(2)}
-                            className={`w-1/6 py-2 px-4 rounded-md focus:outline-none focus:shadow-outline-blue transition-all duration-300 ${
-                              nestedTab === 2 ? "bg-blue-600 text-white" : ""
-                            }`}
-                          >
-                            Staff
-                          </button>
-                          <button
-                            onClick={() => setNestedTab(3)}
-                            className={`w-1/6 py-2 px-4 rounded-md focus:outline-none focus:shadow-outline-blue transition-all duration-300 ${
-                              nestedTab === 3 ? "bg-blue-600 text-white" : ""
-                            }`}
-                          >
-                            Postgraduate
-                          </button>
+                            <option value="">--Select Type--</option>
+                            <option value="outsider">Outsider.</option>
+                            <option value="staff">Staff Member.</option>
+                            <option value="postGraduate">
+                              Post Graduate Student.
+                            </option>
+                          </select>
                         </div>
-
-                        {nestedTab === 1 && <MemberOutside />}
-                        {nestedTab === 2 && <MemberStaff />}
-                        {nestedTab === 3 && <MemberPostG />}
+                        {selectedForm === "outsider" && <MemberOutside />}
+                        {selectedForm === "staff" && <MemberStaff />}
+                        {selectedForm === "postGraduate" && <MemberPostG />}
                       </div>
                     </div>
                   )}

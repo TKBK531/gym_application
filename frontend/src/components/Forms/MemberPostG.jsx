@@ -1,3 +1,5 @@
+import { formStyles } from "../../styles";
+
 const MemberPostG = () => {
   return (
     <div>
@@ -16,48 +18,48 @@ const MemberPostG = () => {
                 </div>
                 <div className="md:flex-1 mt-2 mb:mt-0 md:px-3">
                   <div className="mb-4">
-                    <label className="block tracking-wide text-xs font-bold">
+                    <label className={`${formStyles.formLable}`}>
                       Name(Mr./Ms.)
                     </label>
                     <input
-                      className="w-full shadow-inner p-4 border-0"
+                      className={`${formStyles.formTextInput}`}
                       type="text"
                       name="name"
                       placeholder="Acme Mfg. Co."
                     />
                   </div>
                   <div className="mb-4">
-                    <label className="block tracking-wide text-xs font-bold">
+                    <label className={`${formStyles.formLable}`}>
                       National Identity Card No.
                     </label>
                     <input
-                      className="w-full shadow-inner p-4 border-0"
+                      className={`${formStyles.formTextInput}`}
                       type="text"
-                      name="name"
-                      placeholder="Acme Mfg. Co."
+                      name="id"
+                      placeholder="11111111111"
                     />
                   </div>
                   <div className="md:flex mb-4">
                     <div className="md:flex-1 md:pr-3">
-                      <label className="block tracking-wide text-charcoal-darker text-xs font-bold">
+                      <label className={`${formStyles.formLable}`}>
                         Date of Birth
                       </label>
                       <input
-                        className="w-full shadow-inner p-4 border-0"
+                        className={`${formStyles.formTextInput}`}
                         type="date"
-                        name="appointment"
+                        name="dob"
                         placeholder="2000/01/01"
                       />
                     </div>
                     <div className="md:flex-1 md:pl-3">
-                      <label className="block tracking-wide text-charcoal-darker text-xs font-bold">
+                      <label className={`${formStyles.formLable}`}>
                         Age
                       </label>
                       <input
-                        className="w-full shadow-inner p-4 border-0"
-                        type="text"
-                        name="tempory"
-                        placeholder="1 year"
+                        className={`${formStyles.formTextInput}`}
+                        type="number"
+                        name="age"
+                        placeholder="25"
                       />
                     </div>
                   </div>
@@ -71,45 +73,45 @@ const MemberPostG = () => {
                 <div className="md:flex-1 mt-2 mb:mt-0 md:px-3">
                   <div className="md:flex mb-4">
                     <div className="md:flex-1 md:pr-3">
-                      <label className="block tracking-wide text-xs font-bold">
+                      <label className={`${formStyles.formLable}`}>
                         Mobile
                       </label>
                       <input
-                        className="w-full shadow-inner p-4 border-0"
+                        className={`${formStyles.formTextInput}`}
                         type="tel"
                         name="mobile"
                         placeholder="0771122333"
                       />
                     </div>
                     <div className="md:flex-1 md:pr-3">
-                      <label className="block tracking-wide text-xs font-bold">
-                        Office
+                      <label className={`${formStyles.formLable}`}>
+                        Residence
                       </label>
                       <input
-                        className="w-full shadow-inner p-4 border-0"
+                        className={`${formStyles.formTextInput}`}
                         type="tel"
-                        name="office"
+                        name="residence"
                         placeholder="0912233444"
                       />
                     </div>
                   </div>
                   <div className="mb-4">
-                    <label className="block tracking-wide text-charcoal-darker text-xs font-bold">
+                    <label className={`${formStyles.formLable}`}>
                       Address
                     </label>
                     <input
-                      className="w-full shadow-inner p-4 border-0"
+                      className={`${formStyles.formTextInput}`}
                       type="text"
                       name="address"
                       placeholder="425 Galaha Lane, Peradeniya"
                     />
                   </div>
                   <div className="mb-4">
-                    <label className="block tracking-wide text-charcoal-darker text-xs font-bold">
+                    <label className={`${formStyles.formLable}`}>
                       Email
                     </label>
                     <input
-                      className="w-full shadow-inner p-4 border-0"
+                      className={`${formStyles.formTextInput}`}
                       type="email"
                       name="email"
                       placeholder="contact@acme.co"
@@ -126,11 +128,11 @@ const MemberPostG = () => {
                 </div>
                 <div className="md:flex-1 mt-2 mb:mt-0 md:px-3">
                   <div className="mb-4">
-                    <label className="block tracking-wide text-charcoal-darker text-xs font-bold">
+                    <label className={`${formStyles.formLable}`}>
                       Postgraduate Institute Name
                     </label>
                     <input
-                      className="w-full shadow-inner p-4 border-0"
+                      className={`${formStyles.formTextInput}`}
                       type="text"
                       name="name"
                       placeholder="PGIS"
@@ -138,22 +140,22 @@ const MemberPostG = () => {
                   </div>
                   <div className="md:flex mb-4">
                     <div className="md:flex-1 md:pr-3">
-                      <label className="block tracking-wide text-xs font-bold">
+                      <label className={`${formStyles.formLable}`}>
                         Registration No.
                       </label>
                       <input
-                        className="w-full shadow-inner p-4 border-0"
+                        className={`${formStyles.formTextInput}`}
                         type="text"
                         name="registration"
                         placeholder="22222"
                       />
                     </div>
                     <div className="md:flex-1 md:pr-3">
-                      <label className="block tracking-wide text-xs font-bold">
+                      <label className={`${formStyles.formLable}`}>
                         Students Identity Card No.
                       </label>
                       <input
-                        className="w-full shadow-inner p-4 border-0"
+                        className={`${formStyles.formTextInput}`}
                         type="text"
                         name="studentId"
                         placeholder="22222"
@@ -163,21 +165,21 @@ const MemberPostG = () => {
 
                   <div className="md:flex mb-4">
                     <div className="md:flex-1 md:pr-3">
-                      <label className="block tracking-wide text-xs font-bold">
+                      <label className={`${formStyles.formLable}`}>
                         Date of commencement of the course
                       </label>
                       <input
-                        className="w-full shadow-inner p-4 border-0"
+                        className={`${formStyles.formTextInput}`}
                         type="date"
                         name="commencement"
                       />
                     </div>
                     <div className="md:flex-1 md:pr-3">
-                      <label className="block tracking-wide text-xs font-bold">
+                      <label className={`${formStyles.formLable}`}>
                         Date of completion of the course
                       </label>
                       <input
-                        className="w-full shadow-inner p-4 border-0"
+                        className={`${formStyles.formTextInput}`}
                         type="date"
                         name="completion"
                       />
@@ -192,7 +194,7 @@ const MemberPostG = () => {
                 </div>
                 <div className="mb-4">
                   <input
-                    className="w-full shadow-inner p-4 border-0"
+                    className={`${formStyles.formTextInput}`}
                     type="text"
                     name="name"
                     placeholder="Auto filled"

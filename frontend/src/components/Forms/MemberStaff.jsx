@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { formStyles } from "../../styles";
+import FamilyDetails from "../Table/FamilyDetails";
 
 const MemberStaff = () => {
 
@@ -6,29 +8,6 @@ const MemberStaff = () => {
 
   const handleCategoryChange = (event) => {
     setCategory(event.target.value);
-  };
-
-  const [familyDetails, setFamilyDetails] = useState([
-    { name: "", age: "", relation: "", occupation: "" },
-  ]);
-
-  const handleInputChange = (index, event) => {
-    const values = [...familyDetails];
-    values[index][event.target.name] = event.target.value;
-    setFamilyDetails(values);
-  };
-
-  const handleAddMember = () => {
-    setFamilyDetails([
-      ...familyDetails,
-      { name: "", age: "", relation: "", occupation: "" },
-    ]);
-  };
-
-  const handleRemoveMember = (index) => {
-    const values = [...familyDetails];
-    values.splice(index, 1);
-    setFamilyDetails(values);
   };
 
   return (
@@ -47,11 +26,11 @@ const MemberStaff = () => {
               </div>
               <div className="md:flex-1 mt-2 mb:mt-0 md:px-3">
                 <div className="mb-4">
-                  <label className="block tracking-wide text-xs font-bold">
+                  <label className={`${formStyles.formLable}`}>
                     Name(Mr./Mrs./Miss)
                   </label>
                   <input
-                    className="w-full shadow-inner p-4 border-0"
+                    className={`${formStyles.formTextInput}`}
                     type="text"
                     name="name"
                     placeholder="Acme Mfg. Co."
@@ -59,22 +38,22 @@ const MemberStaff = () => {
                 </div>
                 <div className="md:flex mb-4">
                   <div className="md:flex-1 md:pr-3">
-                    <label className="block tracking-wide text-charcoal-darker text-xs font-bold">
+                    <label className={`${formStyles.formLable}`}>
                       Faculty/Dept./Division
                     </label>
                     <input
-                      className="w-full shadow-inner p-4 border-0"
+                      className={`${formStyles.formTextInput}`}
                       type="text"
                       name="faculty"
                       placeholder="Faculty of Science"
                     />
                   </div>
                   <div className="md:flex-1 md:pl-3">
-                    <label className="block tracking-wide text-charcoal-darker text-xs font-bold">
+                    <label className={`${formStyles.formLable}`}>
                       Designation
                     </label>
                     <input
-                      className="w-full shadow-inner p-4 border-0"
+                      className={`${formStyles.formTextInput}`}
                       type="text"
                       name="designation"
                       placeholder="Professor"
@@ -83,22 +62,22 @@ const MemberStaff = () => {
                 </div>
                 <div className="md:flex mb-4">
                   <div className="md:flex-1 md:pr-3">
-                    <label className="block tracking-wide text-charcoal-darker text-xs font-bold">
+                    <label className={`${formStyles.formLable}`}>
                       Date of Appointment
                     </label>
                     <input
-                      className="w-full shadow-inner p-4 border-0"
+                      className={`${formStyles.formTextInput}`}
                       type="date"
                       name="appointment"
                       placeholder="2000/01/01"
                     />
                   </div>
                   <div className="md:flex-1 md:pl-3">
-                    <label className="block tracking-wide text-charcoal-darker text-xs font-bold">
+                    <label className={`${formStyles.formLable}`}>
                       Period of Apt.(if temporary)
                     </label>
                     <input
-                      className="w-full shadow-inner p-4 border-0"
+                      className={`${formStyles.formTextInput}`}
                       type="text"
                       name="tempory"
                       placeholder="1 year"
@@ -106,24 +85,24 @@ const MemberStaff = () => {
                   </div>
                 </div>
                 <div className="mb-4">
-                  <label className="block tracking-wide text-xs font-bold">
+                  <label className={`${formStyles.formLable}`}>
                     UPF No.
                   </label>
                   <input
-                    className="w-full shadow-inner p-4 border-0"
+                    className={`${formStyles.formTextInput}`}
                     type="text"
                     name="upf"
                     placeholder="000 000"
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block tracking-wide text-xs font-bold">
+                  <label className={`${formStyles.formLable}`}>
                     Category
                   </label>
                   <select
                     value={category}
                     onChange={handleCategoryChange}
-                    className="mt-1 block w-1/2 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                    className={`${formStyles.formTextInput}`}
                   >
                     <option value="">Select Category</option>
                     <option value="individual">Individual</option>
@@ -132,22 +111,22 @@ const MemberStaff = () => {
                 </div>
                 <div className="md:flex mb-4">
                   <div className="md:flex-1 md:pr-3">
-                    <label className="block tracking-wide text-charcoal-darker text-xs font-bold">
+                    <label className={`${formStyles.formLable}`}>
                       Form Category
                     </label>
                     <input
-                      className="w-full shadow-inner p-4 border-0"
+                      className={`${formStyles.formTextInput}`}
                       type="text"
                       name="category"
                       placeholder="Auto filled"
                     />
                   </div>
                   <div className="md:flex-1 md:pl-3">
-                    <label className="block tracking-wide text-charcoal-darker text-xs font-bold">
+                    <label className={`${formStyles.formLable}`}>
                       Membership Type
                     </label>
                     <input
-                      className="w-full shadow-inner p-4 border-0"
+                      className={`${formStyles.formTextInput}`}
                       type="text"
                       name="membership"
                       placeholder="Auto filled"
@@ -163,45 +142,45 @@ const MemberStaff = () => {
               <div className="md:flex-1 mt-2 mb:mt-0 md:px-3">
                 <div className="md:flex mb-4">
                   <div className="md:flex-1 md:pr-3">
-                    <label className="block tracking-wide text-xs font-bold">
+                    <label className={`${formStyles.formLable}`}>
                       Mobile
                     </label>
                     <input
-                      className="w-full shadow-inner p-4 border-0"
+                      className={`${formStyles.formTextInput}`}
                       type="tel"
                       name="mobile"
                       placeholder="0771122333"
                     />
                   </div>
                   <div className="md:flex-1 md:pr-3">
-                    <label className="block tracking-wide text-xs font-bold">
-                      Office
+                    <label className={`${formStyles.formLable}`}>
+                      Residence
                     </label>
                     <input
-                      className="w-full shadow-inner p-4 border-0"
+                      className={`${formStyles.formTextInput}`}
                       type="tel"
-                      name="office"
+                      name="residence"
                       placeholder="0912233444"
                     />
                   </div>
                 </div>
                 <div className="mb-4">
-                  <label className="block tracking-wide text-charcoal-darker text-xs font-bold">
+                  <label className={`${formStyles.formLable}`}>
                     Address
                   </label>
                   <input
-                    className="w-full shadow-inner p-4 border-0"
+                    className={`${formStyles.formTextInput}`}
                     type="text"
                     name="address"
                     placeholder="425 Galaha Lane, Peradeniya"
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block tracking-wide text-charcoal-darker text-xs font-bold">
+                  <label className={`${formStyles.formLable}`}>
                     Email
                   </label>
                   <input
-                    className="w-full shadow-inner p-4 border-0"
+                    className={`${formStyles.formTextInput}`}
                     type="email"
                     name="email"
                     placeholder="contact@acme.co"
@@ -211,100 +190,7 @@ const MemberStaff = () => {
             </div>
 
             {category !== 'individual' && (
-              <div>
-              <h2 className="py-3 tracking-wide text-sm">Family Details</h2>
-              <table className="min-w-full bg-white border border-gray-200">
-                <thead>
-                  <tr>
-                    <th className=" tracking-wide text-charcoal-darker text-xs font-bold">
-                      Name
-                    </th>
-                    <th className=" tracking-wide text-charcoal-darker text-xs font-bold">
-                      Age
-                    </th>
-                    <th className=" tracking-wide text-charcoal-darker text-xs font-bold">
-                      Relationship
-                    </th>
-                    <th className=" tracking-wide text-charcoal-darker text-xs font-bold">
-                      NIC No.
-                    </th>
-                    <th className=" tracking-wide text-charcoal-darker text-xs font-bold">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {familyDetails.map((member, index) => (
-                    <tr key={index}>
-                      <td className="shadow-inner p-4 border-0">
-                        <input
-                          type="text"
-                          name="name"
-                          value={member.name}
-                          onChange={(event) => handleInputChange(index, event)}
-                          className="w-full px-2 py-1 border border-gray-300 rounded"
-                          placeholder="Name"
-                        />
-                      </td>
-                      <td className="shadow-inner p-4 border-0">
-                        <input
-                          type="number"
-                          name="age"
-                          value={member.age}
-                          onChange={(event) => handleInputChange(index, event)}
-                          className="w-full px-2 py-1 border border-gray-300 rounded"
-                          placeholder="Age"
-                        />
-                      </td>
-                      <td className="shadow-inner p-4 border-0">
-                          <select
-                            name="relation"
-                            value={member.relation}
-                            onChange={(event) =>
-                              handleInputChange(index, event)
-                            }
-                            className="w-full px-2 py-1 border border-gray-300 rounded"
-                          >
-                            <option value="">Select Relation</option>
-                            <option value="Father">Father</option>
-                            <option value="Mother">Mother</option>
-                            <option value="Sibling">Sibling</option>
-                            <option value="Husband">Husband</option>
-                            <option value="Wife">Wife</option>
-                            <option value="Child">Child</option>
-                          </select>
-                        </td>
-                      <td className="shadow-inner p-4 border-0">
-                        <input
-                          type="number"
-                          name="nic"
-                          value={member.occupation}
-                          onChange={(event) => handleInputChange(index, event)}
-                          className="w-full px-2 py-1 border border-gray-300 rounded"
-                          placeholder="NIC Number"
-                        />
-                      </td>
-                      <td className="shadow-inner p-4 border-0">
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveMember(index)}
-                          className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-                        >
-                          Remove
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <button
-                type="button"
-                onClick={handleAddMember}
-                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-              >
-                Add Member
-              </button>
-            </div>
+              <FamilyDetails />
             )}
             
 
@@ -314,7 +200,7 @@ const MemberStaff = () => {
               </div>
               <div className="mb-4">
                   <input
-                    className="w-full shadow-inner p-4 border-0"
+                    className={`${formStyles.formTextInput}`}
                     type="text"
                     name="name"
                     placeholder="Auto filled"
