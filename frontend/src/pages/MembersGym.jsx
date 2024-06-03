@@ -6,7 +6,6 @@ import MemberPostG from "../components/Forms/MemberPostG";
 const MembersGym = () => {
   const [openTab, setOpenTab] = useState(1);
   const [selectedForm, setSelectedForm] = useState("");
-
   return (
     <div>
       <section>
