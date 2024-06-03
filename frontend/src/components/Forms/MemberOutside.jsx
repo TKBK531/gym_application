@@ -147,7 +147,7 @@ const MemberOutside = () => {
               <FamilyDetails />
             )}
 
-            <div className="py-5 md:flex mb-8">
+            <div className="py-5 md:flex">
               <div className="md:w-1/3">
                 <legend className="tracking-wide text-sm">Total Price</legend>
               </div>
@@ -163,28 +163,28 @@ const MemberOutside = () => {
 
             <div className="py-4 md:flex mb-6">
               <div className="md:w-1/3">
-                <legend className="tracking-wide text-sm">Cover Image</legend>
+                <legend className="tracking-wide text-sm">Add Your Image</legend>
               </div>
               <div className="md:flex-1 px-3 text-center">
                 <div className="button bg-gold hover:bg-gold-dark text-cream mx-auto cursor-pointer relative">
                   <input
-                    className="opacity-0 absolute pin-x pin-y"
+                    className={`${formStyles.formTextInput}`}
                     type="file"
-                    name="cover_image"
+                    name="addImage"
                   />
-                  Add Your Image
                 </div>
               </div>
             </div>
 
             <div className="md:flex mb-6 border border-t-1 border-b-0 border-x-0 border-cream-dark">
               <div className="md:flex-1 px-3 text-center md:text-right">
-                <input type="hidden" name="sponsor" value="0" />
-                <input
-                  className="button text-cream-lighter bg-brick hover:bg-brick-dark"
+              <button
                   type="submit"
-                  value="Submit"
-                />
+                  onClick=""
+                  className="text-lg w-1/5 shadow appearance-none rounded-xl py-3 px-3 font-bold bg-yellow-400 text-black hover:bg-yellow-500"
+                >
+                  Submit
+                </button>
               </div>
             </div>
           </form>

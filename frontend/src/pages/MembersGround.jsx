@@ -81,8 +81,8 @@ const MembersGround = () => {
                   {openTab === 2 && (
                     <div className="py-3 justify-center rounded-xl border border-white bg-white shadow-md shadow-black/5 saturate-200">
                       <div className="p-4">
-                        <div className="mb-4 flex">
-                          <label className="mb-2 text-md font-medium text-gray-700 pr-2">
+                        <div className="mb-4 flex flex-row items-center">
+                          <label className="p-2 text-md font-medium text-gray-700 pr-2">
                             I am a
                           </label>
                           <select
@@ -90,7 +90,7 @@ const MembersGround = () => {
                             name="form"
                             value={selectedForm}
                             onChange={(e) => setSelectedForm(e.target.value)}
-                            className="w-1/4 px-2 pb-2 shadow appearance-none text-md text-gray-700 font-medium border leading-tight focus:outline-none focus:ring-2 focus:ring-secondary-golden focus:border-transparent rounded-md"
+                            className="w-1/4 px-2 p-2 shadow appearance-none text-md text-gray-700 font-medium border leading-tight focus:outline-none focus:ring-2 focus:ring-secondary-golden focus:border-transparent rounded-md"
                           >
                             <option value="">--Select Type--</option>
                             <option value="outsider">Outsider.</option>
