@@ -4,18 +4,18 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 class Province(models.Model):
-    lable = models.CharField(max_length=50)
+    label = models.CharField(max_length=50)
 
     def __str__(self):
-        return self.lable
+        return self.label
 
 
 class City(models.Model):
-    lable = models.CharField(max_length=50)
+    label = models.CharField(max_length=50)
     province = models.ForeignKey(Province, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.lable
+        return self.label
 
 
 class UserType(models.Model):

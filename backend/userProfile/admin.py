@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import UserProfile, UserType
+from .models import UserProfile, UserType, Province, City
 
 
 # Register UserProfile model
@@ -11,7 +11,7 @@ class UserProfileAdmin(admin.ModelAdmin):
         "user__username",
         "user__email",
         "contact",
-    )  # Search by related user and contact
+    )
 
 
 @admin.register(UserType)
@@ -21,3 +21,22 @@ class UserTypeAdmin(admin.ModelAdmin):
         "name",
     )
     search_fields = ("name",)
+
+
+@admin.register(Province)
+class ProvinceAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "label",
+    )
+    search_fields = ("label",)
+
+
+@admin.register(City)
+class CityAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "province",
+        "label",
+    )
+    search_fields = ("label",)

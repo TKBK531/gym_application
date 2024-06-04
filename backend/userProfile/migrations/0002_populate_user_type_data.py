@@ -3,6 +3,8 @@ from userProfile.models import UserType
 
 
 def populate_usertype(apps, schema_editor):
+    UserType = apps.get_model("userProfile", "UserType")
+
     UserType.objects.bulk_create(
         [
             UserType(name="internal"),
@@ -14,8 +16,8 @@ def populate_usertype(apps, schema_editor):
 
 
 def reverse_populate_usertype(apps, schema_editor):
-    usertype_model = apps.get_model("userProfile", "usertype")
-    usertype_model.objects.all().delete()
+    UserType = apps.get_model("userProfile", "UserType")
+    UserType.objects.all().delete()
 
 
 class Migration(migrations.Migration):
