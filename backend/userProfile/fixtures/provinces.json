@@ -1,0 +1,65 @@
+[
+    {
+        "model": "userProfile.province",
+        "pk": 1,
+        "fields": {
+            "lable": "Central"
+        }
+    },
+    {
+        "model": "userProfile.province",
+        "pk": 2,
+        "fields": {
+            "lable": "Eastern"
+        }
+    },
+    {
+        "model": "userProfile.province",
+        "pk": 3,
+        "fields": {
+            "lable": "North Central"
+        }
+    },
+    {
+        "model": "userProfile.province",
+        "pk": 4,
+        "fields": {
+            "lable": "Northern"
+        }
+    },
+    {
+        "model": "userProfile.province",
+        "pk": 5,
+        "fields": {
+            "lable": "North Western"
+        }
+    },
+    {
+        "model": "userProfile.province",
+        "pk": 6,
+        "fields": {
+            "lable": "Sabaragamuwa"
+        }
+    },
+    {
+        "model": "userProfile.province",
+        "pk": 7,
+        "fields": {
+            "lable": "Southern"
+        }
+    },
+    {
+        "model": "userProfile.province",
+        "pk": 8,
+        "fields": {
+            "lable": "Uva"
+        }
+    },
+    {
+        "model": "userProfile.province",
+        "pk": 9,
+        "fields": {
+            "lable": "Western"
+        }
+    }
+]

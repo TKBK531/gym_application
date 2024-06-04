@@ -1,0 +1,202 @@
+[
+    {
+        "model": "userProfile.city",
+        "pk": 1,
+        "fields": {
+            "lable": "Kandy",
+            "province": 1
+        }
+    },
+    {
+        "model": "userProfile.city",
+        "pk": 2,
+        "fields": {
+            "lable": "Matale",
+            "province": 1
+        }
+    },
+    {
+        "model": "userProfile.city",
+        "pk": 3,
+        "fields": {
+            "lable": "Nuwara Eliya",
+            "province": 1
+        }
+    },
+    {
+        "model": "userProfile.city",
+        "pk": 4,
+        "fields": {
+            "lable": "Trincomalee",
+            "province": 2
+        }
+    },
+    {
+        "model": "userProfile.city",
+        "pk": 5,
+        "fields": {
+            "lable": "Batticaloa",
+            "province": 2
+        }
+    },
+    {
+        "model": "userProfile.city",
+        "pk": 6,
+        "fields": {
+            "lable": "Ampara",
+            "province": 2
+        }
+    },
+    {
+        "model": "userProfile.city",
+        "pk": 7,
+        "fields": {
+            "lable": "Anuradhapura",
+            "province": 3
+        }
+    },
+    {
+        "model": "userProfile.city",
+        "pk": 8,
+        "fields": {
+            "lable": "Polonnaruwa",
+            "province": 3
+        }
+    },
+    {
+        "model": "userProfile.city",
+        "pk": 9,
+        "fields": {
+            "lable": "Jaffna",
+            "province": 4
+        }
+    },
+    {
+        "model": "userProfile.city",
+        "pk": 10,
+        "fields": {
+            "lable": "Kilinochchi",
+            "province": 4
+        }
+    },
+    {
+        "model": "userProfile.city",
+        "pk": 11,
+        "fields": {
+            "lable": "Mannar",
+            "province": 4
+        }
+    },
+    {
+        "model": "userProfile.city",
+        "pk": 12,
+        "fields": {
+            "lable": "Vavuniya",
+            "province": 4
+        }
+    },
+    {
+        "model": "userProfile.city",
+        "pk": 13,
+        "fields": {
+            "lable": "Mullaitivu",
+            "province": 4
+        }
+    },
+    {
+        "model": "userProfile.city",
+        "pk": 14,
+        "fields": {
+            "lable": "Kurunegala",
+            "province": 5
+        }
+    },
+    {
+        "model": "userProfile.city",
+        "pk": 15,
+        "fields": {
+            "lable": "Puttalam",
+            "province": 5
+        }
+    },
+    {
+        "model": "userProfile.city",
+        "pk": 16,
+        "fields": {
+            "lable": "Ratnapura",
+            "province": 6
+        }
+    },
+    {
+        "model": "userProfile.city",
+        "pk": 17,
+        "fields": {
+            "lable": "Kegalle",
+            "province": 6
+        }
+    },
+    {
+        "model": "userProfile.city",
+        "pk": 18,
+        "fields": {
+            "lable": "Galle",
+            "province": 7
+        }
+    },
+    {
+        "model": "userProfile.city",
+        "pk": 19,
+        "fields": {
+            "lable": "Matara",
+            "province": 7
+        }
+    },
+    {
+        "model": "userProfile.city",
+        "pk": 20,
+        "fields": {
+            "lable": "Hambantota",
+            "province": 7
+        }
+    },
+    {
+        "model": "userProfile.city",
+        "pk": 21,
+        "fields": {
+            "lable": "Badulla",
+            "province": 8
+        }
+    },
+    {
+        "model": "userProfile.city",
+        "pk": 22,
+        "fields": {
+            "lable": "Monaragala",
+            "province": 8
+        }
+    },
+    {
+        "model": "userProfile.city",
+        "pk": 23,
+        "fields": {
+            "lable": "Colombo",
+            "province": 9
+        }
+    },
+    {
+        "model": "userProfile.city",
+        "pk": 24,
+        "fields": {
+            "lable": "Gampaha",
+            "province": 9
+        }
+    },
+    {
+        "model": "userProfile.city",
+        "pk": 25,
+        "fields": {
+            "lable": "Kalutara",
+            "province": 9
+        }
+    }
+]
