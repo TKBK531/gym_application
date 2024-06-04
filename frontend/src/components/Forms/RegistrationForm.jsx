@@ -9,6 +9,7 @@ import PrimaryButton from "../Buttons/PrimaryButton";
 import GoogleLoginButton from "../Buttons/GoogleLoginButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { cities } from "../../constants/index";
 
 const initialValues = {
   firstName: "",
@@ -18,6 +19,8 @@ const initialValues = {
   password: "",
   confirmPassword: "",
   userType: 2,
+  nationalId: "",
+  city: "",
 };
 
 const validationSchema = Yup.object({
@@ -40,6 +43,10 @@ const validationSchema = Yup.object({
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("password")], "Passwords must match")
     .required("This field is required"),
+  nationalId: Yup.string()
+    .required("This field is required")
+    .matches(/^(\d{9}[Vv]|\d{12})$/, "Not a Valid ID Number"),
+  city: Yup.string().required("This field is required"),
 });
 
 const RegistrationForm = () => {
@@ -61,6 +68,8 @@ const RegistrationForm = () => {
             "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png",
           contact: values.contact,
           user_type: 2,
+          national_id: values.nationalId,
+          city: values.city,
         },
       };
 
@@ -176,8 +185,8 @@ const RegistrationForm = () => {
               </div>
             </div>
 
+            {/* Email and UserType (full width) */}
             <div className="flex flex-col md:flex-row md:space-x-4">
-              {/* Email and Contact (full width) */}
               <div className="w-1/2">
                 <label htmlFor="email" className={formStyles.formLabel}>
                   Email address
@@ -213,6 +222,57 @@ const RegistrationForm = () => {
                 />
               </div>
             </div>
+
+            {/* National ID and City */}
+            <div className="flex flex-col md:flex-row md:space-x-4">
+              <div className="w-1/2">
+                <label htmlFor="nationalId" className={formStyles.formLabel}>
+                  National ID Number
+                </label>
+                <Field
+                  type="text"
+                  id="nationalId"
+                  name="nationalId"
+                  className={`${formStyles.formTextInput} ${
+                    touched.nationalId && errors.nationalId
+                      ? "border-red-500"
+                      : ""
+                  }`}
+                />
+                <ErrorMessage
+                  name="nationalId"
+                  component="div"
+                  className={`${formStyles.formError}`}
+                />
+              </div>
+
+              <div className="w-1/2">
+                <label htmlFor="city" className={formStyles.formLabel}>
+                  City
+                </label>
+                <Field
+                  as="select"
+                  id="city"
+                  name="city"
+                  className={`${formStyles.formTextInput} ${
+                    touched.city && errors.city ? "border-red-500" : ""
+                  }`}
+                >
+                  <option value="" label="Select city" />
+                  {cities.map((city) => (
+                    <option key={city.pk} value={city.pk}>
+                      {city.label}
+                    </option>
+                  ))}
+                </Field>
+                <ErrorMessage
+                  name="city"
+                  component="div"
+                  className={`${formStyles.formError}`}
+                />
+              </div>
+            </div>
+
             <div>
               <label htmlFor="contact" className={formStyles.formLabel}>
                 Contact Number
@@ -232,6 +292,7 @@ const RegistrationForm = () => {
               />
             </div>
 
+            {/* Password and Confirm Password */}
             <div className="relative">
               <label htmlFor="password" className={formStyles.formLabel}>
                 Password
