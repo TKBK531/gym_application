@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 
 const LeftBar = ({ profileData }) => {
   return (
-    <div className=" w-[290px] bg-info-dark-blue h-full">
+    <div className=" w-[290px] bg-info-dark-blue h-full fixed">
       <div className="items-center text-center py-10">
         <div className="flex justify-center">
           {profileData && <AvatarOnline image={profileData.profile_picture} />}
@@ -35,7 +35,7 @@ const LeftBar = ({ profileData }) => {
 };
 
 LeftBar.propTypes = {
-  profileData: PropTypes.object.isRequired,
+  profileData: PropTypes.object,
 };
 
 export default LeftBar;

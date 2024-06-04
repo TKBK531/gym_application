@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect, JsonResponse
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import UserSerializer, UserProfileSerializer
+from .serializers import UserDataSerializer, UserSerializer, UserProfileSerializer
 from .models import UserProfile
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.exceptions import NotFound
@@ -138,17 +138,17 @@ class UserProfileDetailView(generics.RetrieveAPIView):
                 "id": instance.user.id,
                 "first_name": instance.user.first_name,
                 "last_name": instance.user.last_name,
-                "username": instance.user.username,
                 "email": instance.user.email,
+                "username": instance.user.username,
                 "national_id": (
                     instance.national_id if instance.national_id else "Not Provided"
                 ),
                 "profile_picture": instance.profile_picture,
                 "contact": instance.contact if instance.contact else "Not Provided",
                 "user_type": instance.user_type.name,
-                "city": instance.city.label if instance.city else "Not Provided",
+                "city": instance.city.id if instance.city else "Not Provided",
                 "province": (
-                    instance.city.province.label if instance.city else "Not Provided"
+                    instance.city.province.id if instance.city else "Not Provided"
                 ),
             }
         }
@@ -163,24 +163,41 @@ class UserProfileDetailView(generics.RetrieveAPIView):
         return JsonResponse(response_data, status=status.HTTP_200_OK)
 
 
-class UserProfileView(generics.RetrieveAPIView):
-    def get(self, request, id):
+class UserProfileUpdateView(generics.UpdateAPIView):
+    serializer_class = UserDataSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        user = self.request.user
         try:
-            user = User.objects.get(id=id)
-        except User.DoesNotExist:
+            profile = UserProfile.objects.get(user=user)
+            return profile
+        except UserProfile.DoesNotExist:
+            raise NotFound("User Profile not found")
+
+    def update(self, request, *args, **kwargs):
+        try:
+            partial = kwargs.pop("partial", False)
+            instance = self.get_object()
+            serializer = self.get_serializer(
+                instance, data=request.data, partial=partial
+            )
+            serializer.is_valid(raise_exception=True)
+            self.perform_update(serializer)
+
+            return JsonResponse(
+                {
+                    "status": "success",
+                    "message": "User profile updated successfully.",
+                    "data": serializer.data,
+                },
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
             return JsonResponse(
                 {
                     "status": "error",
-                    "message": "User not found.",
-                    "data": None,
+                    "message": str(e),
                 },
-                status=status.HTTP_404_NOT_FOUND,
+                status=status.HTTP_400_BAD_REQUEST,
             )
-
-        serializer = UserProfileSerializer(user)
-        response_data = {
-            "status": "success",
-            "message": "User profile retrieved successfully. Yaahoo",
-            "data": serializer.data,
-        }
-        return Response(response_data)

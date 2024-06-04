@@ -32,11 +32,28 @@ class UserProfileSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user_type_name = validated_data.pop("user_type")
         user_type = UserType.objects.get(name=user_type_name)
+
         city_lable = validated_data.pop("city")
         city = City.objects.get(label=city_lable)
+
         validated_data["user_type"] = user_type
         validated_data["city"] = city
+
         return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        user_type_name = validated_data.pop("user_type", None)
+        city_label = validated_data.pop("city", None)
+
+        if user_type_name:
+            user_type = UserType.objects.get(name=user_type_name)
+            validated_data["user_type"] = user_type
+
+        if city_label:
+            city = City.objects.get(label=city_label)
+            validated_data["city"] = city
+
+        return super().update(instance, validated_data)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -73,3 +90,71 @@ class UserSerializer(serializers.ModelSerializer):
             UserProfile.objects.create(user=user, **profile_data)
 
         return user
+
+    def update(self, instance, validated_data):
+        profile_data = validated_data.pop("profile", None)
+        user = super().update(instance, validated_data)
+
+        if profile_data:
+            profile_serializer = self.fields["profile"]
+            profile_instance = instance.profile
+
+            if profile_instance:
+                profile_serializer.update(profile_instance, profile_data)
+            else:
+                raise serializers.ValidationError("User profile does not exist.")
+
+        return user
+
+
+class UserDataSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source="pk", read_only=True)
+    first_name = serializers.CharField(source="user.first_name")
+    last_name = serializers.CharField(source="user.last_name")
+    email = serializers.EmailField(source="user.email")
+    username = serializers.CharField(source="user.username")
+
+    class Meta:
+        model = UserProfile
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "username",
+            "email",
+            "national_id",
+            "contact",
+            "profile_picture",
+            # "user_type",
+            "city",
+        ]
+        extra_kwargs = {
+            "profile_picture": {
+                "required": False,
+                "allow_null": True,
+                "default": "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png",
+            },
+        }
+
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop("user", {})
+        user = instance.user
+
+        user.first_name = user_data.get("first_name", user.first_name)
+        user.last_name = user_data.get("last_name", user.last_name)
+        user.email = user_data.get("email", user.email)
+        user.username = user_data.get("email", user.username)
+        user.save()
+
+        user_type_name = validated_data.pop("user_type", None)
+        city_label = validated_data.pop("city", None)
+
+        if user_type_name:
+            user_type = UserType.objects.get(name=user_type_name)
+            validated_data["user_type"] = user_type
+
+        if city_label:
+            city = City.objects.get(label=city_label)
+            validated_data["city"] = city
+
+        return super().update(instance, validated_data)

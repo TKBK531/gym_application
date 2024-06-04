@@ -26,7 +26,7 @@ const PageLink = ({ name, icon, href }) => {
 
 PageLink.propTypes = {
   name: PropTypes.string.isRequired,
-  icon: PropTypes.string.isRequired,
+  icon: PropTypes.object.isRequired,
   href: PropTypes.string.isRequired,
 };
 
