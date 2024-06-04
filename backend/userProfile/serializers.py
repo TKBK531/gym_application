@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import UserProfile, UserType
+from .models import City, UserProfile, UserType
 
 
 class AuthSerializer(serializers.Serializer):
@@ -13,7 +13,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ["id", "contact", "profile_picture", "user_type"]  # Include user_type
+        fields = ["id", "contact", "profile_picture", "user_type", "city"]
         extra_kwargs = {
             "profile_picture": {
                 "required": False,
@@ -25,7 +25,10 @@ class UserProfileSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user_type_name = validated_data.pop("user_type")
         user_type = UserType.objects.get(name=user_type_name)
+        city_lable = validated_data.pop("city")
+        city = City.objects.get(label=city_lable)
         validated_data["user_type"] = user_type
+        validated_data["city"] = city
         return super().create(validated_data)
 
 
@@ -50,14 +53,13 @@ class UserSerializer(serializers.ModelSerializer):
         }
 
     def validate_email(self, value):
-        # Check for unique email (case-insensitive)
         if User.objects.filter(email__iexact=value).exists():
             raise serializers.ValidationError("A user with that email already exists.")
         return value
 
     def create(self, validated_data):
         profile_data = validated_data.pop("profile", None)
-        validated_data["username"] = validated_data["email"]  # Set email as username
+        validated_data["username"] = validated_data["email"]
         user = User.objects.create_user(**validated_data)
 
         if profile_data:

@@ -5,7 +5,7 @@ from .models import UserProfile, UserType, Province, City
 # Register UserProfile model
 @admin.register(UserProfile)  # Using decorator for cleaner registration
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "contact", "user_type")
+    list_display = ("id", "user", "contact", "user_type", "city")
     list_filter = ("user_type",)  # Filter by user_type
     search_fields = (
         "user__username",
