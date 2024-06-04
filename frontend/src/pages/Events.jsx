@@ -24,6 +24,8 @@ const Events = () => (
         ))}
 
       </div>
+
+      <div>Calender</div>
       
     </div>
   </div>
