@@ -13,7 +13,14 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ["id", "contact", "profile_picture", "user_type", "city"]
+        fields = [
+            "id",
+            "national_id",
+            "contact",
+            "profile_picture",
+            "user_type",
+            "city",
+        ]
         extra_kwargs = {
             "profile_picture": {
                 "required": False,

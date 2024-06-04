@@ -27,6 +27,7 @@ class UserType(models.Model):
 
 class UserProfile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    national_id = models.CharField(max_length=15, null=False, blank=False)
     contact = models.CharField(max_length=10)
     profile_picture = models.TextField(null=True, blank=True)
     user_type = models.ForeignKey(UserType, on_delete=models.CASCADE, default=1)
