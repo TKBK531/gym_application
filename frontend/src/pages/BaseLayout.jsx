@@ -18,7 +18,7 @@ const BaseLayout = () => {
         <div className="w-full bg-gray-200">
           <NavBar />
         </div>
-        <div className="flex bg-gray-300 pt-12 px-8">
+        <div className="bg-slate-100 flex py-14 px-7">
           <Outlet />
         </div>
       </div>

@@ -11,8 +11,7 @@ export const formStyles = {
 };
 
 export const profilePageStyles = {
-  dataField:
-    "font-medium border-transparent rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-secondary-golden focus:border-transparent",
+  dataField: "font-medium border border-transparent  rounded p-2 w-full",
   dataFieldEditMode:
-    "font-medium border-gray-500 rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-secondary-golden focus:border-transparent",
+    "font-medium border border-gray-300 rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-secondary-golden ",
 };
