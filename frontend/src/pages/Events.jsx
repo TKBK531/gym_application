@@ -2,6 +2,7 @@ import CountingCard from "../components/CountingCard";
 import React from "react";
 import countingCards, {categoryCards} from "../constants/index";
 import CategoryCard from "../components/CategoryCard";
+import EventCalenderComponent from "../components/EventCalenderComponent";
 
 const Events = () => (
   <div>
@@ -25,7 +26,7 @@ const Events = () => (
 
       </div>
 
-      <div>Calender</div>
+      <div>EventCalenderComponent</div>
       
     </div>
   </div>
