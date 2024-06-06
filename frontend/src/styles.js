@@ -9,3 +9,9 @@ export const formStyles = {
     "bg-primary-red text-white py-3 rounded-md transition-colors duration-300 ease-in-out hover:bg-primary-shade-2 w-full text-sub mb-3",
   formError: "text-red-500 text-xs mt-1",
 };
+
+export const profilePageStyles = {
+  dataField: "font-medium border border-transparent  rounded p-2 w-full",
+  dataFieldEditMode:
+    "font-medium border border-gray-300 rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-secondary-golden ",
+};

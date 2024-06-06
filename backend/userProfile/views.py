@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect, JsonResponse
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import UserSerializer, UserProfileSerializer
+from .serializers import UserDataSerializer, UserSerializer, UserProfileSerializer
 from .models import UserProfile
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.exceptions import NotFound
@@ -43,85 +43,34 @@ class UserCreateView(generics.CreateAPIView):
         return Response(response_data, status=status.HTTP_201_CREATED, headers=headers)
 
 
-class UserDetailView(generics.RetrieveAPIView):
-    permission_classes = [IsAuthenticated]
-    serializer_class = UserSerializer
+class GoogleLoginApi(APIView):
+    permission_classes = [AllowAny]
 
-    def get_object(self):
-        user_id = self.kwargs["pk"]
+    def get(self, request, *args, **kwargs):
+        auth_serializer = AuthSerializer(data=request.GET)
+        auth_serializer.is_valid(raise_exception=True)
+
+        validated_data = auth_serializer.validated_data
+
         try:
-            user = User.objects.get(pk=user_id)
-            return user
-        except User.DoesNotExist:
-            return None
+            user_data = get_user_data(validated_data)
+        except Exception as e:
+            params = urlencode({"error": e.message})
+            redirect_url = f"{settings.BASE_APP_URL}/login?{params}"
 
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
+            return redirect(redirect_url)
 
-        if instance is None:
-            return Response(
-                {
-                    "status": "error",
-                    "message": "User not found",
-                },
-                status=status.HTTP_404_NOT_FOUND,
-            )
+        user = User.objects.get(email=user_data["email"])
+        print(f"User: {user}")
+        login(request, user)
 
-        serializer = self.get_serializer(instance)
-        profile = UserProfile.objects.get(user=instance)
-        profile_serializer = UserProfileSerializer(profile)
+        refresh = RefreshToken.for_user(user)
+        access_token = str(refresh.access_token)
+        refresh_token = str(refresh)
 
-        response_data = {
-            "status": "success",
-            "data": {
-                "id": serializer.data["id"],
-                "first_name": serializer.data["first_name"],
-                "last_name": serializer.data["last_name"],
-                "username": serializer.data["username"],
-                "email": serializer.data["email"],
-                "profile": profile_serializer.data,
-            },
-        }
+        redirect_url = f"{settings.BASE_APP_URL}/loading?access_token={access_token}&refresh_token={refresh_token}"
 
-        return Response(response_data)
-
-
-class UserProfileDetailView(generics.RetrieveAPIView):
-    serializer_class = UserProfileSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_object(self):
-        user = self.request.user
-        try:
-            profile = UserProfile.objects.get(user=user)
-            return profile
-        except UserProfile.DoesNotExist:
-            raise NotFound("User Profile not found")
-
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        user_data = {
-            "user": {
-                "id": instance.user.id,
-                "first_name": instance.user.first_name,
-                "last_name": instance.user.last_name,
-                "username": instance.user.username,
-                "email": instance.user.email,
-                "profile_picture": instance.profile_picture,
-                "user_type": instance.user_type.name,
-            }
-        }
-
-        # Combine profile and user data
-        response_data = {
-            "status": "success",
-            "message": "User profile retrieved successfully.",
-            "data": user_data,
-        }
-        # print(response_data)
-
-        return Response(response_data)
+        return redirect(redirect_url)
 
 
 class UserLoginView(generics.GenericAPIView):
@@ -169,77 +118,86 @@ class UserLoginView(generics.GenericAPIView):
             )
 
 
-class UserProfileEditView(generics.UpdateAPIView):
-    serializer_class = UserSerializer
+class UserProfileDetailView(generics.RetrieveAPIView):
+    serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        return self.request.user
+        user = self.request.user
+        try:
+            profile = UserProfile.objects.get(user=user)
+            return profile
+        except UserProfile.DoesNotExist:
+            raise NotFound("User Profile not found")
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        user_data = {
+            "user": {
+                "id": instance.user.id,
+                "first_name": instance.user.first_name,
+                "last_name": instance.user.last_name,
+                "email": instance.user.email,
+                "username": instance.user.username,
+                "national_id": (
+                    instance.national_id if instance.national_id else "Not Provided"
+                ),
+                "profile_picture": instance.profile_picture,
+                "contact": instance.contact if instance.contact else "Not Provided",
+                "user_type": instance.user_type.name,
+                "city": instance.city.id if instance.city else "Not Provided",
+                "province": (
+                    instance.city.province.id if instance.city else "Not Provided"
+                ),
+            }
+        }
+
+        response_data = {
+            "status": "success",
+            "message": "User profile retrieved successfully.",
+            "data": user_data,
+        }
+        # print(response_data)
+
+        return JsonResponse(response_data, status=status.HTTP_200_OK)
+
+
+class UserProfileUpdateView(generics.UpdateAPIView):
+    serializer_class = UserDataSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        user = self.request.user
+        try:
+            profile = UserProfile.objects.get(user=user)
+            return profile
+        except UserProfile.DoesNotExist:
+            raise NotFound("User Profile not found")
 
     def update(self, request, *args, **kwargs):
-        user_instance = self.get_object()
-        profile_instance = UserProfile.objects.get(user=user_instance)
-
-        user_serializer = UserSerializer(
-            instance=user_instance, data=request.data, partial=True
-        )
-        user_serializer.is_valid(raise_exception=True)
-        user_serializer.save()
-
-        profile_serializer = UserProfileSerializer(
-            instance=profile_instance, data=request.data, partial=True
-        )
-        profile_serializer.is_valid(raise_exception=True)
-        profile_serializer.save()
-
-        response_data = {
-            "status": "success",
-            "message": "User profile updated successfully.",
-            "data": {
-                **user_serializer.data,
-                **profile_serializer.data,
-            },
-        }
-        return Response(response_data, status=status.HTTP_200_OK)
-
-
-class GoogleLoginApi(APIView):
-    permission_classes = [AllowAny]
-
-    def get(self, request, *args, **kwargs):
-        auth_serializer = AuthSerializer(data=request.GET)
-        auth_serializer.is_valid(raise_exception=True)
-
-        validated_data = auth_serializer.validated_data
-
         try:
-            user_data = get_user_data(validated_data)
+            partial = kwargs.pop("partial", False)
+            instance = self.get_object()
+            serializer = self.get_serializer(
+                instance, data=request.data, partial=partial
+            )
+            serializer.is_valid(raise_exception=True)
+            self.perform_update(serializer)
+
+            return JsonResponse(
+                {
+                    "status": "success",
+                    "message": "User profile updated successfully.",
+                    "data": serializer.data,
+                },
+                status=status.HTTP_200_OK,
+            )
         except Exception as e:
-            params = urlencode({"error": e.message})
-            redirect_url = f"{settings.BASE_APP_URL}/login?{params}"
-
-            return redirect(redirect_url)
-
-        user = User.objects.get(email=user_data["email"])
-        print(f"User: {user}")
-        login(request, user)
-
-        # Generate tokens for the user
-        refresh = RefreshToken.for_user(user)
-        access_token = str(refresh.access_token)
-        refresh_token = str(refresh)
-
-        redirect_url = f"{settings.BASE_APP_URL}/loading?access_token={access_token}&refresh_token={refresh_token}"
-
-        response_data = {
-            "status": "success",
-            "message": "User logged in successfully",
-            "data": user_data,
-            "auth_tokens": {
-                "refresh": refresh_token,
-                "access": access_token,
-            },
-            "redirect_url": f"{settings.BASE_APP_URL}/dashboard",
-        }
-
-        return redirect(redirect_url)
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": str(e),
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
