@@ -16,6 +16,7 @@ function Profile() {
 
   useEffect(() => {
     fetchProfileData();
+    console.log("Edited data:", editedData);
   }, []);
 
   useEffect(() => {
@@ -31,15 +32,21 @@ function Profile() {
   const fetchProfileData = async () => {
     try {
       const response = await api.get("/user/profile/");
+      // console.log("Profile data:", response.data);
       if (response.data.status === "success") {
         const userData = response.data.data.user;
+        console.log("User data:", userData.city);
         localStorage.setItem("userData", JSON.stringify(userData));
 
         // eslint-disable-next-line no-unused-vars
         const { user_type, province, ...restOfUserData } = userData;
+        // console.log("User data:", userData);
         setProfile_type(user_type);
         setProfileData(restOfUserData);
+        console.log("Profile data:", profileData);
         setEditedData(restOfUserData);
+        console.log("Profile data:", editedData);
+        // console.log("city", editedData.city);
       }
     } catch (error) {
       console.error("Error fetching profile data:", error.message);
@@ -59,6 +66,7 @@ function Profile() {
 
   const handleSaveClick = async () => {
     try {
+      console.log("Edited data:", editedData);
       const response = await api.put("/user/profile/update/", editedData);
       if (response.data.status === "success") {
         fetchProfileData();
@@ -266,8 +274,8 @@ function Profile() {
               </select>
             ) : (
               <p className={`${profilePageStyles.dataField}`}>
-                {cities.find((city) => city.pk === editedData.city)?.province ||
-                  "Not Provided"}
+                {cities.find((city) => city.pk === profileData.city)
+                  ?.province || "Not Provided"}
               </p>
             )}
           </div>
