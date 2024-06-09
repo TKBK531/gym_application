@@ -274,8 +274,7 @@ function Profile() {
               </select>
             ) : (
               <p className={`${profilePageStyles.dataField}`}>
-                {cities.find((city) => city.pk === profileData.city)
-                  ?.province || "Not Provided"}
+                {cities.find((city) => city.pk === profileData.city)?.province}
               </p>
             )}
           </div>
