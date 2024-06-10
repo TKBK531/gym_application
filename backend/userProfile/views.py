@@ -275,7 +275,7 @@ class UserCreateView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        print(f"Serializer: {serializer}")
+        # print(f"Serializer: {serializer}")
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
@@ -394,9 +394,9 @@ class UserProfileDetailView(generics.RetrieveAPIView):
                 "profile_picture": instance.profile_picture,
                 "contact": instance.contact if instance.contact else "Not Provided",
                 "user_type": instance.user_type.name,
-                "city": instance.city.label if instance.city else "Not Provided",
+                "city": instance.city.id if instance.city else "Not Provided",
                 "province": (
-                    instance.city.province.label if instance.city else "Not Provided"
+                    instance.city.province.id if instance.city else "Not Provided"
                 ),
             }
         }
@@ -406,7 +406,7 @@ class UserProfileDetailView(generics.RetrieveAPIView):
             "message": "User profile retrieved successfully.",
             "data": user_data,
         }
-        print(response_data)
+        # print(response_data)
         return JsonResponse(response_data, status=status.HTTP_200_OK)
 
 
