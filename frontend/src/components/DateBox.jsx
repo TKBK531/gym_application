@@ -5,16 +5,16 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import card1 from "../assets/Card1.jpg";
+
 
 export default function DateBox({ count, test,image}) {
   const theme = useTheme();
 
   return (
-    <Card sx={{ display: 'flex', width: 500, height:100,marginLeft : 0}}>
+    <Card sx={{ display: 'flex', width: 400, height:100,marginLeft : 0, padding:2}}>
       <CardMedia
         component="img"
-        sx={{ width:20, height: 80, minWidth:80, objectFit: 'cover', marginLeft: 2 , mt:1 }} 
+        sx={{ width:10, height: 50, minWidth:50, objectFit: 'cover', marginLeft: 2 , mt:1 }} 
         image= {image}
         alt="Live from space album cover"
       />
