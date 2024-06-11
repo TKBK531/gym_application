@@ -11,19 +11,19 @@ export default function DateBox({ count, test,image}) {
   const theme = useTheme();
 
   return (
-    <Card sx={{ display: 'flex', width: 400, height:100,marginLeft : 0, padding:2}}>
+    <Card sx={{ display: 'flex', width: 400, height:80,marginLeft : 0, padding:2}}>
       <CardMedia
         component="img"
-        sx={{ width:10, height: 50, minWidth:50, objectFit: 'cover', marginLeft: 2 , mt:1 }} 
+        sx={{ width:10, height: 50, minWidth:50, objectFit: 'cover', marginLeft: 4}} 
         image= {image}
         alt="Live from space album cover"
       />
       <Box sx={{ display: 'flex', flexDirection: 'column', ml:2}}>
         <CardContent sx={{ textAlign: 'center', padding: '8px 16px' }}>
-          <Typography component="div" variant="h5">
+          <Typography component="div" variant="h7">
             {count}
           </Typography>
-          <Typography variant="subtitle1" color="text.secondary" component="div">
+          <Typography variant="subtitle2" color="text.secondary" component="div">
             {test}
           </Typography>
         </CardContent>
