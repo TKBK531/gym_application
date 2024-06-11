@@ -16,9 +16,7 @@ export default function MediaCard({categoryName,image}) {
         title="green iguana"
       />
       <CardContent sx={{ paddingBottom: 0 }}>
-        <Typography gutterBottom variant="h5" component="div">
-          {categoryName}
-        </Typography>
+      {categoryName}
 
       </CardContent>
       <CardActions sx={{ paddingTop: 0 }}>
