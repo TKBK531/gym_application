@@ -14,7 +14,7 @@ import Card7 from "../assets/Card7.jpg";
 import Card8 from "../assets/Card8.jpg";
 import Card1 from "../assets/Card1.jpg";
 
-const countingCards = [
+export const countingCards = [
   {
     id: "1",
     count: "0",
@@ -22,7 +22,7 @@ const countingCards = [
   },
   {
     id: "2",
-    count:"0", 
+    count: "0",
     test: "On going",
   },
   {
@@ -30,11 +30,9 @@ const countingCards = [
     count: "0",
     test: "Upcoming",
   },
-
 ];
 
-
-const categoryCards = [
+export const categoryCards = [
   {
     id: "1",
     categoryName: "Sports",
@@ -52,7 +50,7 @@ const categoryCards = [
   },
 ];
 
-const dateBox = [
+export const dateBox = [
   {
     id: "1",
     count: "On Going Events",
@@ -110,7 +108,5 @@ export const cities = [
   { pk: 24, label: "Gampaha", province: "Western" },
   { pk: 25, label: "Kalutara", province: "Western" },
 ];
-
-
 
 export default pageLinks;
