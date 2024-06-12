@@ -8,6 +8,13 @@ import {
   faUser,
   faSignOut, // Profile
 } from "@fortawesome/free-solid-svg-icons";
+import Card5 from "../assets/Card5.jpg";
+import Card6 from "../assets/Card6.jpg";
+import Card7 from "../assets/Card7.jpg";
+import Card8 from "../assets/Card8.jpg";
+import Card1 from "../assets/Card1.jpg";
+
+const countingCards = []
 
 const pageLinks = [
   { index: 1, icon: faChartLine, name: "Dashboard", href: "/dashboard" },
@@ -52,5 +59,7 @@ export const cities = [
   { pk: 24, label: "Gampaha", province: "Western" },
   { pk: 25, label: "Kalutara", province: "Western" },
 ];
+
+
 
 export default pageLinks;

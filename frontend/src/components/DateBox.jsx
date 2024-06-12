@@ -5,26 +5,21 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import card3 from "../assets/Card3.png";
+import card1 from "../assets/Card1.jpg";
 
-export default function MediaControlCard({ count, test }) {
+export default function DateBox({ count, test,image}) {
   const theme = useTheme();
 
   return (
-    <Card sx={{ display: 'flex' }}>
+    <Card sx={{ display: 'flex', width: 500, height:100,marginLeft : 0}}>
       <CardMedia
         component="img"
-        sx={{ 
-          width: 50, 
-          height: 'auto', 
-          objectFit: 'contain', 
-          marginLeft: 5 
-        }}  
-        image={card3}
+        sx={{ width:20, height: 80, minWidth:80, objectFit: 'cover', marginLeft: 2 , mt:1 }} 
+        image= {image}
         alt="Live from space album cover"
       />
-      <Box sx={{ display: 'flex', flexDirection: 'column', ml: 4 }}>
-        <CardContent sx={{ flex: '1 0 auto' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', ml:2}}>
+        <CardContent sx={{ textAlign: 'center', padding: '8px 16px' }}>
           <Typography component="div" variant="h5">
             {count}
           </Typography>
