@@ -1,6 +1,6 @@
 import React from "react";
 import CountingCard from "../components/CountingCard";
-import countingCards, { categoryCards } from "../constants/index";
+import {countingCards, categoryCards } from "../constants/index";
 import CategoryCard from "../components/CategoryCard";
 import CustomDatePicker from "../components/CustomDatePicker";
 import {dateBox} from "../constants/index";
