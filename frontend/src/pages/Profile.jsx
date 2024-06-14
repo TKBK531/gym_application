@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import api from "../api";
 import ProfileDataSection from "../components/Profile/ProfileInfoContainer";
 import { userTypes } from "../constants/index";
+import { profileTableStyles } from "../styles";
+import ProfileTable from "../components/Profile/ProfileTable";
 
 function Profile() {
   const [profileData, setProfileData] = useState({});
@@ -98,74 +100,7 @@ function Profile() {
         fetchProfileData={fetchProfileData}
       />
 
-      {showProfilesList && (
-        <div className="mt-8 overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 table-auto">
-            {" "}
-            {/* Use table-auto for better column sizing */}
-            <thead>
-              <tr>
-                <th
-                  scope="col"
-                  className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Name
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Email
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Contact
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  National ID
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  User Type
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {allProfiles.map((profile) => (
-                <tr
-                  key={profile.id}
-                  className="cursor-pointer hover:bg-gray-100"
-                  onClick={() => handleShowAllProfilesClick(profile.id)}
-                >
-                  <td className="px-6 py-4 text-[13px] whitespace-nowrap">
-                    {profile.first_name} {profile.last_name}
-                  </td>
-                  <td className="px-6 py-4 text-[13px] whitespace-nowrap">
-                    {profile.email}
-                  </td>
-                  <td className="px-6 py-4 text-[13px] whitespace-nowrap">
-                    {profile.contact}
-                  </td>
-                  <td className="px-6 py-4 text-[13px] whitespace-nowrap">
-                    {profile.national_id}
-                  </td>
-                  <td className="px-6 py-4 text-[13px] whitespace-nowrap">
-                    {userTypes.find((type) => type.pk === profile.user_type)
-                      ?.label || "Unknown"}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      {showProfilesList && <ProfileTable profiles={allProfiles} />}
     </section>
   );
 }

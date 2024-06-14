@@ -15,3 +15,9 @@ export const profilePageStyles = {
   dataFieldEditMode:
     "font-medium border border-gray-300 rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-secondary-golden ",
 };
+
+export const profileTableStyles = {
+  tableHeader:
+    "px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider",
+  tableData: "px-6 py-4 text-[13px] whitespace-nowrap",
+};
