@@ -80,6 +80,25 @@ const ProfileInfoContainer = ({
 
   return (
     <section className="mb-6">
+      <div className="flex justify-left py-5">
+        <div className="flex justify-center items-center">
+          <img
+            src={
+              profileData.profile_picture ||
+              "https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=600"
+            }
+            alt="Profile"
+            className="w-20 h-20 rounded-full"
+          />
+        </div>
+        <div className="ml-10 gap-2 py-5">
+          <h3 className="text-xl font-normal">
+            {profileData.first_name} {profileData.last_name}
+          </h3>
+          <p className="text-gray-400 capitalize">{profile_type} user</p>
+        </div>
+      </div>
+
       {/* Buttons and Subtitle */}
       <div className="flex justify-between items-center mb-2">
         <h3 className="text-xl font-medium py-7">Personal Information</h3>
