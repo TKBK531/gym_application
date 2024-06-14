@@ -135,7 +135,7 @@ class UserDataSerializer(serializers.ModelSerializer):
             "national_id",
             "contact",
             "profile_picture",
-            # "user_type",
+            "user_type",
             "city",
         ]
         extra_kwargs = {

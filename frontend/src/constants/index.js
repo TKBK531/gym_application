@@ -109,4 +109,11 @@ export const cities = [
   { pk: 25, label: "Kalutara", province: "Western" },
 ];
 
+export const userTypes = [
+  { pk: 4, label: "Admin" },
+  { pk: 3, label: "Staff" },
+  { pk: 2, label: "External User" },
+  { pk: 1, label: "Internal User" },
+];
+
 export default pageLinks;
