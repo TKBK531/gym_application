@@ -9,6 +9,8 @@ function Profile() {
   const [profileType, setProfileType] = useState("");
   const [allProfiles, setAllProfiles] = useState([]);
   const [showProfilesList, setShowProfilesList] = useState(false);
+  const [selectedUserData, setSelectedUserData] = useState({});
+  const [isSelectedUser, setIsSelectedUser] = useState(false);
 
   useEffect(() => {
     fetchProfileData();
@@ -52,6 +54,7 @@ function Profile() {
 
   const handleHideAllProfilesClick = () => {
     setShowProfilesList(false);
+    // window.location.reload();
   };
 
   const handleSpecificProfileClick = async (profileId) => {
@@ -59,7 +62,8 @@ function Profile() {
       const response = await api.get(`/user/profile/${profileId}/`);
       if (response.data.status === "success") {
         const userData = response.data.data.user;
-        console.log(userData);
+        setSelectedUserData(userData);
+        setIsSelectedUser(true);
       }
     } catch (error) {
       console.error("Error fetching profile data:", error.message);
@@ -96,11 +100,20 @@ function Profile() {
       </div>
 
       <div className="mb-16">
-        <ProfileDataSection
-          profileData={profileData}
-          profile_type={profileType}
-          fetchProfileData={fetchProfileData}
-        />
+        {isSelectedUser ? (
+          <ProfileDataSection
+            profileData={selectedUserData}
+            profile_type={profileType}
+            isSelectedUser={isSelectedUser}
+          />
+        ) : (
+          <ProfileDataSection
+            profileData={profileData}
+            profile_type={profileType}
+            isSelectedUser={isSelectedUser}
+            fetchProfileData={fetchProfileData}
+          />
+        )}
       </div>
       <div>
         {showProfilesList && (

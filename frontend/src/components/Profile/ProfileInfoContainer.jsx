@@ -10,6 +10,7 @@ import PropTypes from "prop-types";
 const ProfileInfoContainer = ({
   profileData,
   profile_type,
+  isSelectedUser,
   fetchProfileData,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -95,36 +96,43 @@ const ProfileInfoContainer = ({
           <h3 className="text-xl font-normal">
             {profileData.first_name} {profileData.last_name}
           </h3>
-          <p className="text-gray-400 capitalize">{profile_type} user</p>
+          {!isSelectedUser ? (
+            <p className="text-gray-400 capitalize">{profile_type} user</p>
+          ) : (
+            <p className="text-gray-400 capitalize">
+              {profileData.user_type} user
+            </p>
+          )}
         </div>
       </div>
 
       {/* Buttons and Subtitle */}
       <div className="flex justify-between items-center mb-2">
         <h3 className="text-xl font-medium py-7">Personal Information</h3>
-        {!isEditing ? (
-          <button
-            onClick={handleEditClick}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" // Updated Edit Button Style
-          >
-            <FontAwesomeIcon icon={faUserEdit} className="mr-1" /> Edit
-          </button>
-        ) : (
-          <div className="flex">
+        {!isSelectedUser &&
+          (!isEditing ? (
             <button
-              onClick={handleSaveClick}
-              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2" // Updated Save Button Style
+              onClick={handleEditClick}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" // Updated Edit Button Style
             >
-              Save
+              <FontAwesomeIcon icon={faUserEdit} className="mr-1" /> Edit
             </button>
-            <button
-              onClick={handleCancelClick}
-              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" // Updated Cancel Button Style
-            >
-              Cancel
-            </button>
-          </div>
-        )}
+          ) : (
+            <div className="flex">
+              <button
+                onClick={handleSaveClick}
+                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2" // Updated Save Button Style
+              >
+                Save
+              </button>
+              <button
+                onClick={handleCancelClick}
+                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" // Updated Cancel Button Style
+              >
+                Cancel
+              </button>
+            </div>
+          ))}
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -271,8 +279,9 @@ const ProfileInfoContainer = ({
 
 ProfileInfoContainer.propTypes = {
   profileData: PropTypes.object.isRequired,
-  profile_type: PropTypes.string.isRequired,
-  fetchProfileData: PropTypes.func.isRequired,
+  profile_type: PropTypes.string,
+  isSelectedUser: PropTypes.bool,
+  fetchProfileData: PropTypes.func,
 };
 
 export default ProfileInfoContainer;
