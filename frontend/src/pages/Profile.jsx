@@ -82,21 +82,21 @@ function Profile() {
         <h2 className="text-2xl font-semibold mb-4 text-center md:text-left mr-auto">
           Profile{" "}
         </h2>
-        {profileType === "admin" && showProfilesList === false ? (
+        {profileType === "admin" && !showProfilesList ? (
           <button
             onClick={handleShowAllProfilesClick}
             className="bg-blue-500 hover:bg-blue-700 text-white font-normal py-2 px-4 rounded"
           >
             Show all Profiles
           </button>
-        ) : (
+        ) : profileType === "admin" && showProfilesList ? (
           <button
             onClick={handleHideAllProfilesClick}
             className="bg-blue-500 hover:bg-blue-700 text-white font-normal py-2 px-4 rounded"
           >
             Hide all Profiles
           </button>
-        )}
+        ) : null}
       </div>
 
       <div className="mb-16">
