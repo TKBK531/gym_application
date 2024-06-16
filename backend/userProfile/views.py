@@ -126,12 +126,28 @@ class UserProfileDetailView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        user = self.request.user
-        try:
+
+        if self.kwargs.get("pk") is None:
+            user = self.request.user
+            try:
+                profile = UserProfile.objects.get(user=user)
+                return profile
+            except UserProfile.DoesNotExist:
+                raise NotFound("User Profile not found")
+        else:
+            user = self.request.user
             profile = UserProfile.objects.get(user=user)
-            return profile
-        except UserProfile.DoesNotExist:
-            raise NotFound("User Profile not found")
+            user_id = self.kwargs.get("pk")
+            try:
+                if profile.user_type.name == "admin":
+                    profile = UserProfile.objects.get(pk=user_id)
+                    return profile
+                else:
+                    raise PermissionDenied(
+                        "You do not have permission to perform this action."
+                    )
+            except UserProfile.DoesNotExist:
+                raise NotFound("User Profile not found")
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()

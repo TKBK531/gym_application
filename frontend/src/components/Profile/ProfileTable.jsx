@@ -3,7 +3,7 @@ import { userTypes } from "../../constants/index";
 import { profileTableStyles } from "../../styles";
 import PropTypes from "prop-types";
 
-const ProfileTable = ({ profiles }) => {
+const ProfileTable = ({ profiles, onProfileClick }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedUserType, setSelectedUserType] = useState("");
 
@@ -27,6 +27,7 @@ const ProfileTable = ({ profiles }) => {
 
   return (
     <div className="mt-8 overflow-x-auto">
+      <h3 className="text-xl font-medium py-7">All User Information</h3>
       <div className="mb-4 flex space-x-4">
         <input
           type="text"
@@ -73,7 +74,7 @@ const ProfileTable = ({ profiles }) => {
             <tr
               key={profile.id}
               className="cursor-pointer hover:bg-gray-200 transition-colors duration-300"
-              onClick={() => console.log(`Profile ID: ${profile.id}`)}
+              onClick={() => onProfileClick(profile.id)}
             >
               <td className={`${profileTableStyles.tableData}`}>
                 {profile.first_name} {profile.last_name}
@@ -101,6 +102,7 @@ const ProfileTable = ({ profiles }) => {
 
 ProfileTable.propTypes = {
   profiles: PropTypes.array.isRequired,
+  onProfileClick: PropTypes.func.isRequired,
 };
 
 export default ProfileTable;

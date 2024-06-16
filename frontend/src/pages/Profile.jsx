@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../api";
 import ProfileDataSection from "../components/Profile/ProfileInfoContainer";
-import { userTypes } from "../constants/index";
-import { profileTableStyles } from "../styles";
 import ProfileTable from "../components/Profile/ProfileTable";
 
 function Profile() {
@@ -11,8 +9,6 @@ function Profile() {
   const [profileType, setProfileType] = useState("");
   const [allProfiles, setAllProfiles] = useState([]);
   const [showProfilesList, setShowProfilesList] = useState(false);
-  const [sortBy, setSortBy] = useState("name"); // Initial sorting by name
-  const [sortOrder, setSortOrder] = useState("asc");
 
   useEffect(() => {
     fetchProfileData();
@@ -54,6 +50,24 @@ function Profile() {
     fetchAllProfiles();
   };
 
+  const handleHideAllProfilesClick = () => {
+    setShowProfilesList(false);
+  };
+
+  const handleSpecificProfileClick = async (profileId) => {
+    try {
+      const response = await api.get(`/user/profile/${profileId}/`);
+      if (response.data.status === "success") {
+        const userData = response.data.data.user;
+        console.log(userData);
+      }
+    } catch (error) {
+      console.error("Error fetching profile data:", error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -64,7 +78,7 @@ function Profile() {
         <h2 className="text-2xl font-semibold mb-4 text-center md:text-left mr-auto">
           Profile{" "}
         </h2>
-        {profileType === "admin" ? (
+        {profileType === "admin" && showProfilesList === false ? (
           <button
             onClick={handleShowAllProfilesClick}
             className="bg-blue-500 hover:bg-blue-700 text-white font-normal py-2 px-4 rounded"
@@ -72,17 +86,30 @@ function Profile() {
             Show all Profiles
           </button>
         ) : (
-          <div></div>
+          <button
+            onClick={handleHideAllProfilesClick}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-normal py-2 px-4 rounded"
+          >
+            Hide all Profiles
+          </button>
         )}
       </div>
 
-      <ProfileDataSection
-        profileData={profileData}
-        profile_type={profileType}
-        fetchProfileData={fetchProfileData}
-      />
-
-      {showProfilesList && <ProfileTable profiles={allProfiles} />}
+      <div className="mb-16">
+        <ProfileDataSection
+          profileData={profileData}
+          profile_type={profileType}
+          fetchProfileData={fetchProfileData}
+        />
+      </div>
+      <div>
+        {showProfilesList && (
+          <ProfileTable
+            profiles={allProfiles}
+            onProfileClick={handleSpecificProfileClick}
+          />
+        )}
+      </div>
     </section>
   );
 }
