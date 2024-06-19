@@ -72,11 +72,12 @@ const Events = () => {
             </div>
           </>
         ) : (
-          <div className="grid grid-cols-3 gap-6 mt-8 px-10">
+          <div className="grid grid-cols-3 gap-6 mt-8 px-4">
             <h2>{selectedCategory}</h2>
-            <p>Details about {selectedCategory}</p>
+            
             <button onClick={handleBackClick}>Back</button>
           </div>
+          <p>divDetails about {selectedCategory}</p>
         )}
       </div>
     </div>
