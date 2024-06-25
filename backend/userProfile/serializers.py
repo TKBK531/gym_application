@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 from .models import City, UserProfile, UserType
 
@@ -39,7 +39,9 @@ class UserProfileSerializer(serializers.ModelSerializer):
         validated_data["user_type"] = user_type
         validated_data["city"] = city
 
-        return super().create(validated_data)
+        user_profile = super().create(validated_data)
+        self._assign_user_to_group(user_profile, user_type_name)
+        return user_profile
 
     def update(self, instance, validated_data):
         user_type_name = validated_data.pop("user_type", None)
@@ -48,12 +50,20 @@ class UserProfileSerializer(serializers.ModelSerializer):
         if user_type_name:
             user_type = UserType.objects.get(name=user_type_name)
             validated_data["user_type"] = user_type
+            print(user_type_name)
+            self._assign_user_to_group(instance, user_type_name)
 
         if city_label:
             city = City.objects.get(label=city_label)
             validated_data["city"] = city
 
         return super().update(instance, validated_data)
+
+    def _assign_user_to_group(self, user_profile, user_type_name):
+        group, created = Group.objects.get_or_create(name=user_type_name)
+        user_profile.user.groups.clear()  # Clear existing groups
+        print(group.name)
+        user_profile.user.groups.add(group)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -125,7 +135,7 @@ class UserDataSerializer(serializers.ModelSerializer):
             "national_id",
             "contact",
             "profile_picture",
-            # "user_type",
+            "user_type",
             "city",
         ]
         extra_kwargs = {
@@ -137,6 +147,7 @@ class UserDataSerializer(serializers.ModelSerializer):
         }
 
     def update(self, instance, validated_data):
+        print(validated_data)
         user_data = validated_data.pop("user", {})
         user = instance.user
 
@@ -157,4 +168,9 @@ class UserDataSerializer(serializers.ModelSerializer):
             city = City.objects.get(label=city_label)
             validated_data["city"] = city
 
+        print(validated_data)
         return super().update(instance, validated_data)
+
+
+class UserTypeUpdateSerializer(serializers.Serializer):
+    user_type = serializers.CharField()

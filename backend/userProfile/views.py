@@ -1,21 +1,27 @@
 from urllib.parse import urlencode
-from django.db import transaction
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import JsonResponse
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import UserDataSerializer, UserSerializer, UserProfileSerializer
-from .models import UserProfile
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.exceptions import NotFound
-from .services import get_user_data
+from rest_framework.exceptions import NotFound, PermissionDenied
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.views import APIView
 from django.shortcuts import redirect
 from django.conf import settings
-from django.contrib.auth import login
-from rest_framework.views import APIView
-from .serializers import AuthSerializer
+from .permissions import IsAdminUserType
+
+from .serializers import (
+    UserDataSerializer,
+    UserSerializer,
+    UserProfileSerializer,
+    AuthSerializer,
+    UserTypeUpdateSerializer,
+)
+from .models import UserProfile, UserType
+from .services import get_user_data
 
 
 class UserCreateView(generics.CreateAPIView):
@@ -25,6 +31,7 @@ class UserCreateView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
+        # print(f"Serializer: {serializer}")
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
@@ -61,7 +68,6 @@ class GoogleLoginApi(APIView):
             return redirect(redirect_url)
 
         user = User.objects.get(email=user_data["email"])
-        print(f"User: {user}")
         login(request, user)
 
         refresh = RefreshToken.for_user(user)
@@ -80,9 +86,7 @@ class UserLoginView(generics.GenericAPIView):
     def post(self, request):
         email = request.data.get("email")
         password = request.data.get("password")
-        user = authenticate(
-            request, username=email, password=password
-        )  # Authenticate with email
+        user = authenticate(request, username=email, password=password)
 
         if user is not None:
             refresh = RefreshToken.for_user(user)
@@ -123,12 +127,28 @@ class UserProfileDetailView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        user = self.request.user
-        try:
+
+        if self.kwargs.get("pk") is None:
+            user = self.request.user
+            try:
+                profile = UserProfile.objects.get(user=user)
+                return profile
+            except UserProfile.DoesNotExist:
+                raise NotFound("User Profile not found")
+        else:
+            user = self.request.user
             profile = UserProfile.objects.get(user=user)
-            return profile
-        except UserProfile.DoesNotExist:
-            raise NotFound("User Profile not found")
+            user_id = self.kwargs.get("pk")
+            try:
+                if profile.user_type.name == "admin":
+                    profile = UserProfile.objects.get(pk=user_id)
+                    return profile
+                else:
+                    raise PermissionDenied(
+                        "You do not have permission to perform this action."
+                    )
+            except UserProfile.DoesNotExist:
+                raise NotFound("User Profile not found")
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -159,7 +179,6 @@ class UserProfileDetailView(generics.RetrieveAPIView):
             "data": user_data,
         }
         # print(response_data)
-
         return JsonResponse(response_data, status=status.HTTP_200_OK)
 
 
@@ -198,6 +217,90 @@ class UserProfileUpdateView(generics.UpdateAPIView):
                 {
                     "status": "error",
                     "message": str(e),
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+
+class UserListView(generics.ListAPIView):
+    serializer_class = UserDataSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = PageNumberPagination
+
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return UserProfile.objects.all()
+        else:
+            return UserProfile.objects.none()
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        if not request.user.is_superuser:
+            return Response(
+                {
+                    "status": "error",
+                    "message": "You do not have permission to perform this action.",
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(
+            {
+                "status": "success",
+                "message": "All profiles retrieved successfully.",
+                "data": serializer.data,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+class UserTypeUpdateView(generics.UpdateAPIView):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserTypeUpdateSerializer
+    permission_classes = [IsAdminUserType]
+
+    def update(self, request, *args, **kwargs):
+        user_profile_id = self.kwargs.get("pk")
+        user_profile = UserProfile.objects.get(pk=user_profile_id)
+
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            user_type_name = serializer.validated_data["user_type"]
+
+            try:
+                user_type = UserType.objects.get(name=user_type_name)
+                user_profile.user_type = user_type
+                user_profile.save()
+
+                return JsonResponse(
+                    {
+                        "status": "success",
+                        "message": "User type updated",
+                        "data": serializer.data,
+                    },
+                    status=status.HTTP_200_OK,
+                )
+            except UserType.DoesNotExist:
+                return JsonResponse(
+                    {
+                        "status": "error",
+                        "message": "UserType does not exist",
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+        else:
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": serializer.errors,
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
