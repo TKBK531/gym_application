@@ -1,11 +1,17 @@
 // ProfileInfoContainer.js
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserEdit, faEdit } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUserEdit,
+  faEdit,
+  faCheck,
+  faTimes,
+} from "@fortawesome/free-solid-svg-icons";
 import { profilePageStyles } from "../../styles";
 import { cities } from "../../constants/index";
 import api from "../../api";
 import PropTypes from "prop-types";
+import { userTypes } from "../../constants/index";
 
 const ProfileInfoContainer = ({
   profileData,
@@ -46,11 +52,11 @@ const ProfileInfoContainer = ({
       const response = await api.put("/user/profile/update/", editedData);
       if (response.data.status === "success") {
         fetchProfileData();
-        setIsEditing(false);
+        setIsEditingProfileType(false);
       }
     } catch (error) {
-      setIsEditing(false);
-      console.error("Error saving profile data:", error.message);
+      setIsEditingProfileType(false);
+      console.error("Error saving profile type:", error.message);
     }
   };
 
@@ -84,6 +90,33 @@ const ProfileInfoContainer = ({
     setIsEditingProfileType(true);
   };
 
+  const handleProfileTypeChange = async (event) => {
+    const selectedUserType = event.target.value;
+    const selectedUserTypeObject = userTypes.find(
+      (type) => type.label === selectedUserType
+    );
+    const profile_id = profileData.id;
+    const req_data = {
+      user_type: selectedUserTypeObject.name,
+    };
+    // console.log(req_data);
+
+    try {
+      const response = await api.put(
+        `/user/profile/${profile_id}/update-user-type/`,
+        req_data
+      );
+      // console.log(response.data);
+      if (response.data.status === "success") {
+        fetchProfileData();
+        setIsEditingProfileType(false);
+      }
+    } catch (error) {
+      setIsEditingProfileType(false);
+      console.error("Error saving profile data:", error.message);
+    }
+  };
+
   return (
     <section className="mb-6">
       <div className="flex justify-left py-5">
@@ -105,10 +138,30 @@ const ProfileInfoContainer = ({
             <p className="text-gray-400 capitalize">{profile_type} user</p>
           ) : (
             <div className="flex flex-row gap-5 text-gray-400">
-              <p className=" capitalize">{profileData.user_type} user</p>
-              <button onClick={handleEditProfileType}>
-                <FontAwesomeIcon icon={faEdit} />
-              </button>
+              {!isEditingProfileType ? (
+                <p className="capitalize">{profileData.user_type} user</p>
+              ) : (
+                <select onChange={handleProfileTypeChange}>
+                  {userTypes.map((userType) => (
+                    <option key={userType.pk} value={userType.label}>
+                      {userType.label}
+                    </option>
+                  ))}
+                </select>
+              )}
+
+              {!isEditingProfileType ? (
+                <button onClick={handleEditProfileType}>
+                  <FontAwesomeIcon icon={faEdit} />
+                </button>
+              ) : (
+                <button
+                  className="text-red-700"
+                  onClick={() => setIsEditingProfileType(false)}
+                >
+                  <FontAwesomeIcon icon={faTimes} />
+                </button>
+              )}
             </div>
           )}
         </div>

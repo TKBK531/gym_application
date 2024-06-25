@@ -279,13 +279,21 @@ class UserTypeUpdateView(generics.UpdateAPIView):
                 user_type = UserType.objects.get(name=user_type_name)
                 user_profile.user_type = user_type
                 user_profile.save()
+
                 return JsonResponse(
-                    {"status": "user type updated"},
+                    {
+                        "status": "success",
+                        "message": "User type updated",
+                        "data": serializer.data,
+                    },
                     status=status.HTTP_200_OK,
                 )
             except UserType.DoesNotExist:
                 return JsonResponse(
-                    {"error": "UserType does not exist"},
+                    {
+                        "status": "error",
+                        "message": "UserType does not exist",
+                    },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
         else:

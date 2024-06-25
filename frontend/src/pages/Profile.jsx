@@ -41,7 +41,7 @@ function Profile() {
         console.log("All profiles fetched successfully");
         setAllProfiles(response.data.data);
         setShowProfilesList(true);
-        // console.log(allProfiles);
+        console.log(allProfiles);
       }
     } catch (error) {
       console.error("Error fetching all profiles:", error.message);
