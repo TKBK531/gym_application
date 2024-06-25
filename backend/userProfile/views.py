@@ -11,14 +11,16 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
 from django.shortcuts import redirect
 from django.conf import settings
+from .permissions import IsAdminUserType
 
 from .serializers import (
     UserDataSerializer,
     UserSerializer,
     UserProfileSerializer,
     AuthSerializer,
+    UserTypeUpdateSerializer,
 )
-from .models import UserProfile
+from .models import UserProfile, UserType
 from .services import get_user_data
 
 
@@ -257,3 +259,40 @@ class UserListView(generics.ListAPIView):
             },
             status=status.HTTP_200_OK,
         )
+
+
+class UserTypeUpdateView(generics.UpdateAPIView):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserTypeUpdateSerializer
+    permission_classes = [IsAdminUserType]
+
+    def update(self, request, *args, **kwargs):
+        user_profile_id = self.kwargs.get("pk")
+        user_profile = UserProfile.objects.get(pk=user_profile_id)
+
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            user_type_name = serializer.validated_data["user_type"]
+
+            try:
+                user_type = UserType.objects.get(name=user_type_name)
+                user_profile.user_type = user_type
+                user_profile.save()
+                return JsonResponse(
+                    {"status": "user type updated"},
+                    status=status.HTTP_200_OK,
+                )
+            except UserType.DoesNotExist:
+                return JsonResponse(
+                    {"error": "UserType does not exist"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+        else:
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": serializer.errors,
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )

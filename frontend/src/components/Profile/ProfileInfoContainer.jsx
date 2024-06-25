@@ -1,7 +1,7 @@
 // ProfileInfoContainer.js
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserEdit } from "@fortawesome/free-solid-svg-icons";
+import { faUserEdit, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { profilePageStyles } from "../../styles";
 import { cities } from "../../constants/index";
 import api from "../../api";
@@ -14,6 +14,7 @@ const ProfileInfoContainer = ({
   fetchProfileData,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [isEditingProfileType, setIsEditingProfileType] = useState(false);
   const [editedData, setEditedData] = useState(profileData);
   const [filteredCityOptions, setFilteredCityOptions] = useState(cities);
 
@@ -79,6 +80,10 @@ const ProfileInfoContainer = ({
     }
   };
 
+  const handleEditProfileType = () => {
+    setIsEditingProfileType(true);
+  };
+
   return (
     <section className="mb-6">
       <div className="flex justify-left py-5">
@@ -99,9 +104,12 @@ const ProfileInfoContainer = ({
           {!isSelectedUser ? (
             <p className="text-gray-400 capitalize">{profile_type} user</p>
           ) : (
-            <p className="text-gray-400 capitalize">
-              {profileData.user_type} user
-            </p>
+            <div className="flex flex-row gap-5 text-gray-400">
+              <p className=" capitalize">{profileData.user_type} user</p>
+              <button onClick={handleEditProfileType}>
+                <FontAwesomeIcon icon={faEdit} />
+              </button>
+            </div>
           )}
         </div>
       </div>

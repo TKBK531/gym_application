@@ -170,3 +170,7 @@ class UserDataSerializer(serializers.ModelSerializer):
 
         print(validated_data)
         return super().update(instance, validated_data)
+
+
+class UserTypeUpdateSerializer(serializers.Serializer):
+    user_type = serializers.CharField()
