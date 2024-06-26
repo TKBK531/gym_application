@@ -19,7 +19,11 @@ class AssignInCharge(generics.UpdateAPIView):
     permission_classes = [IsAdminUser]
 
     def get_user(pk):
-        return User.objects.get(pk=pk)
+        try:
+            in_charge = User.objects.get(pk=pk)
+
+        except User.DoesNotExist:
+            return None
 
     def perform_update(self, serializer):
         serializer.save(in_charge=self.request.user)

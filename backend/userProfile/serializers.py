@@ -98,8 +98,22 @@ class UserSerializer(serializers.ModelSerializer):
 
         if profile_data:
             UserProfile.objects.create(user=user, **profile_data)
+        try:
+            self.add_user_to_group(user)
+        except Exception as e:
+            raise serializers.ValidationError(
+                f"Failed to add user to external group: {e}"
+            )
 
         return user
+
+    def add_user_to_group(self, user):
+        try:
+            group = Group.objects.get(name="external")  # Get the group
+        except Group.DoesNotExist:
+            raise serializers.ValidationError("The 'external' group does not exist.")
+
+        user.groups.add(group)
 
     def update(self, instance, validated_data):
         profile_data = validated_data.pop("profile", None)

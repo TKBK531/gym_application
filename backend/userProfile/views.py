@@ -1,6 +1,6 @@
 from urllib.parse import urlencode
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.http import JsonResponse
 from rest_framework import generics, status
 from rest_framework.response import Response
@@ -68,6 +68,8 @@ class GoogleLoginApi(APIView):
             return redirect(redirect_url)
 
         user = User.objects.get(email=user_data["email"])
+        group = Group.objects.get(name="internal")
+        user.groups.add(group)
         login(request, user)
 
         refresh = RefreshToken.for_user(user)
@@ -274,11 +276,13 @@ class UserTypeUpdateView(generics.UpdateAPIView):
 
         if serializer.is_valid():
             user_type_name = serializer.validated_data["user_type"]
+            group = Group.objects.get(name=user_type_name.lower())
 
             try:
                 user_type = UserType.objects.get(name=user_type_name)
                 user_profile.user_type = user_type
                 user_profile.save()
+                user_profile.user.groups.add(group)
 
                 return JsonResponse(
                     {
