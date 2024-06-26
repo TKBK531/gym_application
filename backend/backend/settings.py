@@ -59,6 +59,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     "userProfile",
+    "items",
+    "sport",
 ]
 
 MIDDLEWARE = [
@@ -179,3 +181,6 @@ ALLOWED_DOMAINS = [
     "dental.pdn.ac.lk",
     "agri.pdn.ac.lk",
 ]
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
