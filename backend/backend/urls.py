@@ -25,6 +25,7 @@ from userProfile.views import GoogleLoginApi
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("user/", include("userProfile.urls")),
+    path("sport/", include("sport.urls")),
     path("user/token/", TokenObtainPairView.as_view(), name="get_token"),
     path("user/token/refresh/", TokenRefreshView.as_view(), name="refresh_token"),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
