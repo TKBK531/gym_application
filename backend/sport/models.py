@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 # Create your models here.
 class Sport(models.Model):
     label = models.CharField(max_length=100)
-    image = models.ImageField(null=True, blank=True, upload_to="images/")
+    image = models.ImageField(null=True, blank=True, upload_to="images/sport_images/")
     in_charge = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True
     )
