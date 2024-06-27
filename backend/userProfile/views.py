@@ -238,7 +238,7 @@ class UserListView(generics.ListAPIView):
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
 
-        if not request.user.is_superuser:
+        if not request.user.groups.filter(name="admin").exists():
             return Response(
                 {
                     "status": "error",
