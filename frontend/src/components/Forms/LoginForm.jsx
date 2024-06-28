@@ -25,6 +25,7 @@ const LoginForm = ({ setErrorMessage, setLoading, setLoggedInUser }) => {
       localStorage.setItem("userData", JSON.stringify(res.data.data));
       localStorage.setItem(ACCESS_TOKEN, res.data.auth_tokens.access);
       localStorage.setItem(REFRESH_TOKEN, res.data.auth_tokens.refresh);
+      localStorage.setItem("userType", res.data.data.user_type);
 
       setLoggedInUser(res.data.data);
 
