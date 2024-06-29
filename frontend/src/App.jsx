@@ -16,6 +16,7 @@ import {
   PageNotFound,
 } from "./pages";
 import Register from "./pages/Register";
+import Table from './components/Table'; 
 
 const router = createBrowserRouter([
   {
@@ -111,6 +112,20 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <Profile />
+          </ProtectedRoute>
+        ),
+      },
+    ],
+  },
+  {
+    path: "/table", 
+    element: <BaseLayout />,
+    children: [
+      {
+        index: true,
+        element: (
+          <ProtectedRoute>
+            <Table />
           </ProtectedRoute>
         ),
       },

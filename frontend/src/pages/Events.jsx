@@ -5,6 +5,7 @@ import MediaCard from "../components/CategoryCard";  // Ensure correct import
 import CustomDatePicker from "../components/CustomDatePicker";
 import { dateBox } from "../constants/index";
 import DateBox from "../components/DateBox";
+import Table from '../components/Table'; 
 
 const Events = () => {
   const [showDetails, setShowDetails] = useState(false);
@@ -72,14 +73,15 @@ const Events = () => {
             </div>
           </>
         ) : (
-          <div className="grid grid-cols-3 gap-6 mt-8 px-10">
-            <h2>{selectedCategory}</h2>
-            <p>Details about {selectedCategory}</p>
+          <div className="grid grid-cols-3 gap-6 mt-8 px-10 bg-red-500">
             <button onClick={handleBackClick}>Back</button>
+            <Table/>
           </div>
         )}
       </div>
+      <Table/>
     </div>
+    
   );
 };
 
