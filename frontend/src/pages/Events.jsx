@@ -27,18 +27,21 @@ const Events = () => {
         <h1>Hello Alesia K. 👋 </h1>
         <div className="grid grid-cols-3 gap-4 mt-10 px-4">
           {countingCards.map((card) => (
-            <CountingCard key={card.id} count={card.count} test={card.test} />
+            <div  key={card.id} className="transition transform hover:scale-105 hover:shadow-lg">
+              <CountingCard count={card.count} test={card.test} />
+            </div>
           ))}
         </div>
 
         <div className="grid grid-cols-3 gap-6 mt-8 px-10">
           {categoryCards.map((card) => (
-            <MediaCard
-              key={card.id}
-              categoryName={card.categoryName}
-              image={card.image}
-              onReadMoreClick={() => handleReadMoreClick(card.categoryName)}
-            />
+            <div key={card.id} className="transition transform hover:scale-105 hover:shadow-lg">
+              <MediaCard
+                categoryName={card.categoryName}
+                image={card.image}
+                onReadMoreClick={() => handleReadMoreClick(card.categoryName)}
+              />
+            </div>
           ))}
         </div>
       </div>
@@ -47,7 +50,7 @@ const Events = () => {
         {!showDetails ? (
           <>
             <div className="col-span-2">
-              <div className="grid grid-cols-1 gap-5 mt-5 px-7">
+              <div className="grid grid-cols-1 gap-5 mt-5 px-7 ">
                 {dateBox.map((card) => (
                   <DateBox
                     key={card.id}
@@ -71,15 +74,19 @@ const Events = () => {
                 </div>
               </div>
             </div>
+            <br />
           </>
         ) : (
-          <div className="grid grid-cols-3 gap-6 mt-8 px-10 bg-red-500">
-            <button onClick={handleBackClick}>Back</button>
-            <Table/>
+          <div className="col-span-3 mt-8 px-10">
+          <Table />
+          <div className="flex justify-center mt-4">
+            <button onClick={handleBackClick} className="bg-blue-500 text-white px-4 py-2 rounded">
+              Back
+            </button>
           </div>
-        )}
+        </div>
+      )}
       </div>
-      <Table/>
     </div>
     
   );
