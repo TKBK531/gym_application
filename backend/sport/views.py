@@ -102,3 +102,37 @@ class UpdateInChargeView(generics.UpdateAPIView):
                 "message": "You are not authorized to perform this action",
             }
             return JsonResponse(resp_data, status=403)
+
+
+class AddSportView(generics.CreateAPIView):
+    queryset = Sport.objects.all()
+    serializer_class = SportSerializer
+    permission_classes = [IsAuthenticated]  # Or a custom permission
+
+    def perform_create(self, serializer):
+        in_charge_id = self.request.data.get("in_charge")
+        in_charge_user = User.objects.get(id=in_charge_id)
+
+        if in_charge_user.groups.filter(name="staff").exists():
+            serializer.save(in_charge=in_charge_user)
+        else:
+            raise ValidationError("User is not a staff member")
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            self.perform_create(serializer)
+        except ValidationError as e:
+            resp = {
+                "status": "error",
+                "message": e.message,
+            }
+            return JsonResponse(resp, status=400)
+
+        resp = {
+            "status": "success",
+            "data": serializer.data,
+            "message": "Sport added successfully",
+        }
+        return JsonResponse(resp, status=201)
