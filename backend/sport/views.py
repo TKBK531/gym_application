@@ -40,6 +40,35 @@ class SportListView(generics.ListAPIView):
         )
 
 
+class SportDetailView(generics.RetrieveAPIView):
+    queryset = Sport.objects.all()
+    serializer_class = SportSerializer
+    permission_classes = [IsAuthenticated]
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        sport_data = serializer.data
+
+        in_charge_id = sport_data.get("in_charge")
+        if in_charge_id:
+            try:
+                in_charge_user = User.objects.get(id=in_charge_id)
+                sport_data["in_charge_name"] = in_charge_user.get_full_name()
+            except User.DoesNotExist:
+                sport_data["in_charge_name"] = None
+        else:
+            sport_data["in_charge_name"] = None
+
+        return JsonResponse(
+            {
+                "status": "success",
+                "data": sport_data,
+                "message": "Sport details retrieved successfully",
+            }
+        )
+
+
 class UpdateInChargeView(generics.UpdateAPIView):
     queryset = Sport.objects.all()
     serializer_class = SportSerializer

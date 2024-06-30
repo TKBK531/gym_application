@@ -1,8 +1,15 @@
 from django.urls import path
-from .views import SportListView, UpdateInChargeView, AddSportView, DeleteSportView
+from .views import (
+    SportListView,
+    SportDetailView,
+    UpdateInChargeView,
+    AddSportView,
+    DeleteSportView,
+)
 
 urlpatterns = [
     path("all-sports/", SportListView.as_view(), name="sport-list"),
+    path("<int:pk>/", SportDetailView.as_view(), name="sport-detail"),
     path(
         "<int:pk>/assign-in-charge/",
         UpdateInChargeView.as_view(),
