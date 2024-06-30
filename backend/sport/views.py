@@ -136,3 +136,38 @@ class AddSportView(generics.CreateAPIView):
             "message": "Sport added successfully",
         }
         return JsonResponse(resp, status=201)
+
+
+class DeleteSportView(generics.DestroyAPIView):
+    queryset = Sport.objects.all()
+    permission_classes = [IsAuthenticated]  # Or a custom permission
+
+    def destroy(self, request, *args, **kwargs):
+        sport_id = self.request.data.get("sport_id")
+        try:
+            instance = Sport.objects.get(id=sport_id)
+        except Sport.DoesNotExist:
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": "Sport does not exist",
+                },
+                status=404,
+            )
+
+        # Additional check: Is the authenticated user the 'in_charge' of this sport?
+        if not request.user.groups.filter(name="admin").exists():
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": "You are not authorized to perform this action",
+                },
+                status=403,
+            )
+
+        self.perform_destroy(instance)
+        resp = {
+            "status": "success",
+            "message": "Sport deleted successfully",
+        }
+        return JsonResponse(resp, status=204)

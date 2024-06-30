@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import SportListView, UpdateInChargeView, AddSportView
+from .views import SportListView, UpdateInChargeView, AddSportView, DeleteSportView
 
 urlpatterns = [
     path("all-sports/", SportListView.as_view(), name="sport-list"),
@@ -9,4 +9,5 @@ urlpatterns = [
         name="assign-in-charge",
     ),
     path("add-sport/", AddSportView.as_view(), name="add-sport"),
+    path("delete-sport/", DeleteSportView.as_view(), name="delete-sport"),
 ]
