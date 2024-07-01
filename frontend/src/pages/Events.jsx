@@ -24,8 +24,8 @@ const Events = () => {
   return (
     <div className="flex flex-col">
       <div>
-        <h1>Hello Alesia K. 👋 </h1>
-        <div className="grid grid-cols-3 gap-4 mt-10 px-4">
+        <h1 className="text-lg sm:text-xl md:text-xl lg:text-xl">Hello Alesia K. 👋 </h1>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-10 px-4">
           {countingCards.map((card) => (
             <div  key={card.id} className="transition transform hover:scale-105 hover:shadow-lg">
               <CountingCard count={card.count} test={card.test} />
