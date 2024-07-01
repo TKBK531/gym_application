@@ -52,18 +52,19 @@ const Events = () => {
             <div className="col-span-2">
               <div className="grid grid-cols-1 gap-5 mt-5 px-7 ">
                 {dateBox.map((card) => (
+                  <div key={card.id} className="transition transform hover:scale-105 hover:shadow-lg">
                   <DateBox
-                    key={card.id}
                     count={card.count}
                     test={card.test}
                     image={card.image}
                   />
+                </div>
                 ))}
               </div>
             </div>
             <div className="">
               <div className="flex flex-col items-end mt-4 px-4">
-                <div className="border border-gray-300 p-2 w-100 h-100 flex items-center justify-center bg-white mb-4 px-2">
+                <div className="border border-gray-300 p-2 w-100 h-100 flex items-center justify-center bg-white mb-4 px-2 ">
                   <CustomDatePicker
                     style={{
                       backgroundColor: "white",
@@ -79,7 +80,7 @@ const Events = () => {
         ) : (
           <div className="col-span-3 mt-8 px-10">
           <Table />
-          <div className="flex justify-center mt-4">
+          <div className="flex justify-center mt-4 bg-red-500">
             <button onClick={handleBackClick} className="bg-blue-500 text-white px-4 py-2 rounded">
               Back
             </button>
