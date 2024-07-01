@@ -1,12 +1,7 @@
 // ProfileInfoContainer.js
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faUserEdit,
-  faEdit,
-  faCheck,
-  faTimes,
-} from "@fortawesome/free-solid-svg-icons";
+import { faUserEdit, faEdit, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { profilePageStyles } from "../../styles";
 import { cities } from "../../constants/index";
 import api from "../../api";
