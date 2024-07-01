@@ -1,14 +1,3 @@
-import {
-  faChartLine, // Dashboard
-  faCalendarAlt, // Eventsa
-  faList, // Items
-  faClipboardList, // Reservations
-  faUsers, // Members
-  faFutbol, // Sports
-  faUser,
-  faSignOut, // Profile
-} from "@fortawesome/free-solid-svg-icons";
-
 import Card5 from "../assets/Card5.jpg";
 import Card6 from "../assets/Card6.jpg";
 import Card7 from "../assets/Card7.jpg";
@@ -22,8 +11,6 @@ import {
   ClipboardPen,
   Users2,
   Medal,
-  User2,
-  LogOut,
 } from "lucide-react";
 
 export const countingCards = [

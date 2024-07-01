@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, useRef } from "react";
-import { ChevronLeft, ChevronRight, MoreVertical } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import pageLinks from "../../constants/index";
 import PageLink from "./PageLink";
 import PropTypes from "prop-types";
@@ -60,7 +60,7 @@ const Leftbar = ({ profileData }) => {
 
           <button
             onClick={() => setExpanded((curr) => !curr)}
-            className="group relative bg-secondary-golden  transition-all duration-200 ease-in-out ml-2 p-2 rounded-md focus:outline-none right-4 top-1/2 transform -translate-y-1/2"
+            className="group relative bg-secondary-golden-shade-1  transition-all duration-200 ease-in-out ml-2 p-2 rounded-md focus:outline-none right-4 top-1/2 transform -translate-y-1/2"
           >
             {expanded ? (
               <ChevronLeft
@@ -103,7 +103,7 @@ const Leftbar = ({ profileData }) => {
               className="flex w-full items-center cursor-pointer "
             >
               <img
-                src="https://ui-avatars.com/api/?background=random"
+                src={profileData.profile_picture}
                 className={`w-8 h-8 rounded-full mr-3 ${!expanded && "mr-0"}`} // Conditional margin
                 alt="Profile"
               />
@@ -129,7 +129,9 @@ const Leftbar = ({ profileData }) => {
           {isMenuOpen && (
             <div
               ref={menuRef}
-              className="absolute right-90 top-16 w-max bg-white rounded-md shadow-lg z-10"
+              className={`absolute right-90 top-16 w-max bg-white rounded-md shadow-lg z-10 transition-all duration-300 ease-in-out transform ${
+                isMenuOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"
+              }`}
             >
               <div className="py-2 px-4">
                 <p className="font-semibold text-sm">
