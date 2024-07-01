@@ -1,12 +1,15 @@
 import PropTypes from "prop-types";
 
-const SportCard = ({ sport }) => {
+const SportCard = ({ sport, onClick, className }) => {
   const defaultImageUrl =
     "http://127.0.0.1:8000/media/images/sport_images/baseball.webp";
   const imageUrl = sport.image || defaultImageUrl;
 
   return (
-    <div className="flex flex-col w-full max-w-sm rounded-lg overflow-hidden shadow-xl bg-white m-4 transition duration-300 hover:shadow-2xl hover:-translate-y-1">
+    <div
+      onClick={onClick}
+      className={`flex flex-col w-full max-w-sm rounded-lg overflow-hidden shadow-xl bg-white m-4 transition duration-300 hover:shadow-2xl hover:-translate-y-1 ${className}`}
+    >
       <div className="relative w-full h-56">
         <img
           src={imageUrl}
@@ -37,6 +40,8 @@ SportCard.propTypes = {
     label: PropTypes.string,
     in_charge_name: PropTypes.string,
   }).isRequired,
+  onClick: PropTypes.func.isRequired,
+  className: PropTypes.string,
 };
 
 export default SportCard;
