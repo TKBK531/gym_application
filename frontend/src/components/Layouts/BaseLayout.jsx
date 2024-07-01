@@ -1,8 +1,7 @@
-import { Outlet } from "react-router-dom";
-import LeftBar from "../components/LeftBar";
-import NavBar from "../components/NavBar";
 import { useState } from "react";
-import Leftbar from "../components/NavComponents/Leftbar";
+import { Outlet } from "react-router-dom";
+import Leftbar from "../NavComponents/Leftbar";
+import NavBar from "../NavBar";
 
 const BaseLayout = () => {
   const [userProfileData, setUserProfileData] = useState({});
@@ -12,8 +11,8 @@ const BaseLayout = () => {
   }, [userData]);
   return (
     <div className="flex h-screen">
-      <div className="hidden xs:block w-min bg-gray-200 z-30">
-        <Leftbar profileData={userProfileData} />
+      <div className="hidden xs:block w-[290px] bg-gray-200 z-30">
+        <LeftBar profileData={userProfileData} />
       </div>
       <div className="flex-1 flex flex-col">
         <div className="w-full bg-gray-200">
