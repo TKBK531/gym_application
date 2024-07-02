@@ -33,7 +33,7 @@ const Events = () => {
           ))}
         </div>
 
-        <div className="grid grid-cols-3 gap-6 mt-8 px-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-8 px-2 sm:px-4 md:px-10">
           {categoryCards.map((card) => (
             <div key={card.id} className="transition transform hover:scale-105 hover:shadow-lg">
               <MediaCard
@@ -46,11 +46,11 @@ const Events = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-1 mt-1 mb-4 px-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-1 mt-1 mb-4 px-2 sm:px-4">
         {!showDetails ? (
           <>
-            <div className="col-span-2">
-              <div className="grid grid-cols-1 gap-5 mt-5 px-7 ">
+            <div className="sm:col-span-2">
+              <div className="grid grid-cols-1 gap-5 mt-5 px-2 sm:px-4 md:px-7">
                 {dateBox.map((card) => (
                   <div key={card.id} className="transition transform hover:scale-105 hover:shadow-lg">
                   <DateBox
@@ -62,8 +62,7 @@ const Events = () => {
                 ))}
               </div>
             </div>
-            <div className="">
-              <div className="flex flex-col items-end mt-4 px-4">
+            <div className="mt-4 px-2 sm:px-4">
                 <div className="border border-gray-300 p-2 w-100 h-100 flex items-center justify-center bg-white mb-4 px-2 ">
                   <CustomDatePicker
                     style={{
@@ -73,7 +72,6 @@ const Events = () => {
                     }}
                   />
                 </div>
-              </div>
             </div>
             <br />
           </>
