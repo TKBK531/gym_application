@@ -4,6 +4,7 @@ import pageLinks from "../../constants/index";
 import PageLink from "./PageLink";
 import PropTypes from "prop-types";
 import { useLocation, useNavigate } from "react-router-dom";
+import uniLogo from "../../assets/logo/uni_logo.png";
 
 export const LeftbarContext = createContext();
 
@@ -48,10 +49,11 @@ const Leftbar = ({ profileData }) => {
       >
         <div className="p-4 pb-2 flex items-center justify-between relative">
           <img
-            src="https://img.logoipsum.com/254.svg"
-            className={`transition-all duration-300 ease-in-out ${
+            onClick={() => navigate("/dashboard")}
+            src={uniLogo}
+            className={`transition-all duration-300 ease-in-out cursor-pointer ${
               expanded
-                ? "w-32 opacity-100 translate-x-0"
+                ? "w-36 opacity-100 translate-x-0"
                 : "w-0 opacity-0 -translate-x-full"
             }
             `}
