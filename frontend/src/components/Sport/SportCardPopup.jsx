@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 const SportCardPopup = ({ onClose, sportData }) => {
-  const loggedInUser = JSON.parse(localStorage.getItem("userData"));
+  // const loggedInUser = JSON.parse(localStorage.getItem("userData"));
   const [isOpen, setIsOpen] = useState(true);
 
   useEffect(() => {

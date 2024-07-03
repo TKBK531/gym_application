@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import api from "../../api";
+import SportAnnouncementsTab from "./SportAnnouncementsTab";
+import SportScheduleTab from "./SportScheduleTab";
+import SportTeamTab from "./SportTeamTab";
+import TabsButton from "../Buttons/TabsButton";
 
 const SportCardPage = () => {
   const [sportData, setSportData] = useState(null);
-  const [isLoading, setIsLoading] = useState(true); // Add loading state
-  const [error, setError] = useState(null); // Add error state
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedTab, setSelectedTab] = useState("announcements");
 
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -14,18 +18,15 @@ const SportCardPage = () => {
   useEffect(() => {
     const fetchSportData = async () => {
       if (sportId) {
-        // Fetch only if sportId is available
         try {
           const response = await api.get(`/sport/${sportId}/`);
           if (response.data.status === "success") {
             setSportData(response.data.data);
           } else {
             console.error("Error fetching sport data:", response.data.message);
-            setError(response.data.message);
           }
         } catch (error) {
           console.error("Error fetching sport data:", error.message);
-          setError(error.message);
         } finally {
           setIsLoading(false);
         }
@@ -38,6 +39,10 @@ const SportCardPage = () => {
   if (isLoading) {
     return <div>Loading...</div>;
   }
+
+  const changeSelectedTab = (tab) => {
+    setSelectedTab(tab);
+  };
 
   return (
     <section>
@@ -61,9 +66,34 @@ const SportCardPage = () => {
               ? sportData.in_charge_name
               : "No in charge assigned yet"}
           </p>
+          <div className="flex gap-2 my-4">
+            <TabsButton
+              text="Announcements"
+              isActive={selectedTab === "announcements"}
+              onClick={() => changeSelectedTab("announcements")}
+            />
+            <TabsButton
+              text="Team"
+              isActive={selectedTab === "team"}
+              onClick={() => changeSelectedTab("team")}
+            />
+            <TabsButton
+              text="Schedule"
+              isActive={selectedTab === "schedule"}
+              onClick={() => changeSelectedTab("schedule")}
+            />
+          </div>
+
+          {selectedTab === "announcements" && (
+            <SportAnnouncementsTab sportData={sportData} />
+          )}
+          {selectedTab === "team" && <SportTeamTab sportData={sportData} />}
+          {selectedTab === "schedule" && (
+            <SportScheduleTab sportData={sportData} />
+          )}
         </>
       ) : (
-        <div>Sport not found!</div> // Handle case where sportData is null
+        <div>Sport not found!</div>
       )}
     </section>
   );
