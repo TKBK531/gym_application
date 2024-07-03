@@ -31,6 +31,10 @@ const Leftbar = ({ profileData }) => {
     }
   };
 
+  const handleLinkClick = (href) => {
+    navigate(href);
+  };
+
   useEffect(() => {
     document.addEventListener("mousedown", handleOutsideClick);
     return () => {
@@ -84,6 +88,7 @@ const Leftbar = ({ profileData }) => {
           <LeftbarContext.Provider value={{ expanded, setExpanded }}>
             {pageLinks.map((link) => (
               <PageLink
+                onClick={() => handleLinkClick(link.href)}
                 key={link.index}
                 href={link.href}
                 icon={link.icon}

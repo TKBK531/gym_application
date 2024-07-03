@@ -8,7 +8,7 @@ const SportCard = ({ sport, onClick, className }) => {
   return (
     <div
       onClick={onClick}
-      className={`flex flex-col w-full max-w-sm rounded-lg overflow-hidden shadow-xl bg-white m-4 transition duration-300 hover:shadow-2xl hover:-translate-y-1 ${className}`}
+      className={`flex flex-col w-full max-w-sm transition-all rounded-lg overflow-hidden shadow-xl bg-white m-4 duration-300 hover:shadow-2xl hover:-translate-y-1 ${className}`}
     >
       <div className="relative w-full h-56">
         <img
