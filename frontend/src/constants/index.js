@@ -1,18 +1,17 @@
-import {
-  faChartLine, // Dashboard
-  faCalendarAlt, // Eventsa
-  faList, // Items
-  faClipboardList, // Reservations
-  faUsers, // Members
-  faFutbol, // Sports
-  faUser,
-  faSignOut, // Profile
-} from "@fortawesome/free-solid-svg-icons";
 import Card5 from "../assets/Card5.jpg";
 import Card6 from "../assets/Card6.jpg";
 import Card7 from "../assets/Card7.jpg";
 import Card8 from "../assets/Card8.jpg";
 import Card1 from "../assets/Card1.jpg";
+
+import {
+  LayoutDashboard,
+  Calendar,
+  List,
+  ClipboardPen,
+  Users2,
+  Medal,
+} from "lucide-react";
 
 export const countingCards = [
   {
@@ -66,19 +65,17 @@ export const dateBox = [
 ];
 
 const pageLinks = [
-  { index: 1, icon: faChartLine, name: "Dashboard", href: "/dashboard" },
-  { index: 2, icon: faCalendarAlt, name: "Events", href: "/events" },
-  { index: 3, icon: faList, name: "Items", href: "/items" },
+  { index: 1, icon: LayoutDashboard, name: "Dashboard", href: "/dashboard" },
+  { index: 2, icon: Calendar, name: "Events", href: "/events" },
+  { index: 3, icon: List, name: "Items", href: "/items" },
   {
     index: 4,
-    icon: faClipboardList,
+    icon: ClipboardPen,
     name: "Reservations",
     href: "/reservations",
   },
-  { index: 5, icon: faUsers, name: "Members", href: "/members" },
-  { index: 6, icon: faFutbol, name: "Sports", href: "/sports" },
-  { index: 7, icon: faUser, name: "Profile", href: "/profile" },
-  { index: 8, icon: faSignOut, name: "Logout", href: "/logout" },
+  { index: 5, icon: Users2, name: "Members", href: "/members" },
+  { index: 6, icon: Medal, name: "Sports", href: "/sports" },
 ];
 
 export const cities = [

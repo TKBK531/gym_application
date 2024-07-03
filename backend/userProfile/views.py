@@ -99,7 +99,16 @@ class UserLoginView(generics.GenericAPIView):
                 "first_name": user.first_name,
                 "last_name": user.last_name,
                 "email": user.email,
-                **serializer.data,
+                "national_id": (
+                    profile.national_id if profile.national_id else "Not Provided"
+                ),
+                "profile_picture": profile.profile_picture,
+                "contact": profile.contact if profile.contact else "Not Provided",
+                "user_type": profile.user_type.name,
+                "city": profile.city.id if profile.city else "Not Provided",
+                "province": (
+                    profile.city.province.id if profile.city else "Not Provided"
+                ),
             }
 
             return Response(

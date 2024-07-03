@@ -12,6 +12,7 @@ export default {
         "primary-shade-4": "#7E0000",
         "primary-shade-5": "#560606",
         "secondary-golden": "#F6BC0C",
+        "secondary-golden-shade-1": "#fada79",
         "info-dark-blue": "#002A3A",
       },
       backgroundImage: {

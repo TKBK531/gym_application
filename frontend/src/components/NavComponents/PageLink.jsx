@@ -1,26 +1,26 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useLocation } from "react-router-dom";
+import { useContext } from "react";
+import { LeftbarContext } from "./Leftbar";
 import PropTypes from "prop-types";
 
-const PageLink = ({ name, icon, href }) => {
-  const location = useLocation();
-  const isActive = location.pathname === href;
+const PageLink = ({ name, icon: Icon, onClick, isActive }) => {
+  const { expanded } = useContext(LeftbarContext);
 
   return (
-    <div
-      className={`pl-3 py-3 transition-all duration-500 ease-in-out hover:text-info-dark-blue hover:bg-secondary-golden hover:font-medium ${
-        isActive ? "text-secondary-golden font-medium" : "text-white font-light"
+    <li
+      onClick={onClick}
+      className={`relative flex items-center font-medium pl-4 py-3 hover:bg-secondary-golden transition-colors cursor-pointer ${
+        isActive ? "bg-secondary-golden-shade-1 text-info-dark-blue" : ""
       }`}
     >
-      <a href={href} className="flex">
-        <div className="m-1">
-          <FontAwesomeIcon icon={icon} className="h-4 w-4 mr-2" />
-        </div>
-        <div className="mr-auto m-1">
-          <p>{name}</p>
-        </div>
-      </a>
-    </div>
+      <Icon size={25} className="mr-4" />
+      <span
+        className={`overflow-hidden transition-all ${
+          expanded ? "w-36 ml-3" : "w-0 ml-0"
+        }`}
+      >
+        {name}
+      </span>
+    </li>
   );
 };
 
@@ -28,6 +28,8 @@ PageLink.propTypes = {
   name: PropTypes.string.isRequired,
   icon: PropTypes.object.isRequired,
   href: PropTypes.string.isRequired,
+  isActive: PropTypes.bool,
+  onClick: PropTypes.func,
 };
 
 export default PageLink;
