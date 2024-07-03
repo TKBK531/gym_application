@@ -8,14 +8,20 @@ const SportCard = ({ sport, onClick, className }) => {
   return (
     <div
       onClick={onClick}
-      className={`flex flex-col w-full max-w-sm transition-all rounded-lg overflow-hidden shadow-xl bg-white m-4 duration-300 hover:shadow-2xl hover:-translate-y-1 ${className}`}
+      className={`relative flex flex-col w-full max-w-sm transition-all rounded-lg overflow-hidden shadow-xl bg-white m-4 duration-300 hover:shadow-2xl hover:-translate-y-1 ${className}`}
+      style={{
+        transition: "transform 0.3s ease-out, box-shadow 0.3s ease-out",
+      }} // Added inline style
     >
-      <div className="relative w-full h-56">
+      {/* Added group and perspective for better transitions */}
+      <div className="group relative w-full h-56 perspective-1000">
         <img
           src={imageUrl}
           alt={sport.label}
-          className="object-cover object-center w-full h-full hover:scale-105 transition-transform duration-300"
+          className="object-cover object-center w-full h-full transform transition duration-500 ease-out"
         />
+        {/* Added a subtle overlay effect on hover */}
+        <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition duration-500 ease-out"></div>
       </div>
       <div className="p-6 flex-grow">
         <h3 className="text-xl font-semibold mb-2 transition duration-300 hover:text-blue-500">
