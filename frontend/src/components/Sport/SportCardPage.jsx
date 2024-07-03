@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import api from "../../api";
-import SportAnnouncementsTab from "./SportAnnouncementsTab";
-import SportScheduleTab from "./SportScheduleTab";
-import SportTeamTab from "./SportTeamTab";
 import TabsButton from "../Buttons/TabsButton";
+import Announcements from "./Tabs/Announcements";
+import Team from "./Tabs/Team";
+import Schedule from "./Tabs/Schedule";
 
 const SportCardPage = () => {
   const [sportData, setSportData] = useState(null);
@@ -85,12 +85,10 @@ const SportCardPage = () => {
           </div>
 
           {selectedTab === "announcements" && (
-            <SportAnnouncementsTab sportData={sportData} />
+            <Announcements sportData={sportData} />
           )}
-          {selectedTab === "team" && <SportTeamTab sportData={sportData} />}
-          {selectedTab === "schedule" && (
-            <SportScheduleTab sportData={sportData} />
-          )}
+          {selectedTab === "team" && <Team sportData={sportData} />}
+          {selectedTab === "schedule" && <Schedule sportData={sportData} />}
         </>
       ) : (
         <div>Sport not found!</div>

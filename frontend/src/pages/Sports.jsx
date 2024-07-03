@@ -2,14 +2,12 @@ import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api";
 import SportCard from "../components/Sport/SportCard";
-import SportCardPopup from "../components/Sport/SportCardPopup";
 import { userTypes } from "../constants/index";
 
 const Sports = () => {
   const [allSports, setAllSports] = useState([]);
   const [loggedInUserType, setLoggedInUserType] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedSport, setSelectedSport] = useState(null);
 
   const navigate = useNavigate();
 
