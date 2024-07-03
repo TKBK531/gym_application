@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 const SportCardPopup = ({ onClose, sportData }) => {
+  const loggedInUser = JSON.parse(localStorage.getItem("userData"));
   const [isOpen, setIsOpen] = useState(true);
 
   useEffect(() => {
@@ -37,7 +38,11 @@ const SportCardPopup = ({ onClose, sportData }) => {
                     {sportData.label}
                   </h2>
                   <img
-                    src={sportData.image}
+                    src={
+                      sportData.image
+                        ? sportData.image
+                        : "http://127.0.0.1:8000/media/images/sport_images/baseball.webp"
+                    }
                     className="object-cover rounded-md object-center w-full h-[50vh] transform transition duration-500 ease-out"
                     alt=""
                   />

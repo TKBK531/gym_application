@@ -3,6 +3,7 @@ import api from "../api";
 import SportCard from "../components/Sport/SportCard";
 import SportCardPopup from "../components/Sport/SportCardPopup";
 import { userTypes } from "../constants/index";
+import SportCardPage from "../components/Sport/SportCardPage";
 
 const Sports = () => {
   const [allSports, setAllSports] = useState([]);

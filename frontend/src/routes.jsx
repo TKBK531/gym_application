@@ -1,9 +1,8 @@
-import { RouterProvider } from "react-router-dom";
-import "./App.css";
+import { createBrowserRouter } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import GoogleLoginLoading from "./components/Loading/GoogleLoginLoading";
 import {
-  // BaseLayout,
+  BaseLayout,
   Home,
   Events,
   Items,
@@ -16,14 +15,8 @@ import {
   PageNotFound,
 } from "./pages";
 import Register from "./pages/Register";
-import BaseLayout from "./components/Layouts/BaseLayout";
-import MembersGym from "./pages/MembersGym";
-import MembersGround from "./pages/MembersGround";
-import MembersPool from "./pages/MembersPool";
-import Table from "./components/Table";
 
-const router = createBrowserRouter([
-  // Dashboard route
+export const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: <BaseLayout />,
@@ -38,7 +31,7 @@ const router = createBrowserRouter([
       },
     ],
   },
-  // Events route
+
   {
     path: "/events",
     element: <BaseLayout />,
@@ -53,7 +46,6 @@ const router = createBrowserRouter([
       },
     ],
   },
-  // Items route
   {
     path: "/items",
     element: <BaseLayout />,
@@ -68,7 +60,6 @@ const router = createBrowserRouter([
       },
     ],
   },
-  // Reservations route
   {
     path: "/reservations",
     element: <BaseLayout />,
@@ -83,7 +74,6 @@ const router = createBrowserRouter([
       },
     ],
   },
-  // Members route
   {
     path: "/members",
     element: <BaseLayout />,
@@ -96,33 +86,8 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
-      {
-        path: "membersGym",
-        element: (
-          <ProtectedRoute>
-            <MembersGym />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "membersGround",
-        element: (
-          <ProtectedRoute>
-            <MembersGround />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "membersPool",
-        element: (
-          <ProtectedRoute>
-            <MembersPool />
-          </ProtectedRoute>
-        ),
-      },
     ],
   },
-  // Sports route
   {
     path: "/sports",
     element: <BaseLayout />,
@@ -137,7 +102,6 @@ const router = createBrowserRouter([
       },
     ],
   },
-  // Profile route
   {
     path: "/profile",
     element: <BaseLayout />,
@@ -152,31 +116,10 @@ const router = createBrowserRouter([
       },
     ],
   },
-  // Login, Logout, Register, and PageNotFound routes
-  {
-    path: "/table",
-    element: <BaseLayout />,
-    children: [
-      {
-        index: true,
-        element: (
-          <ProtectedRoute>
-            <Table />
-          </ProtectedRoute>
-        ),
-      },
-    ],
-  },
+  // Single routes not requiring nested structure
   { path: "/loading", element: <GoogleLoginLoading /> },
   { path: "/login", element: <Login /> },
   { path: "/logout", element: <Logout /> },
   { path: "/register", element: <Register /> },
   { path: "*", element: <PageNotFound /> },
 ]);
-import { router } from "./routes";
-
-function App() {
-  return <RouterProvider router={router} />;
-}
-
-export default App;
