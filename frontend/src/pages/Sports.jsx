@@ -1,15 +1,17 @@
 import { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../api";
 import SportCard from "../components/Sport/SportCard";
 import SportCardPopup from "../components/Sport/SportCardPopup";
 import { userTypes } from "../constants/index";
-import SportCardPage from "../components/Sport/SportCardPage";
 
 const Sports = () => {
   const [allSports, setAllSports] = useState([]);
   const [loggedInUserType, setLoggedInUserType] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSport, setSelectedSport] = useState(null);
+
+  const navigate = useNavigate();
 
   const filteredSports = allSports.filter((sport) =>
     sport.label.toLowerCase().includes(searchQuery.toLowerCase())
@@ -28,8 +30,12 @@ const Sports = () => {
 
   const handleSportClick = (sportId) => {
     const sport = allSports.find((sport) => sport.id === sportId);
-    setSelectedSport(sport);
-    console.log("Selected sport:", sport);
+    // setSelectedSport(sport);
+    // console.log("Selected sport:", sport);
+    console.log("Navigating to sport:", sport.id);
+    navigate(
+      `/sports/${sport.label.toLowerCase().replace(/\s+/g, "-")}?id=${sportId}`
+    );
   };
 
   const fetchAllSports = async () => {
@@ -91,12 +97,12 @@ const Sports = () => {
           )}
         </div>
       </section>
-      {selectedSport ? (
+      {/* {selectedSport ? (
         <SportCardPopup
           onClose={() => setSelectedSport(null)}
           sportData={selectedSport}
         />
-      ) : null}
+      ) : null} */}
     </>
   );
 };

@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import GoogleLoginLoading from "./components/Loading/GoogleLoginLoading";
+import SportCardPage from "./components/Sport/SportCardPage";
 import {
   BaseLayout,
   Home,
@@ -92,14 +93,8 @@ export const router = createBrowserRouter([
     path: "/sports",
     element: <BaseLayout />,
     children: [
-      {
-        index: true,
-        element: (
-          <ProtectedRoute>
-            <Sports />
-          </ProtectedRoute>
-        ),
-      },
+      { index: true, element: <Sports /> }, // Route for the main Sports list
+      { path: ":sportName", element: <SportCardPage /> }, // Dynamic route for sport pages
     ],
   },
   {
