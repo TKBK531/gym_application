@@ -6,14 +6,15 @@ const PageLink = ({ name, icon: Icon, href, isActive }) => {
   const { expanded } = useContext(LeftbarContext);
 
   return (
-    <li
-      className={`relative flex items-center py-3 pl-3 my-3 font-medium cursor-pointer transition-colors hover:bg-secondary-golden group ${
+    <a
+      href={href}
+      className={`flex pl-4 py-3 hover:bg-secondary-golden transition-colors ${
         isActive ? "bg-secondary-golden-shade-1 text-info-dark-blue" : ""
-      }
-      
-      `}
+      }`}
     >
-      <a href={href} className="flex">
+      <li
+        className={`relative flex items-center font-medium cursor-pointer  group`}
+      >
         <Icon size={25} className="mr-4" />
         <span
           className={`overflow-hidden transition-all ${
@@ -22,8 +23,8 @@ const PageLink = ({ name, icon: Icon, href, isActive }) => {
         >
           {name}
         </span>
-      </a>
-    </li>
+      </li>
+    </a>
   );
 };
 
