@@ -66,7 +66,7 @@ const SportCardPage = () => {
               ? sportData.in_charge_name
               : "No in charge assigned yet"}
           </p>
-          <div className="flex gap-2 my-4">
+          <div className="flex gap-2 mt-4">
             <TabsButton
               text="Announcements"
               isActive={selectedTab === "announcements"}
@@ -83,12 +83,13 @@ const SportCardPage = () => {
               onClick={() => changeSelectedTab("schedule")}
             />
           </div>
-
-          {selectedTab === "announcements" && (
-            <Announcements sportData={sportData} />
-          )}
-          {selectedTab === "team" && <Team sportData={sportData} />}
-          {selectedTab === "schedule" && <Schedule sportData={sportData} />}
+          <div>
+            {selectedTab === "announcements" && (
+              <Announcements sportData={sportData} />
+            )}
+            {selectedTab === "team" && <Team sportData={sportData} />}
+            {selectedTab === "schedule" && <Schedule sportData={sportData} />}
+          </div>
         </>
       ) : (
         <div>Sport not found!</div>

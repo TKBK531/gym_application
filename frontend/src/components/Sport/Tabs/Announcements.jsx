@@ -1,5 +1,9 @@
 const Announcements = () => {
-  return <div>Announcements</div>;
+  return (
+    <section>
+      <div>Announcements</div>
+    </section>
+  );
 };
 
 export default Announcements;

@@ -1,5 +1,9 @@
 const Schedule = () => {
-  return <div>Schedule</div>;
+  return (
+    <section>
+      <div>Schedule</div>
+    </section>
+  );
 };
 
 export default Schedule;
