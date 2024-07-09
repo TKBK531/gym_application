@@ -1,4 +1,5 @@
 from urllib.parse import urlencode
+from django.core.cache import cache
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User, Group
 from django.http import JsonResponse
@@ -12,6 +13,7 @@ from rest_framework.views import APIView
 from django.shortcuts import redirect
 from django.conf import settings
 from .permissions import IsAdminUserType
+from backend.utils import generate_unique_identifier
 
 from .serializers import (
     UserDataSerializer,
@@ -68,7 +70,7 @@ class GoogleLoginApi(APIView):
             return redirect(redirect_url)
 
         user = User.objects.get(email=user_data["email"])
-        group = Group.objects.get(name="internal")
+        group = Group.objects.get(name="student")
         user.groups.add(group)
         login(request, user)
 
@@ -317,3 +319,66 @@ class UserTypeUpdateView(generics.UpdateAPIView):
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+
+class UserRegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        user_data = request.data
+        # print(user_data)
+        serializer = self.get_serializer(data=user_data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        unique_identifier = generate_unique_identifier()
+        cache.set(unique_identifier, user, timeout=5500)
+
+        return_resp = {
+            "status": "success",
+            "message": "User info saved successfully.",
+            "identifier": unique_identifier,
+            "data": serializer.data,
+        }
+
+        return JsonResponse(
+            return_resp,
+            status=status.HTTP_200_OK,
+        )
+
+
+class UserProfileCreateView(generics.CreateAPIView):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        identifier = request.data.get("identifier")
+        user_data = cache.get(identifier)
+        # print("\n\nUser Data: ", user_data.email)
+        if not user_data:
+            return Response(
+                {"error": "Invalid or expired identifier."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user_data.save()
+
+        user = User.objects.get(email=user_data.email)
+
+        request.data["user"] = user.id
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return_resp = {
+            "status": "success",
+            "message": "UserProfile created successfully.",
+            "data": serializer.data,
+        }
+
+        return JsonResponse(
+            return_resp,
+            status=status.HTTP_201_CREATED,
+        )
