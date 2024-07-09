@@ -9,6 +9,8 @@ from .views import (
     UserRegisterView,
     UserProfileCreateView,
     CreateAcademicStaffUserView,
+    CreatePostgraduateUserView,
+    CreateUniversityStudentUserView,
 )
 
 urlpatterns = [
@@ -19,6 +21,16 @@ urlpatterns = [
         "register/profile/academic/",
         CreateAcademicStaffUserView.as_view(),
         name="academic",
+    ),
+    path(
+        "register/profile/postgraduate/",
+        CreatePostgraduateUserView.as_view(),
+        name="postgraduate",
+    ),
+    path(
+        "register/profile/student/",
+        CreateUniversityStudentUserView.as_view(),
+        name="student",
     ),
     path("login/", UserLoginView.as_view(), name="login"),
     path("profile/", UserProfileDetailView.as_view(), name="profile"),

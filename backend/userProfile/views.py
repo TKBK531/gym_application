@@ -22,8 +22,16 @@ from .serializers import (
     AuthSerializer,
     UserTypeUpdateSerializer,
     AcademicStaffSerializer,
+    PostgraduateUserSerializer,
+    UniversityStudentUserSerializer,
 )
-from .models import UserProfile, UserType, AcademicStaffUser
+from .models import (
+    UserProfile,
+    UserType,
+    AcademicStaffUser,
+    PostgraduateUser,
+    UniversityStudentUser,
+)
 from .services import get_user_data
 
 
@@ -401,6 +409,56 @@ class CreateAcademicStaffUserView(generics.CreateAPIView):
         return_resp = {
             "status": "success",
             "message": "Academic Staff User Info Added Successfully",
+            "data": serializer.data,
+        }
+
+        return JsonResponse(
+            return_resp,
+            status=status.HTTP_200_OK,
+        )
+
+
+class CreatePostgraduateUserView(generics.CreateAPIView):
+    queryset = PostgraduateUser.objects.all()
+    serializer_class = PostgraduateUserSerializer
+    permission_classes = [AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        serializer = self.get_serializer(data=data)
+        print(data)
+
+        serializer.is_valid(raise_exception=True)
+        postgraduate_user = serializer.save()
+
+        return_resp = {
+            "status": "success",
+            "message": "Postgraduate User Info Added Successfully",
+            "data": serializer.data,
+        }
+
+        return JsonResponse(
+            return_resp,
+            status=status.HTTP_200_OK,
+        )
+
+
+class CreateUniversityStudentUserView(generics.CreateAPIView):
+    queryset = UniversityStudentUser.objects.all()
+    serializer_class = UniversityStudentUserSerializer
+    permission_classes = [AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        serializer = self.get_serializer(data=data)
+        print(data)
+
+        serializer.is_valid(raise_exception=True)
+        university_student_user = serializer.save()
+
+        return_resp = {
+            "status": "success",
+            "message": "University Student User Info Added Successfully",
             "data": serializer.data,
         }
 

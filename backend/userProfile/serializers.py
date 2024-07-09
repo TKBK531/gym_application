@@ -1,6 +1,14 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
-from .models import City, UserProfile, UserType, AcademicStaffUser, Faculty
+from .models import (
+    City,
+    UserProfile,
+    UserType,
+    AcademicStaffUser,
+    Faculty,
+    PostgraduateUser,
+    UniversityStudentUser,
+)
 from django.core.exceptions import ValidationError
 
 
@@ -148,6 +156,69 @@ class AcademicStaffSerializer(serializers.ModelSerializer):
         validated_data["user"] = user
         validated_data["faculty"] = faculty
         print(validated_data)
+        return super().create(validated_data)
+
+
+class PostgraduateUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostgraduateUser
+        fields = [
+            "user",
+            "pg_registration_number",
+            "pg_commencement_date",
+        ]
+
+    def validate_user(self, value):
+        if PostgraduateUser.objects.filter(user=value).exists():
+            raise ValidationError("User already has a Postgraduate User Account.")
+        return value
+
+    def validate_pg_registration_number(self, value):
+        if PostgraduateUser.objects.filter(pg_registration_number=value).exists():
+            raise ValidationError(
+                "An account with the same registration number already exists."
+            )
+        return value
+
+    def create(self, validated_data):
+        user = validated_data["user"]
+        if isinstance(user, int):
+            user = UserProfile.objects.get(pk=user)
+
+        validated_data["user"] = user
+        return super().create(validated_data)
+
+
+class UniversityStudentUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UniversityStudentUser
+        fields = [
+            "user",
+            "registration_number",
+            "faculty",
+        ]
+
+    def validate_user(self, value):
+        if UniversityStudentUser.objects.filter(user=value).exists():
+            raise ValidationError("User already has a University Student Account.")
+        return value
+
+    def validate_registration_number(self, value):
+        if UniversityStudentUser.objects.filter(registration_number=value).exists():
+            raise ValidationError(
+                "An account with the same registration number already exists."
+            )
+        return value
+
+    def create(self, validated_data):
+        user = validated_data["user"]
+        faculty = validated_data["faculty"]
+        if isinstance(user, int) and isinstance(faculty, int):
+            user = UserProfile.objects.get(pk=user)
+            faculty = Faculty.objects.get(pk=faculty)
+
+        validated_data["user"] = user
+        validated_data["faculty"] = faculty
         return super().create(validated_data)
 
 

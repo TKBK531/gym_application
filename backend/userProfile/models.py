@@ -60,8 +60,8 @@ class AcademicStaffUser(models.Model):
 class PostgraduateUser(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     pg_registration_number = models.CharField(max_length=15)
-    pg_commencement_date = models.DateField()
-    pg_completion_date = models.DateField()
+    pg_commencement_date = models.DateField(blank=True, null=True)
+    pg_completion_date = models.DateField(blank=True, null=True)
 
     def __str__(self):
         return f"{self.user_profile.user.first_name}'s Postgraduate User Profile"
