@@ -7,7 +7,9 @@ def populate_usertype(apps, schema_editor):
 
     UserType.objects.bulk_create(
         [
-            UserType(name="internal"),
+            UserType(name="student"),
+            UserType(name="academic"),
+            UserType(name="postgraduate"),
             UserType(name="external"),
             UserType(name="staff"),
             UserType(name="admin"),
