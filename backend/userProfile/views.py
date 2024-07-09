@@ -1,8 +1,11 @@
+from django.conf import settings
 from urllib.parse import urlencode
 from django.core.cache import cache
+from django.http import JsonResponse
+from django.shortcuts import redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User, Group
-from django.http import JsonResponse
+
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -10,10 +13,9 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.exceptions import NotFound, PermissionDenied
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
-from django.shortcuts import redirect
-from django.conf import settings
-from .permissions import IsAdminUserType
+
 from backend.utils import generate_unique_identifier
+from .permissions import IsAdminUserType
 
 from .serializers import (
     UserDataSerializer,
@@ -35,6 +37,8 @@ from .models import (
 from .services import get_user_data
 
 
+# --------------------------------Creation Views--------------------------------
+# -------------UserCreateView-------------
 class UserCreateView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -61,6 +65,151 @@ class UserCreateView(generics.CreateAPIView):
         return Response(response_data, status=status.HTTP_201_CREATED, headers=headers)
 
 
+# -------------UserRegisterView-------------
+class UserRegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        user_data = request.data
+        # print(user_data)
+        serializer = self.get_serializer(data=user_data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        unique_identifier = generate_unique_identifier()
+        cache.set(unique_identifier, user, timeout=5500)
+
+        return_resp = {
+            "status": "success",
+            "message": "User info saved successfully.",
+            "identifier": unique_identifier,
+            "data": serializer.data,
+        }
+
+        return JsonResponse(
+            return_resp,
+            status=status.HTTP_200_OK,
+        )
+
+
+# -------------UserProfileCreateView-------------
+class UserProfileCreateView(generics.CreateAPIView):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        identifier = request.data.get("identifier")
+        user_data = cache.get(identifier)
+        # print("\n\nUser Data: ", user_data.email)
+        if not user_data:
+            return Response(
+                {"error": "Invalid or expired identifier."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user_data.save()
+
+        user = User.objects.get(email=user_data.email)
+
+        request.data["user"] = user.id
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return_resp = {
+            "status": "success",
+            "message": "UserProfile created successfully.",
+            "data": serializer.data,
+        }
+
+        return JsonResponse(
+            return_resp,
+            status=status.HTTP_201_CREATED,
+        )
+
+
+# -------------CreateAcademicStaffUserView-------------
+class CreateAcademicStaffUserView(generics.CreateAPIView):
+    queryset = AcademicStaffUser.objects.all()
+    serializer_class = AcademicStaffSerializer
+    permission_classes = [AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        serializer = self.get_serializer(data=data)
+        print(data)
+
+        serializer.is_valid(raise_exception=True)
+        academic_staff_user = serializer.save()
+
+        return_resp = {
+            "status": "success",
+            "message": "Academic Staff User Info Added Successfully",
+            "data": serializer.data,
+        }
+
+        return JsonResponse(
+            return_resp,
+            status=status.HTTP_200_OK,
+        )
+
+
+# -------------CreatePostgraduateUserView-------------
+class CreatePostgraduateUserView(generics.CreateAPIView):
+    queryset = PostgraduateUser.objects.all()
+    serializer_class = PostgraduateUserSerializer
+    permission_classes = [AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        serializer = self.get_serializer(data=data)
+        print(data)
+
+        serializer.is_valid(raise_exception=True)
+        postgraduate_user = serializer.save()
+
+        return_resp = {
+            "status": "success",
+            "message": "Postgraduate User Info Added Successfully",
+            "data": serializer.data,
+        }
+
+        return JsonResponse(
+            return_resp,
+            status=status.HTTP_200_OK,
+        )
+
+
+# -------------CreateUniversityStudentUserView-------------
+class CreateUniversityStudentUserView(generics.CreateAPIView):
+    queryset = UniversityStudentUser.objects.all()
+    serializer_class = UniversityStudentUserSerializer
+    permission_classes = [AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        serializer = self.get_serializer(data=data)
+        print(data)
+
+        serializer.is_valid(raise_exception=True)
+        university_student_user = serializer.save()
+
+        return_resp = {
+            "status": "success",
+            "message": "University Student User Info Added Successfully",
+            "data": serializer.data,
+        }
+
+        return JsonResponse(
+            return_resp,
+            status=status.HTTP_200_OK,
+        )
+
+
+# --------------------------------User Authentication Views--------------------------------
+# -------------GoogleLoginApi-------------
 class GoogleLoginApi(APIView):
     permission_classes = [AllowAny]
 
@@ -92,6 +241,7 @@ class GoogleLoginApi(APIView):
         return redirect(redirect_url)
 
 
+# -------------UserLoginView-------------
 class UserLoginView(generics.GenericAPIView):
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
@@ -144,6 +294,8 @@ class UserLoginView(generics.GenericAPIView):
             )
 
 
+# --------------------------------User Profile Views--------------------------------
+# -------------UserProfileDetailView-------------
 class UserProfileDetailView(generics.RetrieveAPIView):
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
@@ -204,6 +356,48 @@ class UserProfileDetailView(generics.RetrieveAPIView):
         return JsonResponse(response_data, status=status.HTTP_200_OK)
 
 
+# -------------UserListView-------------
+class UserListView(generics.ListAPIView):
+    serializer_class = UserDataSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = PageNumberPagination
+
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return UserProfile.objects.all()
+        else:
+            return UserProfile.objects.none()
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        if not request.user.groups.filter(name="admin").exists():
+            return Response(
+                {
+                    "status": "error",
+                    "message": "You do not have permission to perform this action.",
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(
+            {
+                "status": "success",
+                "message": "All profiles retrieved successfully.",
+                "data": serializer.data,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+# --------------------------------Update Views--------------------------------
+# -------------UserProfileUpdateView-------------
 class UserProfileUpdateView(generics.UpdateAPIView):
     serializer_class = UserDataSerializer
     permission_classes = [IsAuthenticated]
@@ -244,45 +438,7 @@ class UserProfileUpdateView(generics.UpdateAPIView):
             )
 
 
-class UserListView(generics.ListAPIView):
-    serializer_class = UserDataSerializer
-    permission_classes = [IsAuthenticated]
-    pagination_class = PageNumberPagination
-
-    def get_queryset(self):
-        if self.request.user.is_superuser:
-            return UserProfile.objects.all()
-        else:
-            return UserProfile.objects.none()
-
-    def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-
-        if not request.user.groups.filter(name="admin").exists():
-            return Response(
-                {
-                    "status": "error",
-                    "message": "You do not have permission to perform this action.",
-                },
-                status=status.HTTP_403_FORBIDDEN,
-            )
-
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(
-            {
-                "status": "success",
-                "message": "All profiles retrieved successfully.",
-                "data": serializer.data,
-            },
-            status=status.HTTP_200_OK,
-        )
-
-
+# -------------UserTypeUpdateView-------------
 class UserTypeUpdateView(generics.UpdateAPIView):
     queryset = UserProfile.objects.all()
     serializer_class = UserTypeUpdateSerializer
@@ -328,141 +484,3 @@ class UserTypeUpdateView(generics.UpdateAPIView):
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
-
-
-class UserRegisterView(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [AllowAny]
-
-    def create(self, request, *args, **kwargs):
-        user_data = request.data
-        # print(user_data)
-        serializer = self.get_serializer(data=user_data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-        unique_identifier = generate_unique_identifier()
-        cache.set(unique_identifier, user, timeout=5500)
-
-        return_resp = {
-            "status": "success",
-            "message": "User info saved successfully.",
-            "identifier": unique_identifier,
-            "data": serializer.data,
-        }
-
-        return JsonResponse(
-            return_resp,
-            status=status.HTTP_200_OK,
-        )
-
-
-class UserProfileCreateView(generics.CreateAPIView):
-    queryset = UserProfile.objects.all()
-    serializer_class = UserProfileSerializer
-    permission_classes = [AllowAny]
-
-    def create(self, request, *args, **kwargs):
-        identifier = request.data.get("identifier")
-        user_data = cache.get(identifier)
-        # print("\n\nUser Data: ", user_data.email)
-        if not user_data:
-            return Response(
-                {"error": "Invalid or expired identifier."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        user_data.save()
-
-        user = User.objects.get(email=user_data.email)
-
-        request.data["user"] = user.id
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-        return_resp = {
-            "status": "success",
-            "message": "UserProfile created successfully.",
-            "data": serializer.data,
-        }
-
-        return JsonResponse(
-            return_resp,
-            status=status.HTTP_201_CREATED,
-        )
-
-
-class CreateAcademicStaffUserView(generics.CreateAPIView):
-    queryset = AcademicStaffUser.objects.all()
-    serializer_class = AcademicStaffSerializer
-    permission_classes = [AllowAny]
-
-    def create(self, request, *args, **kwargs):
-        data = request.data
-        serializer = self.get_serializer(data=data)
-        print(data)
-
-        serializer.is_valid(raise_exception=True)
-        academic_staff_user = serializer.save()
-
-        return_resp = {
-            "status": "success",
-            "message": "Academic Staff User Info Added Successfully",
-            "data": serializer.data,
-        }
-
-        return JsonResponse(
-            return_resp,
-            status=status.HTTP_200_OK,
-        )
-
-
-class CreatePostgraduateUserView(generics.CreateAPIView):
-    queryset = PostgraduateUser.objects.all()
-    serializer_class = PostgraduateUserSerializer
-    permission_classes = [AllowAny]
-
-    def create(self, request, *args, **kwargs):
-        data = request.data
-        serializer = self.get_serializer(data=data)
-        print(data)
-
-        serializer.is_valid(raise_exception=True)
-        postgraduate_user = serializer.save()
-
-        return_resp = {
-            "status": "success",
-            "message": "Postgraduate User Info Added Successfully",
-            "data": serializer.data,
-        }
-
-        return JsonResponse(
-            return_resp,
-            status=status.HTTP_200_OK,
-        )
-
-
-class CreateUniversityStudentUserView(generics.CreateAPIView):
-    queryset = UniversityStudentUser.objects.all()
-    serializer_class = UniversityStudentUserSerializer
-    permission_classes = [AllowAny]
-
-    def create(self, request, *args, **kwargs):
-        data = request.data
-        serializer = self.get_serializer(data=data)
-        print(data)
-
-        serializer.is_valid(raise_exception=True)
-        university_student_user = serializer.save()
-
-        return_resp = {
-            "status": "success",
-            "message": "University Student User Info Added Successfully",
-            "data": serializer.data,
-        }
-
-        return JsonResponse(
-            return_resp,
-            status=status.HTTP_200_OK,
-        )
