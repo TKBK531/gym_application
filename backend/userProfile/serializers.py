@@ -121,6 +121,22 @@ class AcademicStaffSerializer(serializers.ModelSerializer):
             "upf_number",
         ]
 
+    def validate_user(self, value):
+        if AcademicStaffUser.objects.filter(user=value).exists():
+            raise ValidationError("User already has an Academic staff Account.")
+        return value
+
+    def validate_upf_number(self, value):
+        if AcademicStaffUser.objects.filter(upf_number=value).exists():
+            raise ValidationError("An account with the same UPF number already exists.")
+        return value
+
+    def validate_faculty(self, value):
+        if Faculty.objects.filter(pk=value.id).exists():
+            return value
+        else:
+            raise ValidationError("Faculty does not exist.")
+
     def create(self, validated_data):
         user = validated_data["user"]
         faculty = validated_data["faculty"]

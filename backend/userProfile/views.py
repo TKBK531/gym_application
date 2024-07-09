@@ -394,8 +394,8 @@ class CreateAcademicStaffUserView(generics.CreateAPIView):
         data = request.data
         serializer = self.get_serializer(data=data)
         print(data)
-        serializer.is_valid(raise_exception=True)
 
+        serializer.is_valid(raise_exception=True)
         academic_staff_user = serializer.save()
 
         return_resp = {

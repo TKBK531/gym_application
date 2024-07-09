@@ -54,7 +54,7 @@ class AcademicStaffUser(models.Model):
     upf_number = models.CharField(max_length=15)
 
     def __str__(self):
-        return f"{self.user_profile.user.first_name}'s Academic User Profile"
+        return f"{self.user.first_name}'s Academic User Profile"
 
 
 class PostgraduateUser(models.Model):
