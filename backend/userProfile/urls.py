@@ -8,12 +8,18 @@ from .views import (
     UserTypeUpdateView,
     UserRegisterView,
     UserProfileCreateView,
+    CreateAcademicStaffUserView,
 )
 
 urlpatterns = [
     path("register/", UserCreateView.as_view(), name="register"),
     path("register2/", UserRegisterView.as_view(), name="register2"),
     path("register/profile/", UserProfileCreateView.as_view(), name="register-profile"),
+    path(
+        "register/profile/academic/",
+        CreateAcademicStaffUserView.as_view(),
+        name="academic",
+    ),
     path("login/", UserLoginView.as_view(), name="login"),
     path("profile/", UserProfileDetailView.as_view(), name="profile"),
     path("profile/<int:pk>/", UserProfileDetailView.as_view(), name="profile-detail"),

@@ -38,7 +38,7 @@ class UserProfile(models.Model):
     national_id = models.CharField(max_length=15, null=False, blank=False)
     contact = models.CharField(max_length=10)
     profile_picture = models.TextField(null=True, blank=True)
-    user_type = models.ForeignKey(UserType, on_delete=models.CASCADE, default=1)
+    user_type = models.ForeignKey(UserType, on_delete=models.CASCADE, default=4)
     city = models.ForeignKey(City, on_delete=models.CASCADE, null=True, blank=True)
     address = models.CharField(max_length=250, null=True, blank=True)
     date_of_birth = models.DateField()
@@ -48,7 +48,7 @@ class UserProfile(models.Model):
 
 
 class AcademicStaffUser(models.Model):
-    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE)
     date_of_appointment = models.DateField()
     upf_number = models.CharField(max_length=15)
@@ -58,7 +58,7 @@ class AcademicStaffUser(models.Model):
 
 
 class PostgraduateUser(models.Model):
-    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     pg_registration_number = models.CharField(max_length=15)
     pg_commencement_date = models.DateField()
     pg_completion_date = models.DateField()
@@ -68,7 +68,7 @@ class PostgraduateUser(models.Model):
 
 
 class UniversityStudentUser(models.Model):
-    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     registration_number = models.CharField(max_length=15)
     faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE)
 

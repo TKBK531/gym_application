@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
-from .models import City, UserProfile, UserType
+from .models import City, UserProfile, UserType, AcademicStaffUser, Faculty
 from django.core.exceptions import ValidationError
 
 
@@ -88,6 +88,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
         if isinstance(user_type, str) and isinstance(city, str):
             user_type = UserType.objects.get(name=user_type)
             city = City.objects.get(label=city)
+            validated_data["user_type"] = user_type
+            validated_data["city"] = city
 
         user_profile = super().create(validated_data)
         self.assign_user_to_group(user_profile, user_type)
@@ -107,6 +109,30 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
         user_profile.user.groups.clear()
         user_profile.user.groups.add(group)
+
+
+class AcademicStaffSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AcademicStaffUser
+        fields = [
+            "user",
+            "faculty",
+            "date_of_appointment",
+            "upf_number",
+        ]
+
+    def create(self, validated_data):
+        user = validated_data["user"]
+        faculty = validated_data["faculty"]
+        print(user, faculty)
+        if isinstance(user, int) and isinstance(faculty, int):
+            user = UserProfile.objects.get(pk=user)
+            faculty = Faculty.objects.get(pk=faculty)
+
+        validated_data["user"] = user
+        validated_data["faculty"] = faculty
+        print(validated_data)
+        return super().create(validated_data)
 
 
 # class UserSerializer(serializers.ModelSerializer):

@@ -21,8 +21,9 @@ from .serializers import (
     UserProfileSerializer,
     AuthSerializer,
     UserTypeUpdateSerializer,
+    AcademicStaffSerializer,
 )
-from .models import UserProfile, UserType
+from .models import UserProfile, UserType, AcademicStaffUser
 from .services import get_user_data
 
 
@@ -381,4 +382,29 @@ class UserProfileCreateView(generics.CreateAPIView):
         return JsonResponse(
             return_resp,
             status=status.HTTP_201_CREATED,
+        )
+
+
+class CreateAcademicStaffUserView(generics.CreateAPIView):
+    queryset = AcademicStaffUser.objects.all()
+    serializer_class = AcademicStaffSerializer
+    permission_classes = [AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        serializer = self.get_serializer(data=data)
+        print(data)
+        serializer.is_valid(raise_exception=True)
+
+        academic_staff_user = serializer.save()
+
+        return_resp = {
+            "status": "success",
+            "message": "Academic Staff User Info Added Successfully",
+            "data": serializer.data,
+        }
+
+        return JsonResponse(
+            return_resp,
+            status=status.HTTP_200_OK,
         )
