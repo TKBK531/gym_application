@@ -37,7 +37,9 @@ class UserProfile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     national_id = models.CharField(max_length=15, null=False, blank=False)
     contact = models.CharField(max_length=10)
-    profile_picture = models.TextField(null=True, blank=True)
+    profile_picture = models.ImageField(
+        null=True, blank=True, upload_to="images/profile_images/"
+    )
     user_type = models.ForeignKey(UserType, on_delete=models.CASCADE, default=4)
     city = models.ForeignKey(City, on_delete=models.CASCADE, null=True, blank=True)
     address = models.CharField(max_length=250, null=True, blank=True)
