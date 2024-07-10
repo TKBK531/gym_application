@@ -8,14 +8,18 @@ import { formStyles } from "../../styles";
 import PrimaryButton from "../Buttons/PrimaryButton";
 import { cities, provinces } from "../../constants/index";
 import PropTypes from "prop-types";
+import api from "../../api";
+import { useNavigate } from "react-router-dom";
 
 const RegistrationForm2 = ({ respData }) => {
+  const navigate = useNavigate();
   const [profilePicturePreview, setProfilePicturePreview] = useState(null);
   // eslint-disable-next-line no-unused-vars
   const [selectedProvince, setSelectedProvince] = useState("");
   const [filteredCities, setFilteredCities] = useState([]);
   const [showCityDropdown, setShowCityDropdown] = useState(false);
   const emptyImg = emptyProfileImg;
+
   useEffect(() => {
     if (selectedProvince) {
       const filtered = cities.filter(
@@ -69,17 +73,32 @@ const RegistrationForm2 = ({ respData }) => {
   };
 
   const handleSubmit = async (values) => {
-    const data = {
-      identifier: respData.identifier,
-      profile_picture: values.profile_picture,
-      national_id: values.national_id,
-      contact: values.contact,
-      date_of_birth: values.date_of_birth,
-      province: values.province,
-      city: values.city,
-    };
+    const formData = new FormData();
+    formData.append("identifier", respData.identifier);
+    formData.append("profile_picture", values.profile_picture);
+    formData.append("national_id", values.national_id);
+    formData.append("contact", values.contact);
+    formData.append("date_of_birth", values.date_of_birth);
+    formData.append("province", values.province);
+    formData.append("city", values.city);
+    formData.append("user_type", "4");
 
-    console.log(data);
+    try {
+      const response = await api.post("/user/register/profile/", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log("User registration response", response);
+      if (response.status === 201) {
+        console.log("User registered successfully");
+        navigate("/login");
+      } else {
+        console.log("User registration failed");
+      }
+    } catch (error) {
+      console.error("Registration error", error);
+    }
   };
 
   return (
