@@ -1,5 +1,6 @@
 import { formStyles } from "../styles";
 import RegistrationForm from "../components/Forms/RegistrationForm";
+import RegistrationForm1 from "../components/Forms/RegistrationForm1";
 
 const Register = () => {
   return (
@@ -12,7 +13,7 @@ const Register = () => {
             Log in
           </a>
         </p>
-        <RegistrationForm />
+        <RegistrationForm1 />
       </div>
     </section>
   );
