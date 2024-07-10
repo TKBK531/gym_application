@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import emptyProfileImg from "../../assets/profile/empty_profile_pic.png";
@@ -6,10 +6,28 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
 import { formStyles } from "../../styles";
 import PrimaryButton from "../Buttons/PrimaryButton";
+import { cities, provinces } from "../../constants/index";
+import PropTypes from "prop-types";
 
-const RegistrationForm2 = () => {
+const RegistrationForm2 = ({ respData }) => {
   const [profilePicturePreview, setProfilePicturePreview] = useState(null);
+  // eslint-disable-next-line no-unused-vars
+  const [selectedProvince, setSelectedProvince] = useState("");
+  const [filteredCities, setFilteredCities] = useState([]);
+  const [showCityDropdown, setShowCityDropdown] = useState(false);
   const emptyImg = emptyProfileImg;
+  useEffect(() => {
+    if (selectedProvince) {
+      const filtered = cities.filter(
+        (city) => city.province === selectedProvince
+      );
+      setFilteredCities(filtered);
+      setShowCityDropdown(true);
+    } else {
+      setShowCityDropdown(false);
+    }
+  }, [selectedProvince]);
+
   const initialValues = {
     national_id: "",
     contact: "",
@@ -20,9 +38,22 @@ const RegistrationForm2 = () => {
   };
 
   const validationSchema = Yup.object().shape({
-    national_id: Yup.string().required("National ID is required"),
+    national_id: Yup.string()
+      .required("National ID is required")
+      .matches(/^(\d{9}[Vv]|\d{12})$/, "Not a Valid ID Number"),
     contact: Yup.string().required("Contact is required"),
-    date_of_birth: Yup.date().required("Date of Birth is required"),
+    date_of_birth: Yup.date()
+      .required("Date of Birth is required")
+      .test("age", "Invalid birthdate", (value) => {
+        const today = new Date();
+        const birthDate = new Date(value);
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+          age--;
+        }
+        return age > 10 && age < 100;
+      }),
     province: Yup.string().required("Province is required"),
     city: Yup.string().required("City is required"),
   });
@@ -37,13 +68,25 @@ const RegistrationForm2 = () => {
     reader.readAsDataURL(file);
   };
 
+  const handleSubmit = async (values) => {
+    const data = {
+      identifier: respData.identifier,
+      profile_picture: values.profile_picture,
+      national_id: values.national_id,
+      contact: values.contact,
+      date_of_birth: values.date_of_birth,
+      province: values.province,
+      city: values.city,
+    };
+
+    console.log(data);
+  };
+
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      onSubmit={(values) => {
-        console.log(values);
-      }}
+      onSubmit={handleSubmit}
     >
       {({ setFieldValue }) => (
         <Form className="space-y-4">
@@ -114,9 +157,22 @@ const RegistrationForm2 = () => {
             name="province"
             as="select"
             className={`${formStyles.formTextInput}`}
+            onChange={(e) => {
+              setFieldValue("province", e.target.value);
+              const filtered = cities.filter(
+                (city) => city.province === e.target.value
+              );
+              setFilteredCities(filtered);
+              setShowCityDropdown(true);
+              setFieldValue("city", "");
+            }}
           >
-            <option value="">Select Province</option>
-            {/* Populate with actual province options */}
+            <option value="" label="Select Province" />
+            {provinces.map((province) => (
+              <option key={province.id} value={province.label}>
+                {province.label}
+              </option>
+            ))}
           </Field>
           <ErrorMessage
             name="province"
@@ -124,23 +180,37 @@ const RegistrationForm2 = () => {
             className={`${formStyles.formError}`}
           />
 
-          <Field
-            name="city"
-            type="text"
-            className={`${formStyles.formTextInput}`}
-            placeholder="City"
-          />
-          <ErrorMessage
-            name="city"
-            component="div"
-            className={`${formStyles.formError}`}
-          />
+          {showCityDropdown && (
+            <>
+              <Field
+                as="select"
+                name="city"
+                className={`${formStyles.formTextInput}`}
+              >
+                <option value="" label="Select city" />
+                {filteredCities.map((city) => (
+                  <option key={city.pk} value={city.pk}>
+                    {city.label}
+                  </option>
+                ))}
+              </Field>
+              <ErrorMessage
+                name="city"
+                component="div"
+                className={`${formStyles.formError}`}
+              />
+            </>
+          )}
 
           <PrimaryButton type="submit" text="Finish" />
         </Form>
       )}
     </Formik>
   );
+};
+
+RegistrationForm2.propTypes = {
+  respData: PropTypes.object,
 };
 
 export default RegistrationForm2;

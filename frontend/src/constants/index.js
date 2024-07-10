@@ -78,6 +78,45 @@ const pageLinks = [
   { index: 6, icon: Medal, name: "Sports", href: "/sports" },
 ];
 
+export const provinces = [
+  {
+    id: 1,
+    label: "Central",
+  },
+  {
+    id: 2,
+    label: "Eastern",
+  },
+  {
+    id: 3,
+    label: "North Central",
+  },
+  {
+    id: 4,
+    label: "Northern",
+  },
+  {
+    id: 5,
+    label: "North Western",
+  },
+  {
+    id: 6,
+    label: "Sabaragamuwa",
+  },
+  {
+    id: 7,
+    label: "Southern",
+  },
+  {
+    id: 8,
+    label: "Uva",
+  },
+  {
+    id: 9,
+    label: "Western",
+  },
+];
+
 export const cities = [
   { pk: 1, label: "Kandy", province: "Central" },
   { pk: 2, label: "Matale", province: "Central" },

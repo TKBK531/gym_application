@@ -4,7 +4,7 @@ import RegistrationForm1 from "../components/Forms/RegistrationForm1";
 import RegistrationForm2 from "../components/Forms/RegistrationForm2";
 
 const Register = () => {
-  const [page_number, setPageNumber] = useState(2);
+  const [page_number, setPageNumber] = useState(1);
   const [respData, setRespData] = useState({});
   return (
     <section className="flex justify-center items-center h-screen bg-gray-100">
@@ -23,7 +23,7 @@ const Register = () => {
             setRespData={setRespData}
           />
         ) : (
-          <RegistrationForm2 />
+          <RegistrationForm2 respData={respData} />
         )}
       </div>
     </section>
