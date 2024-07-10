@@ -6,6 +6,7 @@ from .models import (
     City,
     AcademicStaffUser,
     PostgraduateUser,
+    UniversityStudentUser,
     Faculty,
 )
 
@@ -90,3 +91,12 @@ class PostgraduateUserAdmin(admin.ModelAdmin):
         "user__username",
         "pg_registration_number",
     )
+
+
+@admin.register(UniversityStudentUser)
+class UniversityStudentUserAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "user",
+    )
+    search_fields = ("user__username",)

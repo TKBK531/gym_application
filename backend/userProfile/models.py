@@ -64,7 +64,7 @@ class PostgraduateUser(models.Model):
     pg_completion_date = models.DateField(blank=True, null=True)
 
     def __str__(self):
-        return f"{self.user_profile.user.first_name}'s Postgraduate User Profile"
+        return f"{self.user.first_name}'s Postgraduate User Profile"
 
 
 class UniversityStudentUser(models.Model):
@@ -73,4 +73,4 @@ class UniversityStudentUser(models.Model):
     faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.user_profile.user.first_name}'s University Student User Profile"
+        return f"{self.user.first_name}'s University Student User Profile"
