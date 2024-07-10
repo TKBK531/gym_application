@@ -11,6 +11,8 @@ from .views import (
     CreateAcademicStaffUserView,
     CreatePostgraduateUserView,
     CreateUniversityStudentUserView,
+    ProvinceListView,
+    CityListView,
 )
 
 urlpatterns = [
@@ -42,4 +44,6 @@ urlpatterns = [
         UserTypeUpdateView.as_view(),
         name="profile-type-update",
     ),
+    path("provinces/", ProvinceListView.as_view(), name="provinces"),
+    path("cities/", CityListView.as_view(), name="cities"),
 ]

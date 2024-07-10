@@ -21,6 +21,8 @@ from .serializers import (
     UserDataSerializer,
     UserSerializer,
     UserProfileSerializer,
+    ProvinceSerializer,
+    City,
     AuthSerializer,
     UserTypeUpdateSerializer,
     AcademicStaffSerializer,
@@ -33,6 +35,8 @@ from .models import (
     AcademicStaffUser,
     PostgraduateUser,
     UniversityStudentUser,
+    Province,
+    City,
 )
 from .services import get_user_data
 
@@ -484,3 +488,43 @@ class UserTypeUpdateView(generics.UpdateAPIView):
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+
+# -------------ProvinceListView-------------
+class ProvinceListView(generics.ListAPIView):
+    queryset = Province.objects.all()
+    serializer_class = ProvinceSerializer
+    permission_classes = [AllowAny]
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+
+        return JsonResponse(
+            {
+                "status": "success",
+                "message": "Provinces retrieved successfully.",
+                "data": serializer.data,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+# -------------CityListView-------------
+class CityListView(generics.ListAPIView):
+    queryset = City.objects.all()
+    serializer_class = ProvinceSerializer
+    permission_classes = [AllowAny]
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+
+        return JsonResponse(
+            {
+                "status": "success",
+                "message": "Cities retrieved successfully.",
+                "data": serializer.data,
+            },
+            status=status.HTTP_200_OK,
+        )

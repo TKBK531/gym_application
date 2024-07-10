@@ -2,6 +2,7 @@ from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 from .models import (
     City,
+    Province,
     UserProfile,
     UserType,
     AcademicStaffUser,
@@ -370,3 +371,22 @@ class UserDataSerializer(serializers.ModelSerializer):
 
 class UserTypeUpdateSerializer(serializers.Serializer):
     user_type = serializers.CharField()
+
+
+class ProvinceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Province
+        fields = [
+            "id",
+            "label",
+        ]
+
+
+class CitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = City
+        fields = [
+            "id",
+            "province",
+            "label",
+        ]
