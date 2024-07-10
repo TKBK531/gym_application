@@ -349,7 +349,7 @@ const RegistrationForm = () => {
 
             {/* (Submit Button) */}
             <div className="flex flex-col justify-center items-center">
-              <PrimaryButton type="submit" text="Next" />
+              <PrimaryButton type="submit" text="Create Account" />
               <GoogleLoginButton />
             </div>
           </Form>

@@ -4,8 +4,9 @@ import GoogleLoginButton from "../Buttons/GoogleLoginButton";
 import * as Yup from "yup";
 import { formStyles } from "../../styles";
 import api from "../../api";
+import PropTypes from "prop-types";
 
-const RegistrationForm1 = () => {
+const RegistrationForm1 = ({ setPageNumber, setRespData }) => {
   // Validation Schema
   const validationSchema = Yup.object().shape({
     firstName: Yup.string().required("First Name is required"),
@@ -41,6 +42,8 @@ const RegistrationForm1 = () => {
 
     const response = await api.post("/user/register2/", data);
     console.log(response.data);
+    setRespData(response.data);
+    setPageNumber(2);
   };
 
   return (
@@ -165,6 +168,11 @@ const RegistrationForm1 = () => {
       )}
     </Formik>
   );
+};
+
+RegistrationForm1.propTypes = {
+  setPageNumber: PropTypes.func.isRequired,
+  setRespData: PropTypes.func.isRequired,
 };
 
 export default RegistrationForm1;
