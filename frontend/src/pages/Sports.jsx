@@ -15,11 +15,6 @@ const Sports = () => {
   const initialFetchComplete = useRef(false);
 
   useEffect(() => {
-    const userType = getLoggedInUserType();
-    // console.log(userType);
-
-    setLoggedInUserType(userType.name);
-    console.log("User type:", userType.name);
     fetchAllSports();
   }, []);
 
@@ -36,7 +31,8 @@ const Sports = () => {
       const response = await api.get("/sport/all-sports/");
       if (response.data.status === "success") {
         setAllSports(response.data.data);
-        initialFetchComplete.current = true; // Mark fetch as done
+        initialFetchComplete.current = true;
+        getLoggedInUserType();
       }
     } catch (error) {
       console.error("Error fetching all profiles:", error.message);
@@ -45,11 +41,9 @@ const Sports = () => {
 
   const getLoggedInUserType = () => {
     const storedUser = JSON.parse(localStorage.getItem("userData"));
-    console.log("Stored user type:", storedUser.profile.user_type);
+    const userType = storedUser.profile.user_type;
     console.log("Stored user:", storedUser);
-    const userType = userTypes.find(
-      (type) => type.name === storedUser.user_type
-    );
+    setLoggedInUserType(userType);
     return userType;
   };
 
