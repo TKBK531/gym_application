@@ -6,7 +6,7 @@ from django.shortcuts import redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User, Group
 
-from rest_framework import generics, status
+from rest_framework import views, response, generics, status
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -28,6 +28,7 @@ from .serializers import (
     AcademicStaffSerializer,
     PostgraduateUserSerializer,
     UniversityStudentUserSerializer,
+    LoginSerializer,
 )
 from .models import (
     UserProfile,
@@ -245,57 +246,107 @@ class GoogleLoginApi(APIView):
         return redirect(redirect_url)
 
 
+# class UserLoginView(generics.GenericAPIView):
+#     serializer_class = UserSerializer
+#     permission_classes = [AllowAny]
+
+#     def post(self, request):
+#         email = request.data.get("email")
+#         password = request.data.get("password")
+#         user = authenticate(request, username=email, password=password)
+
+#         if user is not None:
+#             refresh = RefreshToken.for_user(user)
+#             profile = UserProfile.objects.get(user=user)
+#             serializer = UserProfileSerializer(profile)
+#             response_data = {
+#                 "id": user.id,
+#                 "first_name": user.first_name,
+#                 "last_name": user.last_name,
+#                 "email": user.email,
+#                 "national_id": (
+#                     profile.national_id if profile.national_id else "Not Provided"
+#                 ),
+#                 "profile_picture": profile.profile_picture,
+#                 "contact": profile.contact if profile.contact else "Not Provided",
+#                 "user_type": profile.user_type.name,
+#                 "city": profile.city.id if profile.city else "Not Provided",
+#                 "province": (
+#                     profile.city.province.id if profile.city else "Not Provided"
+#                 ),
+#             }
+
+#             return Response(
+#                 {
+#                     "status": "success",
+#                     "message": "User logged in successfully",
+#                     "data": response_data,
+#                     "auth_tokens": {
+#                         "refresh": str(refresh),
+#                         "access": str(refresh.access_token),
+#                     },
+#                 },
+#                 status=status.HTTP_200_OK,
+#             )
+#         else:
+#             return Response(
+#                 {
+#                     "status": "error",
+#                     "message": "Invalid Credentials",
+#                 },
+#                 status=status.HTTP_401_UNAUTHORIZED,
+#             )
+
+
 # -------------UserLoginView-------------
-class UserLoginView(generics.GenericAPIView):
-    serializer_class = UserSerializer
+class UserLoginView(views.APIView):
     permission_classes = [AllowAny]
+    serializer_class = LoginSerializer
 
-    def post(self, request):
-        email = request.data.get("email")
-        password = request.data.get("password")
-        user = authenticate(request, username=email, password=password)
-
-        if user is not None:
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            user = serializer.validated_data
             refresh = RefreshToken.for_user(user)
-            profile = UserProfile.objects.get(user=user)
-            serializer = UserProfileSerializer(profile)
-            response_data = {
-                "id": user.id,
+            user_data = {
                 "first_name": user.first_name,
                 "last_name": user.last_name,
                 "email": user.email,
-                "national_id": (
-                    profile.national_id if profile.national_id else "Not Provided"
-                ),
-                "profile_picture": profile.profile_picture,
-                "contact": profile.contact if profile.contact else "Not Provided",
-                "user_type": profile.user_type.name,
-                "city": profile.city.id if profile.city else "Not Provided",
-                "province": (
-                    profile.city.province.id if profile.city else "Not Provided"
-                ),
+            }
+            try:
+                user_profile = UserProfile.objects.get(user=user)
+                profile_data = {
+                    "national_id": user_profile.national_id,
+                    "contact": user_profile.contact,
+                    "profile_picture": (
+                        user_profile.profile_picture.url
+                        if user_profile.profile_picture
+                        else None
+                    ),
+                    "user_type": user_profile.user_type.name,
+                    "city": user_profile.city.label,
+                    "address": user_profile.address,
+                    "date_of_birth": user_profile.date_of_birth,
+                }
+            except UserProfile.DoesNotExist:
+                profile_data = {}
+
+            return_resp = {
+                "status": "success",
+                "message": "User logged in successfully.",
+                "data": {
+                    "user": user_data,
+                    "profile": profile_data,
+                },
+                "auth_tokens": {
+                    "refresh": str(refresh),
+                    "access": str(refresh.access_token),
+                },
             }
 
-            return Response(
-                {
-                    "status": "success",
-                    "message": "User logged in successfully",
-                    "data": response_data,
-                    "auth_tokens": {
-                        "refresh": str(refresh),
-                        "access": str(refresh.access_token),
-                    },
-                },
-                status=status.HTTP_200_OK,
-            )
-        else:
-            return Response(
-                {
-                    "status": "error",
-                    "message": "Invalid Credentials",
-                },
-                status=status.HTTP_401_UNAUTHORIZED,
-            )
+            return JsonResponse(return_resp, status=status.HTTP_200_OK)
+
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # --------------------------------User Profile Views--------------------------------

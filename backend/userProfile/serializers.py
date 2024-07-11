@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
+from django.contrib.auth import authenticate
 from .models import (
     City,
     Province,
@@ -118,6 +119,17 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
         user_profile.user.groups.clear()
         user_profile.user.groups.add(group)
+
+
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()
+
+    def validate(self, data):
+        user = authenticate(username=data["email"], password=data["password"])
+        if user:
+            return user
+        raise serializers.ValidationError("Incorrect Credentials")
 
 
 class AcademicStaffSerializer(serializers.ModelSerializer):
