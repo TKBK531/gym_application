@@ -174,14 +174,12 @@ class AcademicStaffSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = validated_data["user"]
         faculty = validated_data["faculty"]
-        print(user, faculty)
         if isinstance(user, int) and isinstance(faculty, int):
             user = UserProfile.objects.get(pk=user)
             faculty = Faculty.objects.get(pk=faculty)
 
         validated_data["user"] = user
         validated_data["faculty"] = faculty
-        print(validated_data)
         return super().create(validated_data)
 
 

@@ -16,7 +16,7 @@ const Sports = () => {
 
   useEffect(() => {
     const userType = getLoggedInUserType();
-    console.log(userType);
+    // console.log(userType);
 
     setLoggedInUserType(userType.name);
     console.log("User type:", userType.name);
@@ -45,7 +45,7 @@ const Sports = () => {
 
   const getLoggedInUserType = () => {
     const storedUser = JSON.parse(localStorage.getItem("userData"));
-    console.log("Stored user type:", storedUser.user_type);
+    console.log("Stored user type:", storedUser.profile.user_type);
     console.log("Stored user:", storedUser);
     const userType = userTypes.find(
       (type) => type.name === storedUser.user_type
