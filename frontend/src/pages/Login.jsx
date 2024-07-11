@@ -5,8 +5,9 @@ import LoginForm from "../components/Forms/LoginForm";
 
 const Login = () => {
   const [errorMessage, setErrorMessage] = useState(null);
+  // eslint-disable-next-line no-unused-vars
   const [loading, setLoading] = useState(false);
-  const [loggedInUser, setLoggedInUser] = useState(null);
+  // const [loggedInUser, setLoggedInUser] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -39,7 +40,7 @@ const Login = () => {
           <LoginForm
             setErrorMessage={setErrorMessage}
             setLoading={setLoading}
-            setLoggedInUser={setLoggedInUser}
+            // setLoggedInUser={setLoggedInUser}
           />
 
           <div className="container text-left mt-6">
