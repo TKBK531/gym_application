@@ -78,6 +78,8 @@ class AuthSerializer(serializers.Serializer):
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
+    profile_picture = serializers.SerializerMethodField()
+
     class Meta:
         model = UserProfile
         fields = [
@@ -90,6 +92,17 @@ class UserProfileSerializer(serializers.ModelSerializer):
             "address",
             "date_of_birth",
         ]
+
+    def get_profile_picture(self, obj):
+        if obj.profile_picture and hasattr(obj.profile_picture, "url"):
+            # Use Django's get_absolute_url() method if available, or prepend the domain manually
+            request = self.context.get("request")
+            return (
+                request.build_absolute_uri(obj.profile_picture.url)
+                if request
+                else obj.profile_picture.url
+            )
+        return None
 
     def create(self, validated_data):
         user_type = validated_data["user_type"]

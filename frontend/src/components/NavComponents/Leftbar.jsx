@@ -17,7 +17,11 @@ const Leftbar = ({ userData }) => {
   const navigate = useNavigate();
 
   const backend_url = import.meta.env.VITE_API_URL;
-  // console.log("Backend URL: ", backend_url);
+  const profilePicture = userData.profile.profile_picture;
+
+  const profile_img_url = profilePicture.startsWith("https")
+    ? profilePicture
+    : `${backend_url}${profilePicture}`;
 
   useEffect(() => {
     setActiveLink(location.pathname);
@@ -113,7 +117,7 @@ const Leftbar = ({ userData }) => {
               className="flex w-full items-center cursor-pointer "
             >
               <img
-                src={`${backend_url}${userData.profile.profile_picture}`}
+                src={profile_img_url}
                 className={`w-8 h-8 rounded-full mr-3 object-cover ${
                   !expanded && "mr-0"
                 }`} // Conditional margin

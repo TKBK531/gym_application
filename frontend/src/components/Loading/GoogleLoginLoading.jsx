@@ -24,7 +24,8 @@ function GoogleLoginLoading() {
     api
       .get("/user/profile/")
       .then((response) => {
-        const userData = response.data.data.user;
+        const userData = response.data.data;
+        console.log("User data:", userData);
         localStorage.setItem("userData", JSON.stringify(userData));
         navigate("/dashboard");
       })

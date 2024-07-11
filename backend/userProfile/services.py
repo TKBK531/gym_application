@@ -76,13 +76,14 @@ def get_user_data(validated_data):
             },
         )
         if created:
+            print("User Created", user.username)
             UserProfile.objects.create(
                 user=user, profile_picture=user_data.get("picture")
             )
-
         profile_data = {
             "email": user_data["email"],
             "first_name": user_data.get("given_name"),
             "last_name": user_data.get("family_name"),
         }
+        print(profile_data)
         return profile_data

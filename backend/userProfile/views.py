@@ -144,7 +144,6 @@ class CreateAcademicStaffUserView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         data = request.data
         serializer = self.get_serializer(data=data)
-        print(data)
 
         serializer.is_valid(raise_exception=True)
         academic_staff_user = serializer.save()
@@ -170,7 +169,6 @@ class CreatePostgraduateUserView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         data = request.data
         serializer = self.get_serializer(data=data)
-        print(data)
 
         serializer.is_valid(raise_exception=True)
         postgraduate_user = serializer.save()
@@ -196,7 +194,6 @@ class CreateUniversityStudentUserView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         data = request.data
         serializer = self.get_serializer(data=data)
-        print(data)
 
         serializer.is_valid(raise_exception=True)
         university_student_user = serializer.save()
@@ -227,13 +224,13 @@ class GoogleLoginApi(APIView):
         try:
             user_data = get_user_data(validated_data)
         except Exception as e:
-            params = urlencode({"error": e.message})
+            params = urlencode({"error": e})
             redirect_url = f"{settings.BASE_APP_URL}/login?{params}"
 
             return redirect(redirect_url)
 
         user = User.objects.get(email=user_data["email"])
-        group = Group.objects.get(name="student")
+        group = Group.objects.get(name="internal")
         user.groups.add(group)
         login(request, user)
 
@@ -359,8 +356,10 @@ class UserProfileDetailView(generics.RetrieveAPIView):
 
         if self.kwargs.get("pk") is None:
             user = self.request.user
+
             try:
                 profile = UserProfile.objects.get(user=user)
+
                 return profile
             except UserProfile.DoesNotExist:
                 raise NotFound("User Profile not found")
@@ -381,27 +380,34 @@ class UserProfileDetailView(generics.RetrieveAPIView):
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
+        profile_picture_url = (
+            str(instance.profile_picture)
+            if instance.profile_picture
+            else "media/images/profile_images/empty_profile_pic.png"
+        )
 
         user_data = {
             "user": {
-                "id": instance.user.id,
                 "first_name": instance.user.first_name,
                 "last_name": instance.user.last_name,
                 "email": instance.user.email,
                 "username": instance.user.username,
+            },
+            "profile": {
+                "id": instance.user.id,
                 "national_id": (
                     instance.national_id if instance.national_id else "Not Provided"
                 ),
-                "profile_picture": instance.profile_picture,
+                "profile_picture": profile_picture_url,
                 "contact": instance.contact if instance.contact else "Not Provided",
                 "user_type": instance.user_type.name,
+                "birth_date": instance.date_of_birth if instance.date_of_birth else "",
                 "city": instance.city.id if instance.city else "Not Provided",
                 "province": (
                     instance.city.province.id if instance.city else "Not Provided"
                 ),
-            }
+            },
         }
-
         response_data = {
             "status": "success",
             "message": "User profile retrieved successfully.",
