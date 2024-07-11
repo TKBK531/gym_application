@@ -78,7 +78,9 @@ class AuthSerializer(serializers.Serializer):
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    profile_picture = serializers.SerializerMethodField()
+    profile_picture = serializers.ImageField(
+        max_length=None, use_url=True, allow_null=True, required=False
+    )
 
     class Meta:
         model = UserProfile
