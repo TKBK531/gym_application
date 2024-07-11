@@ -8,13 +8,16 @@ import uniLogo from "../../assets/logo/uni_logo.png";
 
 export const LeftbarContext = createContext();
 
-const Leftbar = ({ profileData }) => {
+const Leftbar = ({ userData }) => {
   const [expanded, setExpanded] = useState(false);
   const [activeLink, setActiveLink] = useState("/");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const menuRef = useRef(null);
   const navigate = useNavigate();
+
+  const backend_url = import.meta.env.VITE_API_URL;
+  // console.log("Backend URL: ", backend_url);
 
   useEffect(() => {
     setActiveLink(location.pathname);
@@ -110,8 +113,10 @@ const Leftbar = ({ profileData }) => {
               className="flex w-full items-center cursor-pointer "
             >
               <img
-                src={profileData.profile_picture}
-                className={`w-8 h-8 rounded-full mr-3 ${!expanded && "mr-0"}`} // Conditional margin
+                src={`${backend_url}${userData.profile.profile_picture}`}
+                className={`w-8 h-8 rounded-full mr-3 object-cover ${
+                  !expanded && "mr-0"
+                }`} // Conditional margin
                 alt="Profile"
               />
 
@@ -128,7 +133,7 @@ const Leftbar = ({ profileData }) => {
                   Profile
                 </h4>
 
-                {/* Using profileData.email for consistency */}
+                {/* Using userData.email for consistency */}
               </div>
             </div>
           </div>
@@ -142,9 +147,9 @@ const Leftbar = ({ profileData }) => {
             >
               <div className="py-2 px-4">
                 <p className="font-semibold text-sm">
-                  {profileData.first_name} {profileData.last_name}
+                  {userData.user.first_name} {userData.user.last_name}
                 </p>
-                <p className="text-xs text-gray-500">{profileData.email}</p>
+                <p className="text-xs text-gray-500">{userData.user.email}</p>
               </div>
               <hr className="border-t border-gray-200" />
               <button
@@ -169,5 +174,5 @@ const Leftbar = ({ profileData }) => {
 export default Leftbar;
 
 Leftbar.propTypes = {
-  profileData: PropTypes.object,
+  userData: PropTypes.object,
 };
