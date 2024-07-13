@@ -60,6 +60,8 @@ class UserProfile(models.Model):
             new_filename = f"{self.user.first_name}_{self.user.last_name}.webp".lower()
             # Save the image to a BytesIO object
             image_io = BytesIO()
+            max_size = (500, 500)
+            pil_image.thumbnail(max_size)
             pil_image.save(image_io, format="WEBP", quality=75)
 
             # Create a new Django file from the BytesIO object
