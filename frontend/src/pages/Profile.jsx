@@ -22,6 +22,9 @@ const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [imagePreview, setImagePreview] = useState("");
   const [changedData, setChangedData] = useState({});
+  const [originalProfileData, setOriginalProfileData] = useState({});
+  const [originalUserData, setOriginalUserData] = useState({});
+
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
@@ -41,6 +44,8 @@ const Profile = () => {
 
   const handleEditButtonClick = () => {
     setIsEditing(true);
+    setOriginalProfileData({ ...profileData });
+    setOriginalUserData({ ...userData });
   };
 
   const handleSaveButtonClick = () => {
@@ -54,12 +59,19 @@ const Profile = () => {
   };
   const handleCancelButtonClick = () => {
     setIsEditing(false);
+    setProfileData(originalProfileData);
+    setUserData(originalUserData);
+    setChangedData({});
   };
 
   const handleInputChange = (event, dataKey) => {
     const { value } = event.target;
-    setUserData({ ...userData, [dataKey]: value });
-    setChangedData({ ...changedData, [dataKey]: value });
+    if (dataKey in userData) {
+      setUserData((prev) => ({ ...prev, [dataKey]: value }));
+    } else if (dataKey in profileData) {
+      setProfileData((prev) => ({ ...prev, [dataKey]: value }));
+    }
+    setChangedData((prev) => ({ ...prev, [dataKey]: value }));
   };
 
   const handleImageChange = (event) => {

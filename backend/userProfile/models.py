@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.files.storage import default_storage
 from django.contrib.auth.models import User
 from PIL import Image
 from django.core.files.base import ContentFile
@@ -49,6 +50,17 @@ class UserProfile(models.Model):
     date_of_birth = models.DateField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
+        if self.pk and self.profile_picture:
+            # Get the current instance from the database
+            old_instance = UserProfile.objects.get(pk=self.pk)
+            # If there's an existing profile picture and it's different from the new one
+            if (
+                old_instance.profile_picture
+                and old_instance.profile_picture != self.profile_picture
+            ):
+                # Delete the existing profile picture
+                if default_storage.exists(old_instance.profile_picture.name):
+                    default_storage.delete(old_instance.profile_picture.name)
         # Check if the instance has a profile picture and it's a new file
         if self.profile_picture and not self.profile_picture._committed:
             # Open the image using PIL
