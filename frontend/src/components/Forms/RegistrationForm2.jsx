@@ -96,9 +96,11 @@ const RegistrationForm2 = ({ respData }) => {
         navigate("/login");
       } else {
         console.log("User registration failed");
+        navigate("/register");
       }
     } catch (error) {
       console.error("Registration error", error);
+      navigate("/register");
     }
   };
 

@@ -1,6 +1,10 @@
+from PIL import Image
+from io import BytesIO
+
 from django.conf import settings
 from urllib.parse import urlencode
 from django.core.cache import cache
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.contrib.auth import authenticate, login
@@ -135,6 +139,55 @@ class UserProfileCreateView(generics.CreateAPIView):
             return_resp,
             status=status.HTTP_201_CREATED,
         )
+
+
+# class UserProfileCreateView(generics.CreateAPIView):
+#     queryset = UserProfile.objects.all()
+#     serializer_class = UserProfileSerializer
+#     permission_classes = [AllowAny]
+#     parser_classes = (MultiPartParser, FormParser)
+
+#     def create(self, request, *args, **kwargs):
+#         identifier = request.data.get("identifier")
+#         user_data = cache.get(identifier)
+#         if not user_data:
+#             return Response(
+#                 {"error": "Invalid or expired identifier."},
+#                 status=status.HTTP_400_BAD_REQUEST,
+#             )
+
+#         user_data.save()
+
+#         user = User.objects.get(email=user_data.email)
+#         request.data["user"] = user.id
+
+#         # Process the profile picture if it exists
+#         profile_picture = request.FILES.get("profile_picture")
+#         if profile_picture:
+#             image = Image.open(profile_picture)
+#             output = BytesIO()
+#             image.save(output, format="WEBP", quality=75)
+#             output.seek(0)
+
+#             # Create new filename based on the user's first and last name
+#             filename = f"{user.first_name.lower}_{user.last_name.lower}.webp"
+#             # Replace the original file with the processed one in the request
+#             processed_file = InMemoryUploadedFile(
+#                 output, "ImageField", filename, "image/webp", output.tell(), None
+#             )
+#             request.FILES["profile_picture"] = processed_file
+
+#         serializer = self.get_serializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+
+#         return_resp = {
+#             "status": "success",
+#             "message": "UserProfile created successfully.",
+#             "data": serializer.data,
+#         }
+
+#         return JsonResponse(return_resp, status=status.HTTP_201_CREATED)
 
 
 # -------------CreateAcademicStaffUserView-------------

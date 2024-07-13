@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
+from PIL import Image
+from django.core.files.base import ContentFile
+from io import BytesIO
 
 
 # Create your models here.
@@ -44,6 +47,28 @@ class UserProfile(models.Model):
     city = models.ForeignKey(City, on_delete=models.CASCADE, null=True, blank=True)
     address = models.CharField(max_length=250, null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        # Check if the instance has a profile picture and it's a new file
+        if self.profile_picture and not self.profile_picture._committed:
+            # Open the image using PIL
+            pil_image = Image.open(self.profile_picture)
+            # Convert the image to webp
+            pil_image = pil_image.convert("RGB")
+
+            # Generate the new filename
+            new_filename = f"{self.user.first_name}_{self.user.last_name}.webp".lower()
+            # Save the image to a BytesIO object
+            image_io = BytesIO()
+            pil_image.save(image_io, format="WEBP", quality=75)
+
+            # Create a new Django file from the BytesIO object
+            new_image = ContentFile(image_io.getvalue(), name=new_filename)
+
+            # Assign the new image to profile_picture
+            self.profile_picture = new_image
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}'s Profile"
