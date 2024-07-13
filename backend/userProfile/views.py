@@ -262,14 +262,21 @@ class UserLoginView(views.APIView):
             }
             try:
                 user_profile = UserProfile.objects.get(user=user)
-                profile_data = {
-                    "national_id": user_profile.national_id,
-                    "contact": user_profile.contact,
-                    "profile_picture": (
+                host_url = settings.BASE_API_URL
+                profile_picture = (
+                    host_url + user_profile.profile_picture.url
+                    if user_profile.profile_picture
+                    and not user_profile.profile_picture.url.startswith("https")
+                    else (
                         user_profile.profile_picture.url
                         if user_profile.profile_picture
                         else None
-                    ),
+                    )
+                )
+                profile_data = {
+                    "national_id": user_profile.national_id,
+                    "contact": user_profile.contact,
+                    "profile_picture": profile_picture,
                     "user_type": user_profile.user_type.name,
                     "city": user_profile.city.label,
                     "address": user_profile.address,

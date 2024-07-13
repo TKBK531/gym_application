@@ -60,6 +60,7 @@ const RegistrationForm2 = ({ respData }) => {
       }),
     province: Yup.string().required("Province is required"),
     city: Yup.string().required("City is required"),
+    profile_picture: Yup.mixed().required("Upload a Profile Picture"),
   });
 
   const handleProfilePictureChange = (event, setFieldValue) => {
@@ -135,6 +136,11 @@ const RegistrationForm2 = ({ respData }) => {
                 handleProfilePictureChange(event, setFieldValue)
               }
               className="hidden"
+            />
+            <ErrorMessage
+              name="profile_picture"
+              component="div"
+              className={`${formStyles.formError}`}
             />
           </div>
           <Field
