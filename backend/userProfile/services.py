@@ -8,7 +8,7 @@ from typing import Dict, Any
 import requests
 import jwt
 
-from .models import UserProfile
+from .models import UserProfile, UserType
 
 GOOGLE_ACCESS_TOKEN_OBTAIN_URL = "https://oauth2.googleapis.com/token"
 GOOGLE_USER_INFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo"
@@ -79,6 +79,7 @@ def get_user_data(validated_data):
             UserProfile.objects.create(
                 user=user,
                 profile_picture=user_data.get("picture"),
+                user_type=UserType.objects.get(name="internal"),
             )
         profile_data = {
             "email": user_data["email"],

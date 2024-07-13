@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import api from "../api";
 import SportCard from "../components/Sport/SportCard";
-import { userTypes } from "../constants/index";
 
 const Sports = () => {
   const [allSports, setAllSports] = useState([]);
