@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
 import ProtectedRoute from "./components/ProtectedRoute";
 import GoogleLoginLoading from "./components/Loading/GoogleLoginLoading";
+import Profile1 from "./pages/Profile1";
 import {
   BaseLayout,
   Home,
@@ -27,6 +28,20 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <Home />
+          </ProtectedRoute>
+        ),
+      },
+    ],
+  },
+  {
+    path: "/profile-test",
+    element: <BaseLayout />,
+    children: [
+      {
+        index: true,
+        element: (
+          <ProtectedRoute>
+            <Profile1 />
           </ProtectedRoute>
         ),
       },

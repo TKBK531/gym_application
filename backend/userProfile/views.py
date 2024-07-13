@@ -19,7 +19,7 @@ from rest_framework.exceptions import NotFound, PermissionDenied
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
 
-from backend.utils import generate_unique_identifier
+from backend.utils import generate_unique_identifier, get_profile_picture_path
 from .permissions import IsAdminUserType
 
 from .serializers import (
@@ -315,17 +315,8 @@ class UserLoginView(views.APIView):
             }
             try:
                 user_profile = UserProfile.objects.get(user=user)
-                host_url = settings.BASE_API_URL
-                profile_picture = (
-                    host_url + user_profile.profile_picture.url
-                    if user_profile.profile_picture
-                    and not user_profile.profile_picture.url.startswith("https")
-                    else (
-                        user_profile.profile_picture.url
-                        if user_profile.profile_picture
-                        else None
-                    )
-                )
+                profile_picture = get_profile_picture_path(user_profile)
+
                 profile_data = {
                     "national_id": user_profile.national_id,
                     "contact": user_profile.contact,
@@ -390,11 +381,7 @@ class UserProfileDetailView(generics.RetrieveAPIView):
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
-        profile_picture_url = (
-            str(instance.profile_picture)
-            if instance.profile_picture
-            else "media/images/profile_images/empty_profile_pic.png"
-        )
+        profile_picture_url = get_profile_picture_path(instance)
 
         user_data = {
             "user": {
@@ -412,9 +399,9 @@ class UserProfileDetailView(generics.RetrieveAPIView):
                 "contact": instance.contact if instance.contact else "Not Provided",
                 "user_type": instance.user_type.name,
                 "birth_date": instance.date_of_birth if instance.date_of_birth else "",
-                "city": instance.city.id if instance.city else "Not Provided",
+                "city": instance.city.label if instance.city else "Not Provided",
                 "province": (
-                    instance.city.province.id if instance.city else "Not Provided"
+                    instance.city.province.label if instance.city else "Not Provided"
                 ),
             },
         }
