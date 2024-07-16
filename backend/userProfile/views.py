@@ -27,7 +27,7 @@ from .serializers import (
     UserSerializer,
     UserProfileSerializer,
     ProvinceSerializer,
-    City,
+    CitySerializer,
     AuthSerializer,
     UserTypeUpdateSerializer,
     AcademicStaffSerializer,
@@ -398,7 +398,9 @@ class UserProfileDetailView(generics.RetrieveAPIView):
                 "profile_picture": profile_picture_url,
                 "contact": instance.contact if instance.contact else "Not Provided",
                 "user_type": instance.user_type.name,
-                "birth_date": instance.date_of_birth if instance.date_of_birth else "",
+                "date_of_birth": (
+                    instance.date_of_birth if instance.date_of_birth else ""
+                ),
                 "city": instance.city.label if instance.city else "Not Provided",
                 "province": (
                     instance.city.province.label if instance.city else "Not Provided"
@@ -456,46 +458,6 @@ class UserListView(generics.ListAPIView):
 
 # --------------------------------Update Views--------------------------------
 # -------------UserProfileUpdateView-------------
-# class UserProfileUpdateView(generics.UpdateAPIView):
-#     serializer_class = UserDataSerializer
-#     permission_classes = [IsAuthenticated]
-
-#     def get_object(self):
-#         user = self.request.user
-#         try:
-#             profile = UserProfile.objects.get(user=user)
-#             return profile
-#         except UserProfile.DoesNotExist:
-#             raise NotFound("User Profile not found")
-
-#     def update(self, request, *args, **kwargs):
-#         try:
-#             partial = kwargs.pop("partial", False)
-#             instance = self.get_object()
-#             serializer = self.get_serializer(
-#                 instance, data=request.data, partial=partial
-#             )
-#             serializer.is_valid(raise_exception=True)
-#             self.perform_update(serializer)
-
-#             return JsonResponse(
-#                 {
-#                     "status": "success",
-#                     "message": "User profile updated successfully.",
-#                     "data": serializer.data,
-#                 },
-#                 status=status.HTTP_200_OK,
-#             )
-#         except Exception as e:
-#             return JsonResponse(
-#                 {
-#                     "status": "error",
-#                     "message": str(e),
-#                 },
-#                 status=status.HTTP_400_BAD_REQUEST,
-#             )
-
-
 class UserProfileUpdateView(generics.UpdateAPIView):
     serializer_class = UserDataSerializer
     permission_classes = [IsAuthenticated]
@@ -606,7 +568,7 @@ class ProvinceListView(generics.ListAPIView):
 # -------------CityListView-------------
 class CityListView(generics.ListAPIView):
     queryset = City.objects.all()
-    serializer_class = ProvinceSerializer
+    serializer_class = CitySerializer
     permission_classes = [AllowAny]
 
     def list(self, request, *args, **kwargs):

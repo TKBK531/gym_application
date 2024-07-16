@@ -288,8 +288,4 @@ class ProvinceSerializer(serializers.ModelSerializer):
 class CitySerializer(serializers.ModelSerializer):
     class Meta:
         model = City
-        fields = [
-            "id",
-            "province",
-            "label",
-        ]
+        fields = "__all__"
