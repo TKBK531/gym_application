@@ -21,6 +21,7 @@ const ProfileDataContainer = ({
   const [originalProfileData, setOriginalProfileData] = useState({});
   const [originalUserData, setOriginalUserData] = useState({});
   const [imagePreview, setImagePreview] = useState("");
+
   useEffect(() => {
     const filterCities = cities.filter(
       (city) => city.province === selectedProvince
@@ -104,7 +105,9 @@ const ProfileDataContainer = ({
 
   return (
     <>
-      <h2 className="text-2xl font-semibold mb-6 text-center">My Profile</h2>
+      <h2 className="text-2xl font-normal mb-6 mt-3 text-center">
+        {userData.first_name} {userData.last_name}
+      </h2>
       <div className="flex flex-col items-center mb-6 md:mb-0 md:mr-6 relative">
         <div className="mt-4 flex flex-col text-center items-center">
           <div
@@ -127,6 +130,7 @@ const ProfileDataContainer = ({
               </div>
             )}
           </div>
+          <p className="my-3">{profileData.user_type.toUpperCase()} USER</p>
         </div>
         {isEditing && (
           <input
@@ -315,8 +319,8 @@ const ProfileDataContainer = ({
 ProfileDataContainer.propTypes = {
   userData: PropTypes.object.isRequired,
   profileData: PropTypes.object.isRequired,
-  setUserData: PropTypes.func.isRequired,
-  setProfileData: PropTypes.func.isRequired,
+  setUserData: PropTypes.func,
+  setProfileData: PropTypes.func,
 };
 
 export default ProfileDataContainer;

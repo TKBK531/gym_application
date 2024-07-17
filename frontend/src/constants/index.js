@@ -146,10 +146,15 @@ export const cities = [
 ];
 
 export const userTypes = [
-  { pk: 4, label: "Admin", name: "admin" },
-  { pk: 3, label: "Staff Member", name: "staff" },
-  { pk: 2, label: "External User", name: "external" },
-  { pk: 1, label: "Internal User", name: "internal" },
+  { pk: 1, label: "Student", name: "student" },
+  { pk: 2, label: "Academic", name: "academic" },
+  { pk: 3, label: "Postgraduate", name: "postgraduate" },
+  { pk: 4, label: "External", name: "external" },
+  { pk: 5, label: "Internal", name: "internal" },
+  { pk: 6, label: "Approval", name: "approval" },
+  { pk: 7, label: "Payment", name: "payment" },
+  { pk: 8, label: "Staff", name: "staff" },
+  { pk: 9, label: "Admin", name: "admin" },
 ];
 
 export default pageLinks;

@@ -83,10 +83,10 @@ const ProfileTable = ({ profiles, onProfileClick }) => {
                 {profile.email}
               </td>
               <td className={`${profileTableStyles.tableData}`}>
-                {profile.contact}
+                {profile.contact || "Not Specified"}
               </td>
               <td className={`${profileTableStyles.tableData}`}>
-                {profile.national_id}
+                {profile.national_id || "Not Specified"}
               </td>
               <td className={`${profileTableStyles.tableData}`}>
                 {userTypes.find((type) => type.pk === profile.user_type)
