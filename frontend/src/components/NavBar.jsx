@@ -33,7 +33,7 @@ const NavBar = () => {
   };
 
   return (
-    <nav className="bg-white p-4 sticky top-0 z-10">
+    <nav className="bg-white p-4 sticky top-0">
       <div className="container mx-auto flex items-center">
         {/* Optional logo or brand name here */}
         <div className="ml-auto">{getNavPath(location.pathname)}</div>

@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import api from "../api";
 
 import ProfileDataContainer from "../components/Profile/ProfileDataContainer";
 import ProfileTable from "../components/Profile/ProfileTable";
+import FinilizeProfile from "../components/Popups/FinilizeProfile";
 
 const Profile = () => {
   const [profileData, setProfileData] = useState({
@@ -21,9 +22,9 @@ const Profile = () => {
     username: "",
     email: "",
   });
-
+  const [showFinilizePopup, setShowFinilizePopup] = useState(false);
   const [allProfiles, setAllProfiles] = useState([]);
-
+  const popupRef = useRef(null);
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
@@ -41,6 +42,26 @@ const Profile = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    const checkIfClickedOutside = (e) => {
+      // If the popup is open and the click is outside the popup, then close it
+      if (
+        showFinilizePopup &&
+        popupRef.current &&
+        !popupRef.current.contains(e.target)
+      ) {
+        setShowFinilizePopup(false);
+      }
+    };
+
+    // Bind the event listener
+    document.addEventListener("mousedown", checkIfClickedOutside);
+    return () => {
+      // Unbind the event listener on clean up
+      document.removeEventListener("mousedown", checkIfClickedOutside);
+    };
+  }, [showFinilizePopup]);
+
   const fetchAllProfiles = async () => {
     try {
       const response = await api.get("/user/profile/all-profiles/");
@@ -55,6 +76,11 @@ const Profile = () => {
     console.log("Profile Clicked: ", profileID);
   };
 
+  const onFinilizeProfileClick = () => {
+    console.log("Finilize Profile Clicked");
+    setShowFinilizePopup(true);
+  };
+
   return (
     <div className="w-full mx-auto p-6 bg-white rounded-lg shadow-lg">
       {profileData.user_type === "admin" && (
@@ -63,6 +89,14 @@ const Profile = () => {
           onClick={fetchAllProfiles}
         >
           Get All Profiles
+        </button>
+      )}
+      {profileData.user_type === "internal" && (
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={onFinilizeProfileClick}
+        >
+          Finilize my Profile
         </button>
       )}
 
@@ -81,6 +115,13 @@ const Profile = () => {
           />
         )}
       </section>
+      {showFinilizePopup && (
+        <FinilizeProfile
+          closePopup={() => setShowFinilizePopup(false)}
+          profileData={profileData}
+          userData={userData}
+        />
+      )}
     </div>
   );
 };
