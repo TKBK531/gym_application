@@ -1,11 +1,14 @@
 import PropTypes from "prop-types";
 
-const Dropdown = ({ options }) => {
+const Dropdown = ({ options, setSelectedOption }) => {
+  const handleDropdownChange = (e) => {
+    setSelectedOption(e.target.value);
+  };
   return (
     <div className="w-64">
       <select
         id="role-dropdown"
-        onChange={(e) => console.log(e.target.value)}
+        onChange={handleDropdownChange}
         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
       >
         <option value="SELECT ONE" defaultValue>
@@ -23,6 +26,7 @@ const Dropdown = ({ options }) => {
 
 Dropdown.propTypes = {
   options: PropTypes.array,
+  setSelectedOption: PropTypes.func,
 };
 
 export default Dropdown;

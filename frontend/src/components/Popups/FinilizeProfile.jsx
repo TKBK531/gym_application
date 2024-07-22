@@ -1,7 +1,10 @@
 import PropTypes from "prop-types";
 import Dropdown from "../Dropdowns/Dropdown";
+import { useState } from "react";
+import FinilizationForm from "../Forms/FinilizationForm";
 
 const FinilizeProfile = ({ closePopup, profileData, userData }) => {
+  const [selectedOption, setSelectedOption] = useState("");
   const roles = [
     { value: "student", label: "Student" },
     { value: "staff", label: "Staff" },
@@ -30,7 +33,15 @@ const FinilizeProfile = ({ closePopup, profileData, userData }) => {
           >
             Select your role
           </label>
-          <Dropdown options={roles} />
+          <Dropdown options={roles} setSelectedOption={setSelectedOption} />
+          {(selectedOption === "student" ||
+            selectedOption === "staff" ||
+            selectedOption === "postgraduate") && (
+            <FinilizationForm
+              userData={userData}
+              selectedOption={selectedOption}
+            />
+          )}
         </div>
       </div>
     </div>
