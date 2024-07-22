@@ -1,6 +1,13 @@
 import PropTypes from "prop-types";
+import Dropdown from "../Dropdowns/Dropdown";
 
 const FinilizeProfile = ({ closePopup, profileData, userData }) => {
+  const roles = [
+    { value: "student", label: "Student" },
+    { value: "staff", label: "Staff" },
+    { value: "postgraduate", label: "Postgraduate" },
+  ];
+
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
       <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white z-30">
@@ -17,7 +24,13 @@ const FinilizeProfile = ({ closePopup, profileData, userData }) => {
           <h3 className="text-lg leading-6 font-medium text-gray-900">
             {userData.first_name} {userData.last_name}
           </h3>
-          {/* Additional content can go here */}
+          <label
+            htmlFor="role-dropdown"
+            className="block mb-2 text-sm font-medium text-gray-900"
+          >
+            Select your role
+          </label>
+          <Dropdown options={roles} />
         </div>
       </div>
     </div>
