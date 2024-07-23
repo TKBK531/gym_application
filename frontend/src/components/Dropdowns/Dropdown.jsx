@@ -5,7 +5,7 @@ const Dropdown = ({ options, setSelectedOption }) => {
     setSelectedOption(e.target.value);
   };
   return (
-    <div className="w-64">
+    <div className="w-full">
       <select
         id="role-dropdown"
         onChange={handleDropdownChange}

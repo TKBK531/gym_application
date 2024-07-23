@@ -157,4 +157,21 @@ export const userTypes = [
   { pk: 9, label: "Admin", name: "admin" },
 ];
 
+export const faculties = [
+  { pk: 1, label: "Science", value: "science", code: "sci" },
+  { pk: 2, label: "Engineering", value: "engineering", code: "eng" },
+  { pk: 3, label: "Arts", value: "arts", code: "arts" },
+  { pk: 4, label: "Medicine", value: "medicine", code: "med" },
+  { pk: 5, label: "Management", value: "management", code: "mgt" },
+  {
+    pk: 6,
+    label: "Veterinary Medicine and Animal Science",
+    value: "vet",
+    code: "vet",
+  },
+  { pk: 7, label: "Dental Sciences", value: "dental", code: "dental" },
+  { pk: 8, label: "Agriculture", value: "agriculture", code: "agri" },
+  { pk: 9, label: "Allied Health Science", value: "ahs", code: "ahs" },
+];
+
 export default pageLinks;
