@@ -2,9 +2,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
 import ProtectedRoute from "./components/ProtectedRoute";
 import GoogleLoginLoading from "./components/Loading/GoogleLoginLoading";
-import Profile1 from "./pages/Profile1";
 import {
-  BaseLayout,
+  // BaseLayout,
   Home,
   Events,
   Items,
@@ -17,8 +16,10 @@ import {
   PageNotFound,
 } from "./pages";
 import Register from "./pages/Register";
+import BaseLayout from "./components/Layouts/BaseLayout";
 
 const router = createBrowserRouter([
+  // Dashboard route
   {
     path: "/dashboard",
     element: <BaseLayout />,
@@ -33,20 +34,7 @@ const router = createBrowserRouter([
       },
     ],
   },
-  {
-    path: "/profile-test",
-    element: <BaseLayout />,
-    children: [
-      {
-        index: true,
-        element: (
-          <ProtectedRoute>
-            <Profile1 />
-          </ProtectedRoute>
-        ),
-      },
-    ],
-  },
+  // Events route
   {
     path: "/events",
     element: <BaseLayout />,
@@ -61,6 +49,7 @@ const router = createBrowserRouter([
       },
     ],
   },
+  // Items route
   {
     path: "/items",
     element: <BaseLayout />,
@@ -75,6 +64,7 @@ const router = createBrowserRouter([
       },
     ],
   },
+  // Reservations route
   {
     path: "/reservations",
     element: <BaseLayout />,
@@ -89,6 +79,7 @@ const router = createBrowserRouter([
       },
     ],
   },
+  // Members route
   {
     path: "/members",
     element: <BaseLayout />,
@@ -103,6 +94,7 @@ const router = createBrowserRouter([
       },
     ],
   },
+  // Sports route
   {
     path: "/sports",
     element: <BaseLayout />,
@@ -117,6 +109,7 @@ const router = createBrowserRouter([
       },
     ],
   },
+  // Profile route
   {
     path: "/profile",
     element: <BaseLayout />,
@@ -131,6 +124,7 @@ const router = createBrowserRouter([
       },
     ],
   },
+  // Login, Logout, Register, and PageNotFound routes
   { path: "/loading", element: <GoogleLoginLoading /> },
   { path: "/login", element: <Login /> },
   { path: "/logout", element: <Logout /> },

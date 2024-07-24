@@ -1,4 +1,3 @@
-import BaseLayout from "./BaseLayout";
 import Home from "./Home";
 import Events from "./Events";
 import Items from "./Items";
@@ -12,7 +11,6 @@ import Register from "./Register";
 import PageNotFound from "./PageNotFound";
 
 export {
-  BaseLayout,
   Home,
   Events,
   Items,
