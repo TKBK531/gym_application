@@ -7,6 +7,7 @@ import { faCamera } from "@fortawesome/free-solid-svg-icons";
 const ProfileDataContainer = ({
   userData,
   profileData,
+  userTypeData,
   setUserData,
   setProfileData,
 }) => {
@@ -284,6 +285,108 @@ const ProfileDataContainer = ({
             </div>
           </div>
 
+          {/* User Type Data */}
+          {profileData.user_type === "student" && (
+            <>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">
+                  Registration Number
+                </label>
+                <input
+                  type="text"
+                  value={userTypeData.registration_number}
+                  disabled
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">
+                  Faculty
+                </label>
+                <input
+                  type="text"
+                  value={userTypeData.faculty}
+                  disabled
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+            </>
+          )}
+          {profileData.user_type === "academic" && (
+            <>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">
+                  UPF Number
+                </label>
+                <input
+                  type="text"
+                  value={userTypeData.upf_number}
+                  disabled
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">
+                  Faculty
+                </label>
+                <input
+                  type="text"
+                  value={userTypeData.faculty}
+                  disabled
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">
+                  Date of Appoinment
+                </label>
+                <input
+                  type="text"
+                  value={userTypeData.date_of_appointment}
+                  disabled
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+            </>
+          )}
+          {profileData.user_type === "postgraduate" && (
+            <>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">
+                  Postgraduate Registration Number
+                </label>
+                <input
+                  type="text"
+                  value={userTypeData.pg_registration_number}
+                  disabled
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">
+                  Postgraduate Commencement Date
+                </label>
+                <input
+                  type="text"
+                  value={userTypeData.pg_commencement_date}
+                  disabled
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">
+                  Date of Appoinment
+                </label>
+                <input
+                  type="text"
+                  value={userTypeData.date_of_appointment}
+                  disabled
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+            </>
+          )}
+
           {/* Edit, Save, Cancel Buttons */}
           <div className="flex flex-row gap-5">
             {isEditing ? (
@@ -321,6 +424,7 @@ ProfileDataContainer.propTypes = {
   profileData: PropTypes.object.isRequired,
   setUserData: PropTypes.func,
   setProfileData: PropTypes.func,
+  userTypeData: PropTypes.object,
 };
 
 export default ProfileDataContainer;

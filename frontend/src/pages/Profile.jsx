@@ -24,6 +24,7 @@ const Profile = () => {
   });
   const [showFinilizePopup, setShowFinilizePopup] = useState(false);
   const [allProfiles, setAllProfiles] = useState([]);
+  const [userTypeData, setUserTypeData] = useState({});
   const popupRef = useRef(null);
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -31,8 +32,10 @@ const Profile = () => {
         const response = await api.get("/user/profile/");
         setProfileData(response.data.data.profile);
         setUserData(response.data.data.user);
+        setUserTypeData(response.data.data.user_type_data);
         console.log("Profile data:", profileData);
         console.log("User data:", userData);
+        console.log("User type data:", userTypeData);
       } catch (error) {
         console.error("Error fetching profile data:", error.message);
       }
@@ -103,6 +106,7 @@ const Profile = () => {
       <ProfileDataContainer
         userData={userData}
         profileData={profileData}
+        userTypeData={userTypeData}
         setProfileData={setProfileData}
         setUserData={setUserData}
       />
