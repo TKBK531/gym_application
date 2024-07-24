@@ -197,12 +197,26 @@ class CreateAcademicStaffUserView(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
-        data = request.data
+        data = request.data.copy()  # Copy the request data
+        user = request.user  # Get the logged-in user
+
+        # Ensure the user is authenticated
+        if user.is_anonymous:
+            return JsonResponse(
+                {"status": "error", "message": "Authentication required"},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        # Add the logged-in user to the data
+        data["user"] = user.id
+
+        # Initialize the serializer with the modified data
         serializer = self.get_serializer(data=data)
-
         serializer.is_valid(raise_exception=True)
-        academic_staff_user = serializer.save()
 
+        # Save the academic staff user
+        academic_staff_user = serializer.save()
+        
         return_resp = {
             "status": "success",
             "message": "Academic Staff User Info Added Successfully",
@@ -222,9 +236,21 @@ class CreatePostgraduateUserView(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
-        data = request.data
-        serializer = self.get_serializer(data=data)
+        data = request.data.copy()  # Copy the request data
+        user = request.user  # Get the logged-in user
 
+        # Ensure the user is authenticated
+        if user.is_anonymous:
+            return JsonResponse(
+                {"status": "error", "message": "Authentication required"},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        # Add the logged-in user to the data
+        data["user"] = user.id
+
+        # Initialize the serializer with the modified data
+        serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         postgraduate_user = serializer.save()
 
@@ -247,9 +273,21 @@ class CreateUniversityStudentUserView(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
-        data = request.data
-        serializer = self.get_serializer(data=data)
+        data = request.data.copy()  # Copy the request data
+        user = request.user  # Get the logged-in user
 
+        # Ensure the user is authenticated
+        if user.is_anonymous:
+            return JsonResponse(
+                {"status": "error", "message": "Authentication required"},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        # Add the logged-in user to the data
+        data["user"] = user.id
+
+        # Initialize the serializer with the modified data
+        serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         university_student_user = serializer.save()
 

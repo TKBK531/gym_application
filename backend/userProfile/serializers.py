@@ -123,6 +123,9 @@ class AcademicStaffSerializer(serializers.ModelSerializer):
             faculty = Faculty.objects.get(pk=faculty)
 
         validated_data["user"] = user
+        userProfile = UserProfile.objects.get(user=user)
+        userProfile.user_type = UserType.objects.get(name="academic")
+        userProfile.save()
         validated_data["faculty"] = faculty
         return super().create(validated_data)
 
@@ -154,6 +157,9 @@ class PostgraduateUserSerializer(serializers.ModelSerializer):
             user = UserProfile.objects.get(pk=user)
 
         validated_data["user"] = user
+        userProfile = UserProfile.objects.get(user=user)
+        userProfile.user_type = UserType.objects.get(name="postgraduate")
+        userProfile.save()
         return super().create(validated_data)
 
 
@@ -186,6 +192,9 @@ class UniversityStudentUserSerializer(serializers.ModelSerializer):
             faculty = Faculty.objects.get(pk=faculty)
 
         validated_data["user"] = user
+        userProfile = UserProfile.objects.get(user=user)
+        userProfile.user_type = UserType.objects.get(name="student")
+        userProfile.save()
         validated_data["faculty"] = faculty
         return super().create(validated_data)
 
