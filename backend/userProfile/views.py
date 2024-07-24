@@ -216,7 +216,7 @@ class CreateAcademicStaffUserView(generics.CreateAPIView):
 
         # Save the academic staff user
         academic_staff_user = serializer.save()
-        
+
         return_resp = {
             "status": "success",
             "message": "Academic Staff User Info Added Successfully",
@@ -398,7 +398,6 @@ class UserProfileDetailView(generics.RetrieveAPIView):
 
             try:
                 profile = UserProfile.objects.get(user=user)
-
                 return profile
             except UserProfile.DoesNotExist:
                 raise NotFound("User Profile not found")
@@ -406,6 +405,7 @@ class UserProfileDetailView(generics.RetrieveAPIView):
             user = self.request.user
             profile = UserProfile.objects.get(user=user)
             user_id = self.kwargs.get("pk")
+
             try:
                 if profile.user_type.name == "admin":
                     profile = UserProfile.objects.get(pk=user_id)
@@ -420,6 +420,29 @@ class UserProfileDetailView(generics.RetrieveAPIView):
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         profile_picture_url = get_profile_picture_path(instance)
+        user = instance.user
+        user_type = instance.user_type
+        print(user_type.name)
+        user_type_data = {}
+        if user_type.name == "student":
+            student_profile = UniversityStudentUser.objects.get(user=user)
+            user_type_data = {
+                "registration_number": student_profile.registration_number,
+                "faculty": student_profile.faculty.name,
+            }
+        elif user_type.name == "academic":
+            academic_staff_profile = AcademicStaffUser.objects.get(user=user)
+            user_type_data = {
+                "upf_number": academic_staff_profile.upf_number,
+                "faculty": academic_staff_profile.faculty.name,
+                "date_of_appointment": academic_staff_profile.date_of_appointment,
+            }
+        elif user_type.name == "postgraduate":
+            postgraduate_profile = PostgraduateUser.objects.get(user=user)
+            user_type_data = {
+                "pg_registration_number": postgraduate_profile.pg_registration_number,
+                "pg_commencement_date": postgraduate_profile.pg_commencement_date,
+            }
 
         user_data = {
             "user": {
@@ -444,6 +467,7 @@ class UserProfileDetailView(generics.RetrieveAPIView):
                     instance.city.province.label if instance.city else "Not Provided"
                 ),
             },
+            "user_type_data": user_type_data,
         }
         response_data = {
             "status": "success",
