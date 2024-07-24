@@ -1,130 +1,133 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import api from "../api";
-import ProfileDataSection from "../components/Profile/ProfileInfoContainer";
+
+import ProfileDataContainer from "../components/Profile/ProfileDataContainer";
 import ProfileTable from "../components/Profile/ProfileTable";
+import FinilizeProfile from "../components/Popups/FinilizeProfile";
 
-function Profile() {
-  const [profileData, setProfileData] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
-  const [profileType, setProfileType] = useState("");
+const Profile = () => {
+  const [profileData, setProfileData] = useState({
+    date_of_birth: "",
+    city: "",
+    contact: "",
+    id: null,
+    national_id: "",
+    profile_picture: "",
+    province: "",
+    user_type: "",
+  });
+  const [userData, setUserData] = useState({
+    first_name: "",
+    last_name: "",
+    username: "",
+    email: "",
+  });
+  const [showFinilizePopup, setShowFinilizePopup] = useState(false);
   const [allProfiles, setAllProfiles] = useState([]);
-  const [showProfilesList, setShowProfilesList] = useState(false);
-  const [selectedUserData, setSelectedUserData] = useState({});
-  const [isSelectedUser, setIsSelectedUser] = useState(false);
-
+  const [userTypeData, setUserTypeData] = useState({});
+  const popupRef = useRef(null);
   useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const response = await api.get("/user/profile/");
+        setProfileData(response.data.data.profile);
+        setUserData(response.data.data.user);
+        setUserTypeData(response.data.data.user_type_data);
+        console.log("Profile data:", profileData);
+        console.log("User data:", userData);
+        console.log("User type data:", userTypeData);
+      } catch (error) {
+        console.error("Error fetching profile data:", error.message);
+      }
+    };
+
     fetchProfileData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const fetchProfileData = async () => {
-    try {
-      const response = await api.get("/user/profile/");
-      if (response.data.status === "success") {
-        const userData = response.data.data.user;
-        localStorage.setItem("userData", JSON.stringify(userData));
-
-        const { user_type, ...restOfUserData } = userData;
-        setProfileType(user_type);
-        setProfileData(restOfUserData);
+  useEffect(() => {
+    const checkIfClickedOutside = (e) => {
+      // If the popup is open and the click is outside the popup, then close it
+      if (
+        showFinilizePopup &&
+        popupRef.current &&
+        !popupRef.current.contains(e.target)
+      ) {
+        setShowFinilizePopup(false);
       }
-    } catch (error) {
-      console.error("Error fetching profile data:", error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    };
+
+    // Bind the event listener
+    document.addEventListener("mousedown", checkIfClickedOutside);
+    return () => {
+      // Unbind the event listener on clean up
+      document.removeEventListener("mousedown", checkIfClickedOutside);
+    };
+  }, [showFinilizePopup]);
 
   const fetchAllProfiles = async () => {
     try {
       const response = await api.get("/user/profile/all-profiles/");
-      if (response.data.status === "success") {
-        console.log("All profiles fetched successfully");
-        setAllProfiles(response.data.data);
-        setShowProfilesList(true);
-        console.log(allProfiles);
-      }
-    } catch (error) {
-      console.error("Error fetching all profiles:", error.message);
-    }
-  };
-
-  const handleShowAllProfilesClick = () => {
-    fetchAllProfiles();
-  };
-
-  const handleHideAllProfilesClick = () => {
-    setShowProfilesList(false);
-    // window.location.reload();
-  };
-
-  const handleSpecificProfileClick = async (profileId) => {
-    try {
-      const response = await api.get(`/user/profile/${profileId}/`);
-      if (response.data.status === "success") {
-        const userData = response.data.data.user;
-        setSelectedUserData(userData);
-        setIsSelectedUser(true);
-      }
+      setAllProfiles(response.data.data);
+      console.log(allProfiles);
     } catch (error) {
       console.error("Error fetching profile data:", error.message);
-    } finally {
-      setIsLoading(false);
     }
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  const onProfileClick = (profileID) => {
+    console.log("Profile Clicked: ", profileID);
+  };
+
+  const onFinilizeProfileClick = () => {
+    console.log("Finilize Profile Clicked");
+    setShowFinilizePopup(true);
+  };
 
   return (
-    <section className="container mx-auto p-4 md:p-8 bg-white rounded-lg shadow-md">
-      <div className="flex flex-row">
-        <h2 className="text-2xl font-semibold mb-4 text-center md:text-left mr-auto">
-          Profile{" "}
-        </h2>
-        {profileType === "admin" && !showProfilesList ? (
-          <button
-            onClick={handleShowAllProfilesClick}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-normal py-2 px-4 rounded"
-          >
-            Show all Profiles
-          </button>
-        ) : profileType === "admin" && showProfilesList ? (
-          <button
-            onClick={handleHideAllProfilesClick}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-normal py-2 px-4 rounded"
-          >
-            Hide all Profiles
-          </button>
-        ) : null}
-      </div>
+    <div className="w-full mx-auto p-6 bg-white rounded-lg shadow-lg">
+      {profileData.user_type === "admin" && (
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={fetchAllProfiles}
+        >
+          Get All Profiles
+        </button>
+      )}
+      {profileData.user_type === "internal" && (
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={onFinilizeProfileClick}
+        >
+          Finilize my Profile
+        </button>
+      )}
 
-      <div className="mb-16">
-        {isSelectedUser ? (
-          <ProfileDataSection
-            profileData={selectedUserData}
-            profile_type={profileType}
-            isSelectedUser={isSelectedUser}
-          />
-        ) : (
-          <ProfileDataSection
-            profileData={profileData}
-            profile_type={profileType}
-            isSelectedUser={isSelectedUser}
-            fetchProfileData={fetchProfileData}
-          />
-        )}
-      </div>
-      <div>
-        {showProfilesList && (
+      <ProfileDataContainer
+        userData={userData}
+        profileData={profileData}
+        userTypeData={userTypeData}
+        setProfileData={setProfileData}
+        setUserData={setUserData}
+      />
+      <section id="all-profiles">
+        {" "}
+        {Object.keys(allProfiles).length > 0 && (
           <ProfileTable
             profiles={allProfiles}
-            onProfileClick={handleSpecificProfileClick}
+            onProfileClick={onProfileClick}
           />
         )}
-      </div>
-    </section>
+      </section>
+      {showFinilizePopup && (
+        <FinilizeProfile
+          closePopup={() => setShowFinilizePopup(false)}
+          profileData={profileData}
+          userData={userData}
+        />
+      )}
+    </div>
   );
-}
+};
 
 export default Profile;

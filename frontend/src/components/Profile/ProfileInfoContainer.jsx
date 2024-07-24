@@ -118,7 +118,7 @@ const ProfileInfoContainer = ({
         <div className="flex justify-center items-center">
           <img
             src={
-              profileData.profile_picture ||
+              profileData.profile.profile_picture ||
               "https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=600"
             }
             alt="Profile"
@@ -127,7 +127,7 @@ const ProfileInfoContainer = ({
         </div>
         <div className="ml-10 gap-2 py-5">
           <h3 className="text-xl font-normal">
-            {profileData.first_name} {profileData.last_name}
+            {profileData.user.first_name} {profileData.user.last_name}
           </h3>
           {!isSelectedUser ? (
             <p className="text-gray-400 capitalize">{profile_type} user</p>
@@ -205,7 +205,7 @@ const ProfileInfoContainer = ({
             />
           ) : (
             <p className={`${profilePageStyles.dataField}`}>
-              {profileData.first_name || "John"}
+              {profileData.user.first_name || "John"}
             </p>
           )}
         </div>

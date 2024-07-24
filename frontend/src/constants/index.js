@@ -78,6 +78,45 @@ const pageLinks = [
   { index: 6, icon: Medal, name: "Sports", href: "/sports" },
 ];
 
+export const provinces = [
+  {
+    id: 1,
+    label: "Central",
+  },
+  {
+    id: 2,
+    label: "Eastern",
+  },
+  {
+    id: 3,
+    label: "North Central",
+  },
+  {
+    id: 4,
+    label: "Northern",
+  },
+  {
+    id: 5,
+    label: "North Western",
+  },
+  {
+    id: 6,
+    label: "Sabaragamuwa",
+  },
+  {
+    id: 7,
+    label: "Southern",
+  },
+  {
+    id: 8,
+    label: "Uva",
+  },
+  {
+    id: 9,
+    label: "Western",
+  },
+];
+
 export const cities = [
   { pk: 1, label: "Kandy", province: "Central" },
   { pk: 2, label: "Matale", province: "Central" },
@@ -107,10 +146,32 @@ export const cities = [
 ];
 
 export const userTypes = [
-  { pk: 4, label: "Admin", name: "admin" },
-  { pk: 3, label: "Staff Member", name: "staff" },
-  { pk: 2, label: "External User", name: "external" },
-  { pk: 1, label: "Internal User", name: "internal" },
+  { pk: 1, label: "Student", name: "student" },
+  { pk: 2, label: "Academic", name: "academic" },
+  { pk: 3, label: "Postgraduate", name: "postgraduate" },
+  { pk: 4, label: "External", name: "external" },
+  { pk: 5, label: "Internal", name: "internal" },
+  { pk: 6, label: "Approval", name: "approval" },
+  { pk: 7, label: "Payment", name: "payment" },
+  { pk: 8, label: "Staff", name: "staff" },
+  { pk: 9, label: "Admin", name: "admin" },
+];
+
+export const faculties = [
+  { pk: 1, label: "Science", value: "science", code: "sci" },
+  { pk: 2, label: "Engineering", value: "engineering", code: "eng" },
+  { pk: 3, label: "Arts", value: "arts", code: "arts" },
+  { pk: 4, label: "Medicine", value: "medicine", code: "med" },
+  { pk: 5, label: "Management", value: "management", code: "mgt" },
+  {
+    pk: 6,
+    label: "Veterinary Medicine and Animal Science",
+    value: "vet",
+    code: "vet",
+  },
+  { pk: 7, label: "Dental Sciences", value: "dental", code: "dental" },
+  { pk: 8, label: "Agriculture", value: "agriculture", code: "agri" },
+  { pk: 9, label: "Allied Health Science", value: "ahs", code: "ahs" },
 ];
 
 export default pageLinks;

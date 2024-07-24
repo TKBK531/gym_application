@@ -1,5 +1,14 @@
 from django.contrib import admin
-from .models import UserProfile, UserType, Province, City
+from .models import (
+    UserProfile,
+    UserType,
+    Province,
+    City,
+    AcademicStaffUser,
+    PostgraduateUser,
+    UniversityStudentUser,
+    Faculty,
+)
 
 
 # Register UserProfile model
@@ -40,3 +49,54 @@ class CityAdmin(admin.ModelAdmin):
         "label",
     )
     search_fields = ("label",)
+
+
+@admin.register(Faculty)
+class FacultyAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "name",
+        "code",
+    )
+    search_fields = (
+        "name",
+        "code",
+    )
+
+
+@admin.register(AcademicStaffUser)
+class AcademicStaffUserAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "user",
+        "faculty",
+        "date_of_appointment",
+        "upf_number",
+    )
+    search_fields = (
+        "user__username",
+        "faculty__name",
+        "upf_number",
+    )
+
+
+@admin.register(PostgraduateUser)
+class PostgraduateUserAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "user",
+        "pg_registration_number",
+    )
+    search_fields = (
+        "user__username",
+        "pg_registration_number",
+    )
+
+
+@admin.register(UniversityStudentUser)
+class UniversityStudentUserAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "user",
+    )
+    search_fields = ("user__username",)
