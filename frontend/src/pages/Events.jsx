@@ -6,6 +6,13 @@ import CustomDatePicker from "../components/CustomDatePicker";
 import { dateBox } from "../constants/index";
 import DateBox from "../components/DateBox";
 import Table from '../components/Table'; 
+import EventCard from '../components/Event_Components/EventCard';
+import ActiveCard from '../components/Event_Components/ActiveCard';
+
+import sportEvent from '../assets/eventPage/Card5.jpg';
+import musicalEvent from '../assets/eventPage/Card6.jpg';
+import otherEvents from '../assets/eventPage/Card7.jpg';
+import cup from '../assets/eventPage/Card3.png';
 
 const Events = () => {
   const [showDetails, setShowDetails] = useState(false);
@@ -25,25 +32,29 @@ const Events = () => {
     <div className="flex flex-col">
       <div>
         <h1 className="text-lg sm:text-xl md:text-xl lg:text-xl">Hello Alesia K. 👋 </h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-10 px-4">
-          {countingCards.map((card) => (
-            <div  key={card.id} className="transition transform hover:scale-105 hover:shadow-lg">
-              <CountingCard count={card.count} test={card.test} />
-            </div>
-          ))}
-        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-4 mt-10 px-4">
+          <div className='transition transform hover:scale-105'>
+            <ActiveCard title={"All Event"} img={cup}/>
+          </div>
+          <div className='transition transform hover:scale-105'>
+            <ActiveCard title={"On going"} img={cup}/>
+          </div>
+          <div className='transition transform hover:scale-105'>
+            <ActiveCard title={"Upcoming"} img={cup}/>
+          </div>
+      </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-8 px-2 sm:px-4 md:px-10">
-          {categoryCards.map((card) => (
-            <div key={card.id} className="transition transform hover:scale-105 hover:shadow-lg">
-              <MediaCard
-                categoryName={card.categoryName}
-                image={card.image}
-                onReadMoreClick={() => handleReadMoreClick(card.categoryName)}
-              />
-            </div>
-          ))}
-        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 xs:grid-cols-1 gap-6 mt-8 px-2 sm:px-4 md:px-10">
+          <div className='transition transform hover:scale-105'> 
+            <EventCard title={"Sports"} img={sportEvent}/>
+          </div>
+          <div className='transition transform hover:scale-105'>
+            <EventCard title={"Musical Shows"} img={musicalEvent}/>
+          </div>
+          <div className='transition transform hover:scale-105'>
+            <EventCard title={"Other Funtions"} img={otherEvents}/>
+          </div>
+      </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-1 mt-1 mb-4 px-2 sm:px-4">
