@@ -4,7 +4,7 @@ import { faculties } from "../../constants/index";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { formStyles } from "../../styles";
-
+import api from "../../api";
 const FinilizationForm = ({ userData, selectedOption }) => {
   const [faculty, setFaculty] = useState(null);
   const [userName, setUserName] = useState("");
@@ -34,7 +34,7 @@ const FinilizationForm = ({ userData, selectedOption }) => {
   };
 
   const initialValues = {
-    reg_number: userName,
+    registration_number: userName,
     faculty: faculty ? faculty.label : "",
     upf_number: "",
     date_of_appointment: "",
@@ -61,29 +61,61 @@ const FinilizationForm = ({ userData, selectedOption }) => {
         : Yup.date(),
   });
 
-  const finishButtonClicked = (values) => {
+  const sendFinilizeRequest = async (url, dataForBackend) => {
+    const response = await api.post(url, dataForBackend);
+    console.log("Finilize Response", response.data);
+    return response.data;
+  };
+
+  const finishButtonClicked = async (values) => {
     if (selectedOption === "student") {
       const dataForBackend = {
-        reg_number: userName,
+        registration_number: userName,
         faculty: faculty.pk,
       };
       console.log(dataForBackend);
-    }
-    if (selectedOption === "academic") {
+      try {
+        const responseData = await sendFinilizeRequest(
+          "/user/register/profile/student/",
+          dataForBackend
+        );
+        console.log(responseData);
+      } catch (error) {
+        console.log(error);
+      }
+    } else if (selectedOption === "academic") {
       const dataForBackend = {
         upf_number: values.upf_number,
         date_of_appointment: values.date_of_appointment,
         faculty: faculty.pk,
       };
       console.log(dataForBackend);
-    }
-    if (selectedOption === "postgraduate") {
+      try {
+        const responseData = await sendFinilizeRequest(
+          "/user/register/profile/academic/",
+          dataForBackend
+        );
+        console.log(responseData);
+      } catch (error) {
+        console.log(error);
+      }
+    } else if (selectedOption === "postgraduate") {
       const dataForBackend = {
         pg_registration_number: values.pg_registration_number,
         pg_commencement_date: values.pg_commencement_date,
       };
       console.log(dataForBackend);
+      try {
+        const responseData = await sendFinilizeRequest(
+          "/user/register/profile/postgraduate/",
+          dataForBackend
+        );
+        console.log(responseData);
+      } catch (error) {
+        console.log(error);
+      }
     }
+    window.location.reload();
   };
 
   return (
@@ -99,20 +131,20 @@ const FinilizationForm = ({ userData, selectedOption }) => {
               <div className="flex flex-col gap-5">
                 <div>
                   <label
-                    htmlFor="reg_number"
+                    htmlFor="registration_number"
                     className={`${formStyles.formLabel}`}
                   >
                     Registration Number
                   </label>
                   <Field
-                    name="reg_number"
+                    name="registration_number"
                     type="text"
                     disabled
                     value={userName}
                     className={`mt-1 block w-full px-3 py-2 border ${formStyles.formTextInput}`}
                   />
                   <ErrorMessage
-                    name="reg_number"
+                    name="registration_number"
                     component="div"
                     className={`${formStyles.formError}`}
                   />
