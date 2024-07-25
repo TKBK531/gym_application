@@ -9,7 +9,7 @@ const DateCard = ({title, img, events}) => {
         className="w-12 h-12"
       />
       <div>
-        <p className="text-md sm:text-lg md:text-xl font-semibold">{title}</p>
+        <p className="text-md sm:text-lg md:text-xl">{title}</p>
         <p className="text-gray-500 text-md sm:text-lg md:text-xl">{events}</p>
       </div>
     </div>

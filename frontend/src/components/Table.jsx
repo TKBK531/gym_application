@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './table.css';
 
 const Table = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -23,48 +22,50 @@ const Table = () => {
   );
 
   return (
-    <div className="table-container">
-      <div className="table-header">
+    <div className="p-5">
+      <div className="flex justify-between items-center mb-5">
         <input
           type="text"
           placeholder="Search..."
-          className="search-bar"
+          className="w-full p-2 border border-gray-300 rounded"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <button className="add-customer-button">Add Customer</button>
+        <button className="ml-4 bg-purple-600 text-white py-3 px-4 rounded text-sm hover:bg-purple-700 w-1/4">Add Customer</button>
       </div>
-      <table className="custom-table">
-        <thead>
-          <tr>
-            <th>Sport</th>
-            <th>Place</th>
-            <th>Customer</th>
-            <th>Date</th>
-            <th>Amount</th>
-            <th>Payment Mode</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredData.map((item, index) => (
-            <tr key={index}>
-              <td>{item.sport}</td>
-              <td>{item.place}</td>
-              <td>{item.customer}</td>
-              <td>{item.date}</td>
-              <td>{item.amount}</td>
-              <td>{item.paymentMode}</td>
-              <td className={`status ${item.status.toLowerCase()}`}>{item.status}</td>
-              <td>
-                <button className="edit-button">✏️</button>
-                <button className="delete-button">🗑️</button>
-              </td>
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-white border border-gray-200">
+          <thead>
+            <tr>
+              <th className="border-b-2 p-4 text-left bg-gray-100">Sport</th>
+              <th className="border-b-2 p-4 text-left bg-gray-100">Place</th>
+              <th className="border-b-2 p-4 text-left bg-gray-100">Customer</th>
+              <th className="border-b-2 p-4 text-left bg-gray-100">Date</th>
+              <th className="border-b-2 p-4 text-left bg-gray-100">Amount</th>
+              <th className="border-b-2 p-4 text-left bg-gray-100">Payment Mode</th>
+              <th className="border-b-2 p-4 text-left bg-gray-100">Status</th>
+              <th className="border-b-2 p-4 text-left bg-gray-100">Action</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredData.map((item, index) => (
+              <tr key={index} className="hover:bg-gray-50">
+                <td className="border-b p-4">{item.sport}</td>
+                <td className="border-b p-4">{item.place}</td>
+                <td className="border-b p-4">{item.customer}</td>
+                <td className="border-b p-4">{item.date}</td>
+                <td className="border-b p-4">{item.amount}</td>
+                <td className="border-b p-4">{item.paymentMode}</td>
+                <td className={`border-b p-4 ${item.status.toLowerCase() === 'delivered' ? 'text-green-500' : item.status.toLowerCase() === 'process' ? 'text-orange-500' : 'text-red-500'}`}>{item.status}</td>
+                <td className="border-b p-4">
+                  <button className="text-purple-600 mr-3">✏️</button>
+                  <button className="text-red-600">🗑️</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

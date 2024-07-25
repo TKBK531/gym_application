@@ -10,9 +10,9 @@ import EventCard from '../components/Event_Components/EventCard';
 import ActiveCard from '../components/Event_Components/ActiveCard';
 import DateCard from '../components/Event_Components/DateCard';
 
-import sportEvent from '../assets/eventPage/Card5.jpg';
-import musicalEvent from '../assets/eventPage/Card6.jpg';
-import otherEvents from '../assets/eventPage/Card7.jpg';
+import sportEvent from '../assets/eventPage/SportsCard.jpg';
+import musicalEvent from '../assets/eventPage/Musical.jpg';
+import otherEvents from '../assets/eventPage/Other.jpg';
 import cup from '../assets/eventPage/Card3.png';
 import datebox1 from '../assets/eventPage/Card1.jpg';
 import datebox2 from '../assets/eventPage/Card8.jpg';
@@ -49,13 +49,13 @@ const Events = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 xs:grid-cols-1 gap-6 mt-8 px-2 sm:px-4 md:px-10">
           <div className='transition transform hover:scale-105'> 
-            <EventCard title={"Sports"} img={sportEvent}/>
+            <EventCard title={"Sports"} img={sportEvent} handleReadMoreClick={handleReadMoreClick} categoryName={"Sport"}/>
           </div>
           <div className='transition transform hover:scale-105'>
-            <EventCard title={"Musical Shows"} img={musicalEvent}/>
+            <EventCard title={"Musical Shows"} img={musicalEvent} handleReadMoreClick={handleReadMoreClick} categoryName={"Shows"}/>
           </div>
           <div className='transition transform hover:scale-105'>
-            <EventCard title={"Other Funtions"} img={otherEvents}/>
+            <EventCard title={"Other Funtions"} img={otherEvents} handleReadMoreClick={handleReadMoreClick} categoryName={"Functions"}/>
           </div>
       </div>
       </div>
@@ -63,8 +63,9 @@ const Events = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-1 mt-1 mb-4 px-2 sm:px-4">
         {!showDetails ? (
           <>
+          {console.log(showDetails)}
             <div className="sm:col-span-2">
-              <div className="grid grid-cols-1 gap-5 mt-5 px-2 sm:px-4 md:px-7">
+              <div className="grid grid-cols-2 gap-5 mt-5 px-2 sm:px-4 md:px-7">
                 <div className="text-lg sm:text-xl md:text-xl lg:text-xl">
                   <DateCard title={"On going Events"} events={"Football match, hockey match"} img={datebox1}/>
                 </div>
@@ -89,8 +90,8 @@ const Events = () => {
         ) : (
           <div className="col-span-3 mt-8 px-10">
           <Table />
-          <div className="flex justify-center mt-4 bg-red-500">
-            <button onClick={handleBackClick} className="bg-blue-500 text-white px-4 py-2 rounded">
+          <div className="flex justify-center mt-4">
+            <button onClick={handleBackClick} className="bg-blue-500 text-white px-4 py-2 rounded w-full">
               Back
             </button>
           </div>
