@@ -28,7 +28,7 @@ const ScrollToTopButton = () => {
         <button
           className="fixed bottom-5 right-5 bg-blue-500 text-white rounded-full p-3 shadow-lg hover:bg-blue-700 focus:outline-none"
           onClick={scrollToTop}
-          aria-label="Scroll to top" // Add aria label for accessibility
+          aria-label="Scroll to top"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

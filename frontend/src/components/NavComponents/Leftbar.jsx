@@ -8,8 +8,8 @@ import uniLogo from "../../assets/logo/uni_logo.png";
 
 export const LeftbarContext = createContext();
 
-const Leftbar = ({ userData }) => {
-  const [expanded, setExpanded] = useState(false);
+const Leftbar = ({ userData, isLeftbarVisible }) => {
+  const [expanded, setExpanded] = useState(true); // Always expanded on mobile
   const [activeLink, setActiveLink] = useState("/");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
@@ -22,7 +22,6 @@ const Leftbar = ({ userData }) => {
 
   const handleMenuToggle = () => {
     setIsMenuOpen(!isMenuOpen);
-    setExpanded(true);
   };
 
   const handleOutsideClick = (event) => {
@@ -44,13 +43,15 @@ const Leftbar = ({ userData }) => {
 
   return (
     <aside
-      className={`h-screen overflow-hidden transition-all duration-300 ease-in-out ${
-        expanded ? "w-64" : "w-16"
-      }`}
+      className={`h-screen bg-white shadow-xl rounded-r-md overflow-hidden transition-all duration-300 ease-in-out transform ${
+        isLeftbarVisible
+          ? "translate-x-0"
+          : "-translate-x-full md:translate-x-0"
+      } ${
+        expanded ? "md:w-64 w-64" : "md:w-16 w-64"
+      } md:relative absolute z-10 md:z-auto`}
     >
-      <nav
-        className={`h-full flex flex-col bg-white shadow-xl rounded-r-md overflow-hidden transition-all duration-300 ease-in-out`}
-      >
+      <nav className="h-full flex flex-col">
         <div className="p-4 pb-2 flex items-center justify-between relative">
           <img
             onClick={() => navigate("/dashboard")}
@@ -59,14 +60,13 @@ const Leftbar = ({ userData }) => {
               expanded
                 ? "w-36 opacity-100 translate-x-0"
                 : "w-0 opacity-0 -translate-x-full"
-            }
-            `}
+            }`}
             alt="Your Logo"
           />
 
           <button
             onClick={() => setExpanded((curr) => !curr)}
-            className="group relative bg-secondary-golden-shade-1  transition-all duration-200 ease-in-out ml-2 p-2 rounded-md focus:outline-none right-4 top-1/2 transform -translate-y-1/2"
+            className="group relative bg-secondary-golden-shade-1 transition-all duration-200 ease-in-out ml-2 p-2 rounded-md hidden md:block focus:outline-none right-4 top-1/2 transform -translate-y-1/2"
           >
             {expanded ? (
               <ChevronLeft
@@ -79,7 +79,6 @@ const Leftbar = ({ userData }) => {
                 className="text-gray-600 group-hover:text-gray-800 transition-colors duration-200"
               />
             )}
-
             <div className="absolute inset-0 bg-gray-100 rounded-md opacity-0 group-hover:opacity-25 transition-opacity duration-200"></div>
           </button>
         </div>
@@ -107,7 +106,7 @@ const Leftbar = ({ userData }) => {
           >
             <div
               onClick={handleMenuToggle}
-              className="flex w-full items-center cursor-pointer "
+              className="flex w-full items-center cursor-pointer"
             >
               <img
                 src={userData.profile.profile_picture}
@@ -117,7 +116,7 @@ const Leftbar = ({ userData }) => {
                 alt="Profile"
               />
 
-              <div // Apply opacity transition only to the text
+              <div
                 className={`transition-opacity duration-300 ${
                   expanded ? "opacity-100" : "opacity-0"
                 }`}
@@ -129,12 +128,10 @@ const Leftbar = ({ userData }) => {
                 >
                   Profile
                 </h4>
-
-                {/* Using userData.email for consistency */}
               </div>
             </div>
           </div>
-          {/* floating menu */}
+          {/* Floating menu */}
           {isMenuOpen && (
             <div
               ref={menuRef}
@@ -168,8 +165,10 @@ const Leftbar = ({ userData }) => {
     </aside>
   );
 };
-export default Leftbar;
 
 Leftbar.propTypes = {
   userData: PropTypes.object,
+  isLeftbarVisible: PropTypes.bool.isRequired,
 };
+
+export default Leftbar;

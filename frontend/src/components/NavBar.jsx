@@ -1,7 +1,9 @@
 import React from "react";
-import { Link, useLocation, NavLink } from "react-router-dom";
+import { useLocation, NavLink } from "react-router-dom";
+import PropTypes from "prop-types";
+import { Menu, X } from "lucide-react";
 
-const NavBar = () => {
+const NavBar = ({ onHamburgerClick, isLeftbarVisible }) => {
   const location = useLocation();
 
   const getNavPath = (pathname) => {
@@ -9,7 +11,7 @@ const NavBar = () => {
 
     if (parts.length === 0) {
       return (
-        <NavLink to="/" className="text-white hover:underline">
+        <NavLink to="/" className="text-black hover:underline">
           Home
         </NavLink>
       );
@@ -35,11 +37,24 @@ const NavBar = () => {
   return (
     <nav className="bg-white p-4 sticky top-0">
       <div className="container mx-auto flex items-center">
+        {/* Hamburger Menu Icon */}
+        <button className="block md:hidden mr-4" onClick={onHamburgerClick}>
+          {isLeftbarVisible ? (
+            <X className="w-6 h-6" /> // "X" icon
+          ) : (
+            <Menu className="w-6 h-6" /> // Hamburger icon
+          )}
+        </button>
         {/* Optional logo or brand name here */}
         <div className="ml-auto">{getNavPath(location.pathname)}</div>
       </div>
     </nav>
   );
+};
+
+NavBar.propTypes = {
+  onHamburgerClick: PropTypes.func.isRequired,
+  isLeftbarVisible: PropTypes.bool.isRequired,
 };
 
 export default NavBar;

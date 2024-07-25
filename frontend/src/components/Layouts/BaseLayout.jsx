@@ -1,25 +1,30 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
-import Leftbar from "../NavComponents/Leftbar";
 import NavBar from "../NavBar";
+import Leftbar from "../NavComponents/Leftbar";
+import ScrollToTopButton from "../Buttons/ScrollToTopButton";
 
 const BaseLayout = () => {
-  const [userProfileData, setUserProfileData] = useState({});
   const userData = JSON.parse(localStorage.getItem("userData"));
-  useState(() => {
-    setUserProfileData(userData);
-  }, [userData]);
+  const [isLeftbarVisible, setIsLeftbarVisible] = useState(false);
+
+  const handleHamburgerClick = () => {
+    setIsLeftbarVisible(!isLeftbarVisible);
+  };
+
   return (
-    <div className="flex h-screen">
-      <div className="hidden xs:block w-[290px] bg-gray-200 z-30">
-        <LeftBar profileData={userProfileData} />
+    <div className="flex flex-col h-screen">
+      <div className="w-full bg-gray-200">
+        <NavBar
+          onHamburgerClick={handleHamburgerClick}
+          isLeftbarVisible={isLeftbarVisible}
+        />
       </div>
-      <div className="flex-1 flex flex-col">
-        <div className="w-full bg-gray-200">
-          <NavBar />
-        </div>
-        <div className="bg-slate-100 flex py-14 px-7">
+      <div className="flex flex-1 overflow-hidden w-full">
+        <Leftbar userData={userData} isLeftbarVisible={isLeftbarVisible} />
+        <div className="flex-1 bg-slate-100 flex flex-col py-14 px-7 overflow-auto">
           <Outlet />
+          <ScrollToTopButton />
         </div>
       </div>
     </div>
