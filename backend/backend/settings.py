@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "userProfile",
     "items",
     "sport",
+    "reservation",
 ]
 
 MIDDLEWARE = [
