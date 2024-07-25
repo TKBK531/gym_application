@@ -15,15 +15,18 @@ const BaseLayout = () => {
   return (
     <div className="flex flex-col h-screen">
       <div className="w-full bg-gray-200">
-        <NavBar onHamburgerClick={handleHamburgerClick} />
+        <NavBar
+          onHamburgerClick={handleHamburgerClick}
+          isLeftbarVisible={isLeftbarVisible}
+        />
       </div>
       <div className="flex flex-1 overflow-hidden w-full">
         <Leftbar userData={userData} isLeftbarVisible={isLeftbarVisible} />
         <div className="flex-1 bg-slate-100 flex flex-col py-14 px-7 overflow-auto">
           <Outlet />
+          <ScrollToTopButton />
         </div>
       </div>
-      <ScrollToTopButton />
     </div>
   );
 };

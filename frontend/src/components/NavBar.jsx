@@ -1,8 +1,9 @@
 import React from "react";
 import { useLocation, NavLink } from "react-router-dom";
 import PropTypes from "prop-types";
+import { Menu, X } from "lucide-react";
 
-const NavBar = ({ onHamburgerClick }) => {
+const NavBar = ({ onHamburgerClick, isLeftbarVisible }) => {
   const location = useLocation();
 
   const getNavPath = (pathname) => {
@@ -38,20 +39,11 @@ const NavBar = ({ onHamburgerClick }) => {
       <div className="container mx-auto flex items-center">
         {/* Hamburger Menu Icon */}
         <button className="block md:hidden mr-4" onClick={onHamburgerClick}>
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M4 6h16M4 12h16m-7 6h7"
-            ></path>
-          </svg>
+          {isLeftbarVisible ? (
+            <X className="w-6 h-6" /> // "X" icon
+          ) : (
+            <Menu className="w-6 h-6" /> // Hamburger icon
+          )}
         </button>
         {/* Optional logo or brand name here */}
         <div className="ml-auto">{getNavPath(location.pathname)}</div>
@@ -62,6 +54,7 @@ const NavBar = ({ onHamburgerClick }) => {
 
 NavBar.propTypes = {
   onHamburgerClick: PropTypes.func.isRequired,
+  isLeftbarVisible: PropTypes.bool.isRequired,
 };
 
 export default NavBar;
