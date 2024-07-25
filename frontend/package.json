@@ -20,6 +20,8 @@
     "@mui/x-date-pickers": "^7.6.2",
     "axios": "^1.6.8",
     "dayjs": "^1.11.11",
+    "flowbite": "^2.4.1",
+    "flowbite-react": "^0.10.1",
     "formik": "^2.4.6",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.399.0",

@@ -44,7 +44,7 @@ const Leftbar = ({ userData }) => {
 
   return (
     <aside
-      className={`h-screen overflow-hidden transition-all duration-300 ease-in-out ${
+      className={`h-screen overflow-hidden transition-all duration-300 ease-in-out absolute z-10 top-5 ${
         expanded ? "w-64" : "w-16"
       }`}
     >

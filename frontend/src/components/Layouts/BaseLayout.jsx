@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import NavBar from "../NavBar";
 import Leftbar from "../NavComponents/Leftbar";
 import ScrollToTopButton from "../Buttons/ScrollToTopButton";
+import Drawer from "../NavComponents/Drawer";
 
 const BaseLayout = () => {
   const userData = JSON.parse(localStorage.getItem("userData"));
@@ -9,7 +10,8 @@ const BaseLayout = () => {
   return (
     <div className="grid h-screen grid-cols-[auto,1fr]">
       <div className="bg-gray-200 h-screen overflow-y-auto">
-        <Leftbar userData={userData} />
+        {/* <Leftbar userData={userData} /> */}
+        <Drawer />
       </div>
       <div className="flex flex-col">
         <div className="w-full bg-gray-200">
