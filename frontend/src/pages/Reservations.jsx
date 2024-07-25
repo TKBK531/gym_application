@@ -12,10 +12,7 @@ import {
 import { BsPinMapFill } from "react-icons/bs";
 import { FaRegCalendarPlus } from "react-icons/fa";
 import {
-  faSwimmer,
-  faWalking,
   faUsers,
-  faRunning,
 } from "@fortawesome/free-solid-svg-icons";
 import StatWidge from "../components/Members/StatWidge";
 
@@ -24,10 +21,10 @@ const bookings = [
   { sport: "Baseball", time: "9 AM - 11 AM", bookedBy: "Sakura Tanaka", status: "Confirmed" },
   { sport: "Tennis", time: "11 AM - 12 PM", bookedBy: "Aisha Khan", status: "Confirmed" },
   { sport: "Tennis", time: "12 PM - 1 PM", bookedBy: "Aisha Khan", status: "Team Practices" },
-  { sport: "Rugby", time: "3 PM - 7 PM", bookedBy: "Linh Nguyen", status: "Unavailable" },
+  { sport: "Rugby", time: "3 PM - 7 PM", bookedBy: "Alesia K", status: "Unavailable" },
   { sport: "Soccer", time: "10 AM - 12 PM", bookedBy: "Mei Chen", status: "Pending" },
   { sport: "Cricket", time: "3 PM - 4 PM", bookedBy: "Haruto Sato", status: "Unavailable" },
-  { sport: "Volleyball", time: "8 AM - 10 AM", bookedBy: "Linh Nguyen", status: "Team Practices" },
+  { sport: "Volleyball", time: "8 AM - 10 AM", bookedBy: "Alesia K", status: "Team Practices" },
   { sport: "Swimming", time: "10 AM - 11 AM", bookedBy: "Akira Yamamoto", status: "Confirmed" },
   { sport: "Swimming", time: "4 PM - 5 PM", bookedBy: "Sakura Tanaka", status: "Team Practices" },
   { sport: "Table Tennis", time: "9 AM - 10 AM", bookedBy: "Mei Chen", status: "Pending" },
@@ -108,18 +105,22 @@ const sports = [
   "Table Tennis",
 ];
 
+const applyOutlineStyle = (bookedBy) => {
+  return bookedBy === "Alesia K" ? "border-2 border-black" : "";
+};
+
 const Reservations = () => (
 
   
 
   <div >
-    <h1 className="font-poppins font-semibold xs:text-[64px] text-[40px] text-black xs:leading-[76.8px] leading-[66.8px] w-full">
-      Reservations
-    </h1>
-    <div className="boxes">
-      <StatWidge name="Overall membership" count="1250" iconName={faUsers} /> 
+    <h1>Hello Alesia K 👋 </h1>
+    <div className="boxes flex flex-row gap-32 m-4">
+      <StatWidge name="Your reservations" count="4" iconName={faUsers} /> 
+      <StatWidge name="Pending reservations" count="3" iconName={faUsers} /> 
+      <StatWidge name="Confirmed reservations" count="1" iconName={faUsers} /> 
     </div>
-    <div className="body bg-white rounded-lg">
+    <div className="body bg-white rounded-xl">
       <div className="table_and_table_legend flex flex-row">
         <div className="1">
           <div className='side-choice-bar flex flex-col p-3 gap-y-6 bg-transparent'>
@@ -169,29 +170,31 @@ const Reservations = () => (
                         nextBooking.bookedBy !== bookedBy ||
                         nextBooking.status !== status;
 
-                      const cellStyle = {
-                        backgroundColor: booking
-                          ? assignStatusColors(booking.status)
-                          : "white",
-                        cursor: booking ? "pointer" : "default",
-                        padding: "4px",
-                        borderTop: "none",
-                        borderBottom: "none",
-                        minWidth: "70px",
-                        borderRadius: booking
-                          ? isStart && isEnd
-                            ? "100px"
-                            : isStart
-                            ? "100px 0 0 100px" 
-                            : isEnd
-                            ? "0 100px 100px 0" 
-                            : "0" 
-                          : "0",
-                        borderLeft: "1px solid #e0e0e0",
-                        borderRight: "1px solid #e0e0e0",
-                        lineHeight: "1.2",
-                        height: "40px",
-                      };
+                        const cellStyle = {
+                          backgroundColor: booking
+                            ? assignStatusColors(booking.status)
+                            : "white",
+                          cursor: booking ? "pointer" : "default",
+                          padding: "4px",
+                          borderTop: "none",
+                          borderBottom: "none",
+                          minWidth: "70px",
+                          borderRadius: booking
+                            ? isStart && isEnd
+                              ? "100px"
+                              : isStart
+                              ? "100px 0 0 100px"
+                              : isEnd
+                              ? "0 100px 100px 0"
+                              : "0"
+                            : "0",
+                          borderLeft: "1px solid #e0e0e0",
+                          borderRight: "1px solid #e0e0e0",
+                          lineHeight: "1.2",
+                          height: "40px",
+                          outline: applyOutlineStyle(bookedBy), 
+                        };
+                        
 
                       return (
                         <Tooltip
@@ -211,7 +214,7 @@ const Reservations = () => (
           </TableContainer>
         </div>
         <div className="3">
-          <div className='color-palette-holder  flex flex-col bg-white '>
+          <div className='color-palette-holder  flex flex-col '>
           {Object.entries(statusColors).map(([status, color]) => (
                   <div key={status} className="legend-item  flex flex-row p-2 gap-2">
                     <span className="color-label flex-1">{status}</span>
