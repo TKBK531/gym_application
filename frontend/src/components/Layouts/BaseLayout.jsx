@@ -52,7 +52,7 @@ const BaseLayout = () => {
             isLeftbarVisible ? "translate-x-0" : "-translate-x-full"
           }`}
         >
-          <Leftbar userData={userData} />
+          <Leftbar userData={userData} isLeftbarVisible={isLeftbarVisible} />
         </div>
         <div className="flex-1 bg-slate-100 flex flex-col py-14 px-7 overflow-auto">
           <Outlet />

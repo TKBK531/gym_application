@@ -173,7 +173,7 @@
 // Leftbar.propTypes = {
 //   userData: PropTypes.object,
 // };
-import { createContext, useState, useEffect, useRef } from "react";
+import React, { createContext, useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import pageLinks from "../../constants/index";
 import PageLink from "./PageLink";
@@ -183,7 +183,7 @@ import uniLogo from "../../assets/logo/uni_logo.png";
 
 export const LeftbarContext = createContext();
 
-const Leftbar = ({ userData }) => {
+const Leftbar = ({ userData, isLeftbarVisible }) => {
   const [expanded, setExpanded] = useState(true); // Always expanded on mobile
   const [activeLink, setActiveLink] = useState("/");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -218,8 +218,12 @@ const Leftbar = ({ userData }) => {
 
   return (
     <aside
-      className={`h-screen bg-white shadow-xl rounded-r-md overflow-hidden transition-transform duration-300 ease-in-out transform ${
+      className={`h-screen bg-white shadow-xl rounded-r-md overflow-hidden transition-all duration-300 ease-in-out transform ${
         expanded ? "w-64" : "w-16"
+      } ${
+        isLeftbarVisible
+          ? "translate-x-0"
+          : "-translate-x-full md:translate-x-0"
       }`}
     >
       <nav className="h-full flex flex-col">
@@ -339,6 +343,7 @@ const Leftbar = ({ userData }) => {
 
 Leftbar.propTypes = {
   userData: PropTypes.object,
+  isLeftbarVisible: PropTypes.bool.isRequired,
 };
 
 export default Leftbar;
