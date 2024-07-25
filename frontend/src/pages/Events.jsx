@@ -8,11 +8,14 @@ import DateBox from "../components/DateBox";
 import Table from '../components/Table'; 
 import EventCard from '../components/Event_Components/EventCard';
 import ActiveCard from '../components/Event_Components/ActiveCard';
+import DateCard from '../components/Event_Components/DateCard';
 
 import sportEvent from '../assets/eventPage/Card5.jpg';
 import musicalEvent from '../assets/eventPage/Card6.jpg';
 import otherEvents from '../assets/eventPage/Card7.jpg';
 import cup from '../assets/eventPage/Card3.png';
+import datebox1 from '../assets/eventPage/Card1.jpg';
+import datebox2 from '../assets/eventPage/Card8.jpg';
 
 const Events = () => {
   const [showDetails, setShowDetails] = useState(false);
@@ -62,15 +65,12 @@ const Events = () => {
           <>
             <div className="sm:col-span-2">
               <div className="grid grid-cols-1 gap-5 mt-5 px-2 sm:px-4 md:px-7">
-                {dateBox.map((card) => (
-                  <div key={card.id} className="transition transform hover:scale-105 hover:shadow-lg">
-                  <DateBox
-                    count={card.count}
-                    test={card.test}
-                    image={card.image}
-                  />
+                <div className="text-lg sm:text-xl md:text-xl lg:text-xl">
+                  <DateCard title={"On going Events"} events={"Football match, hockey match"} img={datebox1}/>
                 </div>
-                ))}
+                <div className="text-lg sm:text-xl md:text-xl lg:text-xl" >
+                  <DateCard title={"Holidays"} events={"Navam Fullmoon poya day"} img={datebox2}/>
+                </div>
               </div>
             </div>
             <div className="mt-4 px-2 sm:px-4">
