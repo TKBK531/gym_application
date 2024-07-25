@@ -103,6 +103,12 @@ const sports = [
   "Cricket",
   "Golf",
   "Table Tennis",
+  "Cycling",
+  "Handball",
+  "Track and Field",
+  "Elle",
+
+
 ];
 
 const applyOutlineStyle = (bookedBy) => {
@@ -129,7 +135,7 @@ const Reservations = () => (
           </div>
         </div>
         <div className="2 p-5">
-          <TableContainer component={Paper} 
+          <TableContainer component={Paper}  elevation={6}
           style={{
           maxHeight: 500, 
           overflowY: 'auto', 
@@ -214,7 +220,7 @@ const Reservations = () => (
           </TableContainer>
         </div>
         <div className="3">
-          <div className='color-palette-holder  flex flex-col '>
+          <div className='color-palette-holder pr-6 flex flex-col '>
           {Object.entries(statusColors).map(([status, color]) => (
                   <div key={status} className="legend-item  flex flex-row p-2 gap-2">
                     <span className="color-label flex-1">{status}</span>
