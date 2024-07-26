@@ -27,6 +27,7 @@ urlpatterns = [
     path("user/", include("userProfile.urls")),
     path("sport/", include("sport.urls")),
     path("items/", include("items.urls")),
+    path("reservation/", include("reservation.urls")),
     path("user/token/", TokenObtainPairView.as_view(), name="get_token"),
     path("user/token/refresh/", TokenRefreshView.as_view(), name="refresh_token"),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
