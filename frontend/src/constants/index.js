@@ -1,9 +1,3 @@
-import Card5 from "../assets/Card5.jpg";
-import Card6 from "../assets/Card6.jpg";
-import Card7 from "../assets/Card7.jpg";
-import Card8 from "../assets/Card8.jpg";
-import Card1 from "../assets/Card1.jpg";
-
 import {
   LayoutDashboard,
   Calendar,
@@ -13,56 +7,8 @@ import {
   Medal,
 } from "lucide-react";
 
-export const countingCards = [
-  {
-    id: "1",
-    count: "0",
-    test: "All Events",
-  },
-  {
-    id: "2",
-    count: "0",
-    test: "On going",
-  },
-  {
-    id: "3",
-    count: "0",
-    test: "Upcoming",
-  },
-];
 
-export const categoryCards = [
-  {
-    id: "1",
-    categoryName: "Sports",
-    image: Card5,
-  },
-  {
-    id: "2",
-    categoryName: "Musical Shows",
-    image: Card6,
-  },
-  {
-    id: "3",
-    categoryName: "Other Functions",
-    image: Card7,
-  },
-];
 
-export const dateBox = [
-  {
-    id: "1",
-    count: "On Going Events",
-    test: "football match,hockey match",
-    image: Card1,
-  },
-  {
-    id: "1",
-    count: "Holidays",
-    test: "Navam fullmoon poya day",
-    image: Card8,
-  },
-];
 
 const pageLinks = [
   { index: 1, icon: LayoutDashboard, name: "Dashboard", href: "/dashboard" },

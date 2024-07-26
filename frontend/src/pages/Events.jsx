@@ -1,9 +1,5 @@
-import React, { useState } from 'react';
-import CountingCard from "../components/CountingCard";
-import { countingCards, categoryCards } from "../constants/index";
+import { useState } from 'react';
 import CustomDatePicker from "../components/CustomDatePicker";
-import { dateBox } from "../constants/index";
-import DateBox from "../components/DateBox";
 import Table from '../components/Table'; 
 import EventCard from '../components/Event_Components/EventCard';
 import ActiveCard from '../components/Event_Components/ActiveCard';
@@ -18,6 +14,7 @@ import datebox2 from '../assets/eventPage/Card8.jpg';
 
 const Events = () => {
   const [showDetails, setShowDetails] = useState(false);
+  // eslint-disable-next-line no-unused-vars
   const [selectedCategory, setSelectedCategory] = useState(null);
 
   const handleReadMoreClick = (categoryName) => {
