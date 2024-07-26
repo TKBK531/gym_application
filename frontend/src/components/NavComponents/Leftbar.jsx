@@ -8,8 +8,8 @@ import uniLogo from "../../assets/logo/uni_logo.png";
 
 export const LeftbarContext = createContext();
 
-const Leftbar = ({ userData, isLeftbarVisible }) => {
-  const [expanded, setExpanded] = useState(true); // Always expanded on mobile
+const Leftbar = ({ userData, isLeftbarVisible, expanded, setExpanded }) => {
+  // const [expanded, setExpanded] = useState(true); // Always expanded on mobile
   const [activeLink, setActiveLink] = useState("/");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
@@ -21,6 +21,7 @@ const Leftbar = ({ userData, isLeftbarVisible }) => {
   }, [location]);
 
   const handleMenuToggle = () => {
+    setExpanded(true);
     setIsMenuOpen(!isMenuOpen);
   };
 
