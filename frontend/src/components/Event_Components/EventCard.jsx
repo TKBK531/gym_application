@@ -1,5 +1,6 @@
-import React from 'react';
 
+
+// eslint-disable-next-line react/prop-types
 const EventCard = ({title, img, handleReadMoreClick, categoryName}) => {
   return (
     <div className="border rounded-lg overflow-hidden max-w-sm shadow-lg hover:shadow-lg h-full">
@@ -15,5 +16,6 @@ const EventCard = ({title, img, handleReadMoreClick, categoryName}) => {
     </div>
   );
 };
+
 
 export default EventCard;
