@@ -20,6 +20,7 @@ import BaseLayout from "./components/Layouts/BaseLayout";
 import MembersGym from "./pages/MembersGym";
 import MembersGround from "./pages/MembersGround";
 import MembersPool from "./pages/MembersPool";
+import Table from "./components/Table";
 
 const router = createBrowserRouter([
   // Dashboard route
@@ -85,7 +86,7 @@ const router = createBrowserRouter([
   // Members route
   {
     path: "/members",
-    element: <BaseLayout />, 
+    element: <BaseLayout />,
     children: [
       {
         index: true,
@@ -152,6 +153,20 @@ const router = createBrowserRouter([
     ],
   },
   // Login, Logout, Register, and PageNotFound routes
+  {
+    path: "/table",
+    element: <BaseLayout />,
+    children: [
+      {
+        index: true,
+        element: (
+          <ProtectedRoute>
+            <Table />
+          </ProtectedRoute>
+        ),
+      },
+    ],
+  },
   { path: "/loading", element: <GoogleLoginLoading /> },
   { path: "/login", element: <Login /> },
   { path: "/logout", element: <Logout /> },
