@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import CountingCard from "../components/CountingCard";
 import { countingCards, categoryCards } from "../constants/index";
-import MediaCard from "../components/CategoryCard";  // Ensure correct import
 import CustomDatePicker from "../components/CustomDatePicker";
 import { dateBox } from "../constants/index";
 import DateBox from "../components/DateBox";
