@@ -9,8 +9,6 @@ class CourtSerializer(serializers.ModelSerializer):
 
 
 class CourtRateSerializer(serializers.ModelSerializer):
-    court = CourtSerializer()
-
     class Meta:
         model = CourtRate
         fields = ["id", "court", "hourley_rate", "daily_rate"]
