@@ -31,7 +31,7 @@ const Table = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <button className="ml-4 bg-purple-600 text-white py-3 px-4 rounded text-sm hover:bg-purple-700 w-1/4">Add Customer</button>
+        <button className="ml-4 bg-yellow-300 text-black py-3 px-4 rounded text-sm hover:bg-yellow-500 w-1/4">Add Event</button>
       </div>
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-200">
@@ -58,8 +58,8 @@ const Table = () => {
                 <td className="border-b p-4">{item.paymentMode}</td>
                 <td className={`border-b p-4 ${item.status.toLowerCase() === 'delivered' ? 'text-green-500' : item.status.toLowerCase() === 'process' ? 'text-orange-500' : 'text-red-500'}`}>{item.status}</td>
                 <td className="border-b p-4">
-                  <button className="text-purple-600 mr-3">✏️</button>
-                  <button className="text-red-600">🗑️</button>
+                  <button className="mr-3">✏️</button>
+                  <button className=" ">🗑️</button>
                 </td>
               </tr>
             ))}

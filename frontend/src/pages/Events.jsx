@@ -33,7 +33,7 @@ const Events = () => {
   return (
     <div className="flex flex-col">
       <div>
-        <h1 className="text-lg sm:text-xl md:text-xl lg:text-xl">Hello Alesia K. 👋 </h1>
+        <h1 className="text-lg sm:text-xl md:text-xl lg:text-xl">Hello, Hasaranga Abeywickrama. 👋 </h1>
         <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-4 mt-10 px-4">
           <div className='transition transform hover:scale-105'>
             <ActiveCard title={"All Event"} img={cup}/>
@@ -64,7 +64,7 @@ const Events = () => {
           <>
           {console.log(showDetails)}
             <div className="sm:col-span-2">
-              <div className="grid grid-cols-2 gap-5 mt-5 px-2 sm:px-4 md:px-7">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-5 mt-5 px-2 sm:px-4 md:px-7">
                 <div className="text-lg sm:text-xl md:text-xl lg:text-xl">
                   <DateCard title={"On going Events"} events={"Football match, hockey match"} img={datebox1}/>
                 </div>
@@ -90,7 +90,7 @@ const Events = () => {
           <div className="col-span-3 mt-8 px-10">
           <Table />
           <div className="flex justify-center mt-4">
-            <button onClick={handleBackClick} className="bg-blue-500 text-white px-4 py-2 rounded w-full">
+            <button onClick={handleBackClick} className="bg-yellow-300 text-black  hover:bg-yellow-500 px-4 py-2 rounded w-full">
               Back
             </button>
           </div>
