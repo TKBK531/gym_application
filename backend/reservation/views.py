@@ -1,10 +1,12 @@
 from django.shortcuts import render
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.http import JsonResponse
+from rest_framework import views, generics, status
 
-from .models import Court, CourtRate
-from .serializers import CourtSerializer, CourtRateSerializer
+from .models import Court, CourtRate, Reservation
+from .serializers import CourtSerializer, CourtRateSerializer, ReservationSerializer
 
 
 # Create your views here.
@@ -30,38 +32,120 @@ class CourtRateView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-        response = super().create(request, *args, **kwargs)
-        response.data = {
-            "status": "success",
-            "message": "Court rate created successfully",
-            "data": response.data,
-        }
-        return JsonResponse(response.data, status=response.status_code)
+        try:
+            response = super().create(request, *args, **kwargs)
+            response_data = {
+                "status": "success",
+                "message": "Court rate created successfully",
+                "data": response.data,
+            }
+        except ValidationError as e:
+            error_message = (
+                list(e.detail.values())[0][0] if e.detail else "Validation error"
+            )
+            response_data = {
+                "status": "error",
+                "message": error_message,
+            }
+
+        return JsonResponse(response_data)
 
     def update(self, request, *args, **kwargs):
-        response = super().update(request, *args, **kwargs)
-        response.data = {
-            "status": "success",
-            "message": "Court rate updated successfully",
-            "data": response.data,
-        }
-        return JsonResponse(response.data, status=response.status_code)
+        partial = kwargs.pop("partial", False)
+        instance = self.get_object()
+        data = request.data.copy()
+
+        # Extract the court value from the URL and set it in the data
+        court_id = self.kwargs.get("pk")
+        data["court"] = court_id
+
+        serializer = self.get_serializer(instance, data=data, partial=partial)
+        try:
+            serializer.is_valid(raise_exception=True)
+            self.perform_update(serializer)
+            response_data = {
+                "status": "success",
+                "message": "Court rate updated successfully",
+                "data": serializer.data,
+            }
+            return JsonResponse(response_data, status=status.HTTP_200_OK)
+        except ValidationError as e:
+            error_message = (
+                list(e.detail.values())[0][0] if e.detail else "Validation error"
+            )
+            response_data = {
+                "status": "error",
+                "message": error_message,
+            }
+            return JsonResponse(response_data, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            response_data = {
+                "status": "error",
+                "message": str(e),
+            }
+            return JsonResponse(response_data, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, *args, **kwargs):
-        response = super().destroy(request, *args, **kwargs)
-        return JsonResponse(
-            {
+        try:
+            response = super().destroy(request, *args, **kwargs)
+            response_data = {
                 "status": "success",
                 "message": "Court rate deleted successfully",
-            },
-            status=response.status_code,
-        )
+            }
+        except Exception as e:
+            response_data = {
+                "status": "error",
+                "message": str(e),
+            }
+
+        return JsonResponse(response_data)
 
     def partial_update(self, request, *args, **kwargs):
-        response = super().partial_update(request, *args, **kwargs)
-        response.data = {
-            "status": "success",
-            "message": "Court rate partially updated successfully",
-            "data": response.data,
-        }
-        return JsonResponse(response.data, status=response.status_code)
+        try:
+            response = super().partial_update(request, *args, **kwargs)
+            response_data = {
+                "status": "success",
+                "message": "Court rate updated successfully",
+                "data": response.data,
+            }
+        except Exception as e:
+            response_data = {
+                "status": "error",
+                "message": str(e),
+            }
+
+        return JsonResponse(response_data)
+
+
+class CreateReservationView(generics.CreateAPIView):
+    queryset = Reservation.objects.all()
+    serializer_class = ReservationSerializer
+    permission_classes = [IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        user = request.user
+        data = request.data
+        data["user"] = user.id
+        try:
+            serializer = self.get_serializer(data=data)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                response_data = {
+                    "status": "success",
+                    "message": "Reservation created successfully",
+                    "data": serializer.data,
+                }
+
+        except ValidationError as e:
+            response_data = {
+                "status": "error",
+                "message": e.detail,
+            }
+
+        except Exception as e:
+            response_data = {
+                "status": "error",
+                "message": str(e),
+            }
+
+        return JsonResponse(response_data)

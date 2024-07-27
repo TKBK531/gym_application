@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CourtViewSet, CourtRateView
+from .views import CourtViewSet, CourtRateView, CreateReservationView
 
 urlpatterns = [
     path("courts/", CourtViewSet.as_view({"get": "list"}), name="courts"),
@@ -12,5 +12,10 @@ urlpatterns = [
         "court-rate/<int:pk>/",
         CourtRateView.as_view({"put": "update", "delete": "destroy"}),
         name="court-rate-update-delete",
+    ),
+    path(
+        "add-reservation/",
+        CreateReservationView.as_view(),
+        name="create-reservation",
     ),
 ]

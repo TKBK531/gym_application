@@ -13,9 +13,14 @@ class CourtRateSerializer(serializers.ModelSerializer):
         model = CourtRate
         fields = ["id", "court", "hourley_rate", "daily_rate"]
 
+    def validate_court(self, value):
+        courtHasRate = CourtRate.objects.filter(court=value).exists()
+        if courtHasRate:
+            raise serializers.ValidationError("Court rate already exists")
+        return value
+
 
 class ReservationSerializer(serializers.ModelSerializer):
-    court = CourtSerializer()
 
     class Meta:
         model = Reservation
