@@ -1,26 +1,31 @@
-import React from 'react';
+import React from "react";
 
-const ItemTable = ({ searchQuery = '', sortSport = true, sortCount = 'asc' }) => {
+const ItemTable = ({
+  searchQuery = "",
+  sortSport = true,
+  sortCount = "asc",
+}) => {
   const items = [
-    { item: 'Badminton Racket', sport: 'Badminton', count: 12 },
-    { item: 'Shuttlecock', sport: 'Badminton', count: 5 },
-    { item: 'Basketball', sport: 'Basketball', count: 3 },
-    { item: 'Paddle', sport: 'Table Tennis', count: 8 },
-    { item: 'Volleyball', sport: 'Volleyball', count: 3 },
+    { item: "Badminton Racket", sport: "Badminton", count: 12 },
+    { item: "Shuttlecock", sport: "Badminton", count: 5 },
+    { item: "Basketball", sport: "Basketball", count: 3 },
+    { item: "Paddle", sport: "Table Tennis", count: 8 },
+    { item: "Volleyball", sport: "Volleyball", count: 3 },
   ];
 
   // Filter the items based on the search query
   const filteredItems = items
-    .filter((item) =>
-      item.item.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.sport.toLowerCase().includes(searchQuery.toLowerCase())
+    .filter(
+      (item) =>
+        item.item.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.sport.toLowerCase().includes(searchQuery.toLowerCase())
     )
     // Sort the items based on the sport or count
     .sort((a, b) => {
       if (sortSport) {
         return a.sport.localeCompare(b.sport); // Sort alphabetically by sport
       } else {
-        const order = sortCount === 'asc' ? 1 : -1; // Ascending or Descending
+        const order = sortCount === "asc" ? 1 : -1; // Ascending or Descending
         return (a.count - b.count) * order;
       }
     });

@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import ItemTable from '../components/Item_Components/ItemTable';
-import ItemImage from '../assets/itemPage/Item1.jpg';
+import { useState } from "react";
+import ItemTable from "../components/Item_Components/ItemTable";
+import ItemImage from "../assets/itemPage/Item1.jpg";
 
 const Items = () => {
-  const [activeTab, setActiveTab] = useState('Indoor');
-  const [searchQuery, setSearchQuery] = useState(''); // This will handle the search input
-  const [sortSport, setSortSport] = useState(true);   // Sort by sport or not
-  const [sortCount, setSortCount] = useState('asc');  // Sort count in 'asc' or 'desc'
+  const [activeTab, setActiveTab] = useState("Indoor");
+  const [searchQuery, setSearchQuery] = useState(""); // This will handle the search input
+  const [sortSport, setSortSport] = useState(true); // Sort by sport or not
+  const [sortCount, setSortCount] = useState("asc"); // Sort count in 'asc' or 'desc'
 
   const handleTabChange = (tab) => setActiveTab(tab);
   const handleSearchChange = (e) => setSearchQuery(e.target.value);
@@ -20,9 +20,9 @@ const Items = () => {
           <span>Hello, Hasaranga Abeywickrama 👋</span>
         </div>
         <div className="relative">
-          <img 
+          <img
             src={ItemImage}
-            alt="Equipment Banner" 
+            alt="Equipment Banner"
             className="w-full h-64 object-cover rounded-lg"
           />
           <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center rounded-lg">
@@ -32,14 +32,18 @@ const Items = () => {
       </div>
       <div className="flex mb-4">
         <button
-          className={`px-4 py-2 ${activeTab === 'Indoor' ? 'bg-yellow-500 text-white' : 'bg-gray-200'}`}
-          onClick={() => handleTabChange('Indoor')}
+          className={`px-4 py-2 ${
+            activeTab === "Indoor" ? "bg-yellow-500 text-white" : "bg-gray-200"
+          }`}
+          onClick={() => handleTabChange("Indoor")}
         >
           Indoor
         </button>
         <button
-          className={`px-4 py-2 ml-2 ${activeTab === 'Outdoor' ? 'bg-gray-500 text-white' : 'bg-gray-200'}`}
-          onClick={() => handleTabChange('Outdoor')}
+          className={`px-4 py-2 ml-2 ${
+            activeTab === "Outdoor" ? "bg-gray-500 text-white" : "bg-gray-200"
+          }`}
+          onClick={() => handleTabChange("Outdoor")}
         >
           Outdoor
         </button>
@@ -49,20 +53,22 @@ const Items = () => {
           type="text"
           className="border p-2 rounded w-full max-w-xs"
           placeholder="Search"
-          value={searchQuery}  // Controlled component for search query
+          value={searchQuery} // Controlled component for search query
           onChange={handleSearchChange}
         />
         <div className="flex items-center">
           <span className="mr-2">Sort by:</span>
           <button
-            className={`px-4 py-2 ${sortSport ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+            className={`px-4 py-2 ${
+              sortSport ? "bg-blue-500 text-white" : "bg-gray-200"
+            }`}
             onClick={handleSortSportChange}
           >
             Sport
           </button>
           <select
             className="ml-2 border p-2 rounded"
-            value={sortCount}  // Controlled component for sorting count
+            value={sortCount} // Controlled component for sorting count
             onChange={handleSortCountChange}
           >
             <option value="asc">Count Ascending</option>
@@ -71,7 +77,11 @@ const Items = () => {
         </div>
       </div>
       {/* Pass search and sort states as props */}
-      <ItemTable searchQuery={searchQuery} sortSport={sortSport} sortCount={sortCount} />
+      <ItemTable
+        searchQuery={searchQuery}
+        sortSport={sortSport}
+        sortCount={sortCount}
+      />
     </div>
   );
 };
