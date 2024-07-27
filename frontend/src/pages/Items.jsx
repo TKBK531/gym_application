@@ -17,7 +17,7 @@ const Items = () => {
     <div className="container mx-auto p-4">
       <div className="mb-4">
         <div className="text-xl mb-2">
-          <span>Hello Alesia K. 👋</span>
+          <span>Hello, Hasaranga Abeywickrama 👋</span>
         </div>
         <div className="relative">
           <img 
