@@ -4,6 +4,8 @@ from .views import (
     CourtRateView,
     CreateReservationView,
     GetAllReservationsView,
+    UpdateReservationView,
+    DeleteReservationView,
 )
 
 urlpatterns = [
@@ -27,5 +29,15 @@ urlpatterns = [
         "get-all-reservations/",
         GetAllReservationsView.as_view(),
         name="get-all-reservations",
+    ),
+    path(
+        "<int:pk>/update/",
+        UpdateReservationView.as_view(),
+        name="update-reservation",
+    ),
+    path(
+        "<int:pk>/delete/",
+        DeleteReservationView.as_view(),
+        name="delete-reservation",
     ),
 ]

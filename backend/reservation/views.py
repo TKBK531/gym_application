@@ -199,3 +199,42 @@ class UpdateReservationView(generics.UpdateAPIView):
                 "data": serializer.data,
             },
         )
+
+
+class DeleteReservationView(generics.DestroyAPIView):
+    queryset = Reservation.objects.all()
+    serializer_class = ReservationSerializer
+    permission_classes = [IsAuthenticated]
+
+    def destroy(self, request, *args, **kwargs):
+        user = request.user
+        pk = kwargs.get("pk")
+
+        try:
+            reservation = Reservation.objects.get(pk=pk)
+        except Reservation.DoesNotExist:
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": "Reservation not found",
+                },
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        if reservation.user == user:
+            reservation.delete()
+        else:
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": "You are not authorized to delete this reservation",
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        return JsonResponse(
+            {
+                "status": "success",
+                "message": "Reservation deleted successfully",
+            },
+        )
