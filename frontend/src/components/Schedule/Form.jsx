@@ -5,6 +5,8 @@ const Form = ({ isOpen, onClose }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [numOfParticipants, setNumOfParticipants] = useState('');
   const [participantsData, setParticipantsData] = useState([]);
+  const [startTime, setStartTime] = useState("08:00");
+  const [endTime, setEndTime] = useState("09:00");
 
   // List of courts
   const gymCourts = [
@@ -66,6 +68,42 @@ const Form = ({ isOpen, onClose }) => {
     updatedParticipants[index][field] = value;
     setParticipantsData(updatedParticipants);
   };
+
+  const timeOptions = [
+    { value: "08:00", label: "8 AM" },
+    { value: "09:00", label: "9 AM" },
+    { value: "10:00", label: "10 AM" },
+    { value: "11:00", label: "11 AM" },
+    { value: "12:00", label: "12 PM" },
+    { value: "13:00", label: "1 PM" },
+    { value: "14:00", label: "2 PM" },
+    { value: "15:00", label: "3 PM" },
+    { value: "16:00", label: "4 PM" },
+    { value: "17:00", label: "5 PM" },
+    { value: "18:00", label: "6 PM" },
+    { value: "19:00", label: "7 PM" },
+    { value: "20:00", label: "8 PM" },
+    { value: "21:00", label: "9 PM" },
+  ];
+
+  const handleStartTimeChange = (event) => {
+    const newStartTime = event.target.value;
+    setStartTime(newStartTime);
+  
+    // Ensure end time is later than start time
+    if (newStartTime >= endTime) {
+      const newEndTimeIndex = timeOptions.findIndex(
+        (option) => option.value === newStartTime
+      );
+      setEndTime(timeOptions[newEndTimeIndex + 1]?.value || newStartTime);
+    }
+  };
+  
+  const handleEndTimeChange = (event) => {
+    setEndTime(event.target.value);
+  };
+
+
 
   if (!isOpen) return null;
 
@@ -194,6 +232,42 @@ const Form = ({ isOpen, onClose }) => {
                 />
               </div>
 
+              <div className="start-time flex flex-col gap-2 mb-2">
+                    <label className="block font-medium">Start Time</label>
+                    <select
+                        name="startTime"
+                        value={startTime}
+                        onChange={handleStartTimeChange}
+                        className="p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                    >
+                        <option value=""></option>
+                        {timeOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                            {option.label}
+                        </option>
+                        ))}
+                    </select>
+                    </div>
+
+                    <div className="end-time flex flex-col gap-2 mb-2">
+                    <label className="block font-medium">End Time</label>
+                    <select
+                        name="endTime"
+                        value={endTime}
+                        onChange={handleEndTimeChange}
+                        className="p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                    >
+                        <option value=""></option>
+                        {timeOptions
+                        .filter((option) => option.value > startTime)
+                        .map((option) => (
+                            <option key={option.value} value={option.value}>
+                            {option.label}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
               <div className='numOfParticipants flex flex-col gap-2 mb-2'>
                 <label className="block font-medium">Number of Participants</label>
                 <input
@@ -250,7 +324,9 @@ const Form = ({ isOpen, onClose }) => {
                     </tbody>
                   </table>
                 )}
-              </div>
+                </div>
+
+
             </form>
           </div>
         </div>
