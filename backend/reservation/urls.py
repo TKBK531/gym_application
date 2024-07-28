@@ -1,5 +1,10 @@
 from django.urls import path
-from .views import CourtViewSet, CourtRateView, CreateReservationView
+from .views import (
+    CourtViewSet,
+    CourtRateView,
+    CreateReservationView,
+    GetAllReservationsView,
+)
 
 urlpatterns = [
     path("courts/", CourtViewSet.as_view({"get": "list"}), name="courts"),
@@ -17,5 +22,10 @@ urlpatterns = [
         "add-reservation/",
         CreateReservationView.as_view(),
         name="create-reservation",
+    ),
+    path(
+        "get-all-reservations/",
+        GetAllReservationsView.as_view(),
+        name="get-all-reservations",
     ),
 ]

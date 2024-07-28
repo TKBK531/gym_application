@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from rest_framework import views, generics, status
 
 from .models import Court, CourtRate, Reservation
+from userProfile.models import UserProfile
 from .serializers import CourtSerializer, CourtRateSerializer, ReservationSerializer
 
 
@@ -149,3 +150,52 @@ class CreateReservationView(generics.CreateAPIView):
             }
 
         return JsonResponse(response_data)
+
+
+class GetAllReservationsView(generics.ListAPIView):
+    queryset = Reservation.objects.all()
+    serializer_class = ReservationSerializer
+    permission_classes = [IsAuthenticated]
+
+
+class UpdateReservationView(generics.UpdateAPIView):
+    queryset = Reservation.objects.all()
+    serializer_class = ReservationSerializer
+    permission_classes = [IsAuthenticated]
+
+    def update(self, request, *args, **kwargs):
+        user = request.user
+        pk = kwargs.get("pk")
+
+        try:
+            reservation = Reservation.objects.get(pk=pk)
+        except Reservation.DoesNotExist:
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": "Reservation not found",
+                },
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        serializer = self.get_serializer(reservation, data=request.data, partial=True)
+
+        try:
+            serializer.is_valid(raise_exception=True)
+            self.perform_update(serializer)
+        except Exception as e:
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": str(e),
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        return JsonResponse(
+            {
+                "status": "success",
+                "message": "Reservation updated successfully",
+                "data": serializer.data,
+            },
+        )
