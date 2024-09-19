@@ -1,25 +1,25 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Form = ({ isOpen, onClose }) => {
   const [selectedRequirement, setSelectedRequirement] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [email, setEmail] = useState('');
   const [numOfParticipants, setNumOfParticipants] = useState('');
   const [participantsData, setParticipantsData] = useState([]);
   const [startTime, setStartTime] = useState("08:00");
   const [endTime, setEndTime] = useState("09:00");
+  const [applicantName, setApplicantName] = useState('');
+  const [teamName, setTeamName] = useState('');
+  const [address, setAddress] = useState('');
+  const [court, setCourt] = useState('');
+  const [requiredDate, setRequiredDate] = useState('');
+  const [emailError, setEmailError] = useState('');
 
-  // List of courts
-  const gymCourts = [
-    'Whole Gym', 'Badminton', 'Basketball', 'Boxing', 'Carrom', 'Chess', 'Karate', 'Netball',
-    'Power Lifting', 'Table Tennis', 'Taekwondo', 'Volleyball', 'Weightlifting',
-    'Wrestling', 'Wushu'
-  ];
+  const navigate = useNavigate();
 
-  const groundCourts = [
-    'Baseball', 'Basketball', 'Cricket (hard ball)', 'Elle', 'Football', 'Hockey',
-    'Netball', 'Rugger', 'Tennis', 'Track and Field', 'Volleyball'
-  ];
-
+  const gymCourts = ['Whole Gym', 'Badminton', 'Basketball', 'Boxing', 'Carrom', 'Chess', 'Karate', 'Netball', 'Power Lifting', 'Table Tennis', 'Taekwondo', 'Volleyball', 'Weightlifting', 'Wrestling', 'Wushu'];
+  const groundCourts = ['Baseball', 'Basketball', 'Cricket (hard ball)', 'Elle', 'Football', 'Hockey', 'Netball', 'Rugger', 'Tennis', 'Track and Field', 'Volleyball'];
   const poolCourts = ['Full Pool', 'Half the Pool'];
 
   const handlePhoneNumber = (event) => {
@@ -29,11 +29,21 @@ const Form = ({ isOpen, onClose }) => {
     }
   };
 
+  const handleEmailChange = (event) => {
+    const { value } = event.target;
+    setEmail(value);
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(value)) {
+      setEmailError('Please enter a valid email address');
+    } else {
+      setEmailError('');
+    }
+  };
+
   const handleRequirementChange = (event) => {
     setSelectedRequirement(event.target.value);
   };
 
-  // Check the required area and set the courts 
   let requiredCourts = [];
   if (selectedRequirement === 'gym') {
     requiredCourts = gymCourts;
@@ -46,7 +56,7 @@ const Form = ({ isOpen, onClose }) => {
   const getTwoWeeksLaterDate = () => {
     const today = new Date();
     const twoWeeksLater = new Date(today.setDate(today.getDate() + 14));
-    return twoWeeksLater.toISOString().split('T')[0]; // Format date as YYYY-MM-DD
+    return twoWeeksLater.toISOString().split('T')[0];
   };
 
   const handleNumOfParticipantsChange = (event) => {
@@ -54,7 +64,6 @@ const Form = ({ isOpen, onClose }) => {
     if (value >= 0 && value <= 20) {
       setNumOfParticipants(value);
 
-      // Update participants data array
       const newParticipantsData = [];
       for (let i = 0; i < value; i++) {
         newParticipantsData.push({ name: '', nic: '' });
@@ -89,8 +98,6 @@ const Form = ({ isOpen, onClose }) => {
   const handleStartTimeChange = (event) => {
     const newStartTime = event.target.value;
     setStartTime(newStartTime);
-  
-    // Ensure end time is later than start time
     if (newStartTime >= endTime) {
       const newEndTimeIndex = timeOptions.findIndex(
         (option) => option.value === newStartTime
@@ -98,12 +105,38 @@ const Form = ({ isOpen, onClose }) => {
       setEndTime(timeOptions[newEndTimeIndex + 1]?.value || newStartTime);
     }
   };
-  
+
   const handleEndTimeChange = (event) => {
     setEndTime(event.target.value);
   };
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
 
+    const formData = {
+      applicantName,
+      email,
+      teamName,
+      address,
+      phoneNumber,
+      selectedRequirement,
+      court,
+      numOfParticipants,
+      participantsData,
+      requiredDate,
+      startTime,
+      endTime,
+    };
+
+    console.log('Form Data:', formData); // Logs the object directly
+    console.log('Form Data as JSON:', JSON.stringify(formData, null, 2)); // Logs the JSON stringified version
+
+    // Close the form modal
+    onClose();
+
+    // Navigate to the reservation page (replace '/reservations' with your desired route)
+    navigate('/reservations');
+  };
 
   if (!isOpen) return null;
 
@@ -121,29 +154,42 @@ const Form = ({ isOpen, onClose }) => {
             </button>
           </div>
           <div className='flex form-holder flex-col gap-4'>
-            <form className="" action="">
-
+            <form onSubmit={handleSubmit}>
               <div className='name flex flex-col gap-2 mb-2'>
                 <label className="block font-medium">Applicant Name</label>
-                <div className='flex flex-row' >
-                <select
-                  name="m"
+                <div className='flex flex-row'>
+                  <select
+                    className="p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                    required
+                  >
+                    <option value="-"></option>
+                    <option value="Mr.">Mr.</option>
+                    <option value="Mrs.">Mrs.</option>
+                    <option value="Miss">Miss</option>
+                    <option value="Rev.">Rev.</option>
+                  </select>
+                  <input
+                    type="text"
+                    name="applicantName"
+                    className="p-2 border w-full border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                    value={applicantName}
+                    onChange={(e) => setApplicantName(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className='email flex flex-col gap-2 mb-2'>
+                <label className="block font-medium">Email Address</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={email}
+                  onChange={handleEmailChange}
                   className="p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
                   required
-                >
-                  <option value="-"></option>
-                  <option value="Mr.">Mr.</option>
-                  <option value="Mrs.">Mrs.</option>
-                  <option value="Miss">Miss</option>
-                  <option value="Rev.">Rev.</option>
-                </select>
-                <input
-                  type="text"
-                  name="applicantName"
-                  className="p-2 border w-full border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                  required
                 />
-                </div>
+                {emailError && <span className="text-red-500">{emailError}</span>}
               </div>
 
               <div className='team-name flex flex-col gap-2 mb-2'>
@@ -152,6 +198,8 @@ const Form = ({ isOpen, onClose }) => {
                   type="text"
                   name="teamName"
                   className="p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                  value={teamName}
+                  onChange={(e) => setTeamName(e.target.value)}
                   required
                 />
               </div>
@@ -162,23 +210,27 @@ const Form = ({ isOpen, onClose }) => {
                   type="text"
                   name="address"
                   className="p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  required
                 />
               </div>
 
-              <div className='phone-num flex flex-col gap-2 mb-2'>
-                <label className="block font-medium">Telephone Number</label>
+              <div className='contact flex flex-col gap-2 mb-2'>
+                <label className="block font-medium">Phone Number</label>
                 <input
-                  id="phone-number"
                   type="text"
+                  name="phoneNumber"
                   value={phoneNumber}
                   onChange={handlePhoneNumber}
-                  maxLength="10"
                   className="p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                  required
                 />
               </div>
 
-              <div className='required-area flex flex-col gap-2 mb-2'>
-                <label className="block font-medium">Required Area</label>
+              {/* Additional fields */}
+              <div className='mb-2'>
+                <label className="block font-medium">Required Facility</label>
                 <select
                   name="requirement"
                   className="p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
@@ -186,147 +238,115 @@ const Form = ({ isOpen, onClose }) => {
                   onChange={handleRequirementChange}
                   required
                 >
-                  <option value="-"></option>
-                  <option value="ground">Ground</option>
+                  <option value=""></option>
                   <option value="gym">Gym</option>
+                  <option value="ground">Ground</option>
                   <option value="pool">Pool</option>
                 </select>
               </div>
 
-              <div className='required-court flex flex-col gap-2 mb-2'>
+              <div className='mb-2'>
                 <label className="block font-medium">Required Court</label>
                 <select
-                  name="requiredCourt"
+                  name="court"
                   className="p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                  value={court}
+                  onChange={(e) => setCourt(e.target.value)}
                   required
                 >
                   <option value="-"></option>
                   {requiredCourts.map((court, index) => (
-                    <option key={index} value={court.toLowerCase().replace(/\s+/g, '-')}>
-                      {court}
-                    </option>
+                    <option key={index} value={court}>{court}</option>
                   ))}
                 </select>
               </div>
 
-              <div className='usageType flex flex-col gap-2 mb-2'>
-                <label className="block mb-1 font-medium">Usage Type</label>
-                <select
-                  name="usageType"
-                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                >
-                  <option value="-"></option>
-                  <option value="Practice">Practice</option>
-                  <option value="Competition">Competition</option>
-                </select>
-              </div>
-
-              <div className='date flex flex-col gap-2 mb-2'>
-                <label className="block mb-1 font-medium">Date</label>
-                <input
-                  type="date"
-                  name="date"
-                  min={getTwoWeeksLaterDate()}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                  required
-                />
-              </div>
-
-              <div className="start-time flex flex-col gap-2 mb-2">
-                    <label className="block font-medium">Start Time</label>
-                    <select
-                        name="startTime"
-                        value={startTime}
-                        onChange={handleStartTimeChange}
-                        className="p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                    >
-                        <option value=""></option>
-                        {timeOptions.map((option) => (
-                        <option key={option.value} value={option.value}>
-                            {option.label}
-                        </option>
-                        ))}
-                    </select>
-                    </div>
-
-                    <div className="end-time flex flex-col gap-2 mb-2">
-                    <label className="block font-medium">End Time</label>
-                    <select
-                        name="endTime"
-                        value={endTime}
-                        onChange={handleEndTimeChange}
-                        className="p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                    >
-                        <option value=""></option>
-                        {timeOptions
-                        .filter((option) => option.value > startTime)
-                        .map((option) => (
-                            <option key={option.value} value={option.value}>
-                            {option.label}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
-              <div className='numOfParticipants flex flex-col gap-2 mb-2'>
+              <div className='participants flex flex-col gap-2 mb-2'>
                 <label className="block font-medium">Number of Participants</label>
                 <input
                   type="number"
-                  name="numberOfParticipants"
-                  min="0"
-                  max="20"
+                  name="numOfParticipants"
                   value={numOfParticipants}
                   onChange={handleNumOfParticipantsChange}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                  className="p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
                   required
                 />
               </div>
 
-              <div className='participantData flex flex-col gap-2 mb-2'>
-                <label className="block font-medium">Data of Participants</label>
-                {participantsData.length > 0 && (
-                  <table className="min-w-full border-collapse">
-                    <thead>
-                      <tr>
-                        <th className="border p-2 text-left">#</th>
-                        <th className="border p-2 text-left">Name</th>
-                        <th className="border p-2 text-left">NIC</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {participantsData.map((participant, index) => (
-                        <tr key={index}>
-                          <td className="border p-2">{index + 1}</td>
-                          <td className="border p-2">
-                            <input
-                              type="text"
-                              value={participant.name}
-                              onChange={(e) =>
-                                handleParticipantChange(index, 'name', e.target.value)
-                              }
-                              className="w-full p-1 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                              required
-                            />
-                          </td>
-                          <td className="border p-2">
-                            <input
-                              type="text"
-                              value={participant.nic}
-                              onChange={(e) =>
-                                handleParticipantChange(index, 'nic', e.target.value)
-                              }
-                              className="w-full p-1 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                              required
-                            />
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                )}
+              {/* Participants Details */}
+              {participantsData.map((participant, index) => (
+                <div key={index} className="participant mb-2">
+                  <label className="block font-medium">Participant {index + 1}</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Name"
+                      className="p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                      value={participant.name}
+                      onChange={(e) => handleParticipantChange(index, 'name', e.target.value)}
+                      required
+                    />
+                    <input
+                      type="text"
+                      placeholder="NIC"
+                      className="p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                      value={participant.nic}
+                      onChange={(e) => handleParticipantChange(index, 'nic', e.target.value)}
+                      required
+                    />
+                  </div>
                 </div>
+              ))}
 
+              <div className='required-date flex flex-col gap-2 mb-2'>
+                <label className="block font-medium">Required Date</label>
+                <input
+                  type="date"
+                  name="requiredDate"
+                  className="p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                  value={requiredDate}
+                  onChange={(e) => setRequiredDate(e.target.value)}
+                  min={getTwoWeeksLaterDate()}
+                  required
+                />
+              </div>
 
+              <div className='required-time flex flex-col gap-2 mb-2'>
+                <label className="block font-medium">Required Time</label>
+                <div className="flex gap-2">
+                  <select
+                    name="startTime"
+                    value={startTime}
+                    onChange={handleStartTimeChange}
+                    className="p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                    required
+                  >
+                    {timeOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+
+                  <select
+                    name="endTime"
+                    value={endTime}
+                    onChange={handleEndTimeChange}
+                    className="p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                    required
+                  >
+                    {timeOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-md">
+                Submit
+              </button>
             </form>
           </div>
         </div>
