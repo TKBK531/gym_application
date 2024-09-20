@@ -158,6 +158,56 @@ const MembersGround = () => {
                     <MemberOutside />
                   )}
                 </div>
+
+                {openTab === 1 && (
+                  <div className="my-2 grid gap-6 px-4">
+                    <div className="p-6 px-2 sm:pr-6 sm:pl-4">
+                      <h4 className="block antialiased tracking-normal font-sans text-lg md:text-xl font-semibold leading-snug text-blue-gray-900 mb-2 normal-case transition-colors">
+                        Guidelines for Ground Membership
+                      </h4>
+                      <div className="block antialiased font-sans text-base leading-relaxed text-inherit mb-8 font-normal !text-gray-500">
+                        <p>
+                          1. Our commitment to sustainable practices is
+                          showcased through environmentally responsible
+                          initiatives on our grounds.
+                        </p>
+                        <p>
+                          2. Engage in various outdoor activities while
+                          contributing to a greener environment.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {openTab === 2 && (
+                  <div className="py-3 justify-center rounded-xl border border-white bg-white shadow-md shadow-black/5 saturate-200">
+                    <div className="p-4">
+                      <div className="mb-4 flex flex-col md:flex-row items-center">
+                        <label className="p-2 text-md font-medium text-gray-700 pr-2">
+                          I am a
+                        </label>
+                        <select
+                          id="form"
+                          name="form"
+                          value={selectedForm}
+                          onChange={(e) => setSelectedForm(e.target.value)}
+                          className="w-full md:w-1/4 px-2 p-2 shadow appearance-none text-md text-gray-700 font-medium border leading-tight focus:outline-none focus:ring-2 focus:ring-secondary-golden focus:border-transparent rounded-md"
+                        >
+                          <option value="">--Select Type--</option>
+                          <option value="outsider">Outsider</option>
+                          <option value="staff">Staff Member</option>
+                          <option value="postGraduate">
+                            Post Graduate Student
+                          </option>
+                        </select>
+                      </div>
+                      {selectedForm === "outsider" && <MemberOutside />}
+                      {selectedForm === "staff" && <MemberStaff />}
+                      {selectedForm === "postGraduate" && <MemberPostG />}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
