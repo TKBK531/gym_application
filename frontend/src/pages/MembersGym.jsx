@@ -6,6 +6,10 @@ import MemberPostG from "../components/Forms/MemberPostG";
 const MembersGym = () => {
   const [openTab, setOpenTab] = useState(1);
   const [selectedForm, setSelectedForm] = useState("");
+<<<<<<< HEAD
+=======
+
+>>>>>>> 08afdd4 (FIX: change to responsive member,gym,ground and pool pages)
   return (
     <div>
       <section>
