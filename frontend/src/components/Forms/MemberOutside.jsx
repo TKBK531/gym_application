@@ -11,22 +11,22 @@ const MemberOutside = () => {
 
   return (
     <div className="bg-cream text-charcoal min-h-screen font-sans leading-normal overflow-x-hidden lg:overflow-auto">
-      <main className="flex-1 md:p-0 lg:pt-8 lg:px-8 md:ml-24 flex flex-col">
+      <main className="flex-1 p-4 sm:p-6 lg:pt-8 lg:px-8 md:ml-24 flex flex-col">
         <section className="bg-cream-lighter p-4 shadow">
-          <div className="md:flex">
-            <h2 className="md:w-1/3 uppercase tracking-wide text-sm sm:text-lg mb-6">
+          <div className="flex flex-col md:flex-row">
+            <h2 className="w-full md:w-1/3 uppercase tracking-wide text-sm sm:text-lg mb-6">
               Non University Form
             </h2>
           </div>
           <form>
-            <div className="md:flex mb-8">
+            <div className="flex flex-col md:flex-row mb-8">
               <div className="md:w-1/3">
                 <legend className="tracking-wide text-sm">Personal</legend>
               </div>
-              <div className="md:flex-1 mt-2 mb:mt-0 md:px-3">
+              <div className="md:flex-1 mt-2 md:mt-0 md:px-3">
                 <div className="mb-4">
                   <label className={`${formStyles.formLable}`}>
-                    Name(Mr./Ms.)
+                    Name (Mr./Ms.)
                   </label>
                   <input
                     className={`${formStyles.formTextInput}`}
@@ -46,7 +46,7 @@ const MemberOutside = () => {
                     placeholder="Acme Mfg. Co."
                   />
                 </div>
-                <div className="md:flex mb-4">
+                <div className="flex flex-col md:flex-row mb-4">
                   <div className="md:flex-1 md:pr-3">
                     <label className={`${formStyles.formLable}`}>
                       Date of Birth
@@ -58,7 +58,7 @@ const MemberOutside = () => {
                       placeholder="2000/01/01"
                     />
                   </div>
-                  <div className="md:flex-1 md:pl-3">
+                  <div className="md:flex-1 md:pl-3 mt-4 md:mt-0">
                     <label className={`${formStyles.formLable}`}>
                       Age
                     </label>
@@ -89,12 +89,12 @@ const MemberOutside = () => {
               </div>
             </div>
 
-            <div className="md:flex mb-8">
+            <div className="flex flex-col md:flex-row mb-8">
               <div className="md:w-1/3">
                 <legend className="tracking-wide text-sm">Contact</legend>
               </div>
-              <div className="md:flex-1 mt-2 mb:mt-0 md:px-3">
-                <div className="md:flex mb-4">
+              <div className="md:flex-1 mt-2 md:mt-0 md:px-3">
+                <div className="flex flex-col md:flex-row mb-4">
                   <div className="md:flex-1 md:pr-3">
                     <label className={`${formStyles.formLable}`}>
                       Mobile
@@ -106,7 +106,7 @@ const MemberOutside = () => {
                       placeholder="0771122333"
                     />
                   </div>
-                  <div className="md:flex-1 md:pr-3">
+                  <div className="md:flex-1 md:pr-3 mt-4 md:mt-0">
                     <label className={`${formStyles.formLable}`}>
                       Residence
                     </label>
@@ -143,11 +143,9 @@ const MemberOutside = () => {
               </div>
             </div>
 
-            {category !== "individual" && (
-              <FamilyDetails />
-            )}
+            {category !== "individual" && <FamilyDetails />}
 
-            <div className="py-5 md:flex">
+            <div className="py-5 flex flex-col md:flex-row">
               <div className="md:w-1/3">
                 <legend className="tracking-wide text-sm">Total Price</legend>
               </div>
@@ -161,7 +159,7 @@ const MemberOutside = () => {
               </div>
             </div>
 
-            <div className="py-4 md:flex mb-6">
+            <div className="py-4 flex flex-col md:flex-row mb-6">
               <div className="md:w-1/3">
                 <legend className="tracking-wide text-sm">Add Your Image</legend>
               </div>
@@ -176,12 +174,12 @@ const MemberOutside = () => {
               </div>
             </div>
 
-            <div className="md:flex mb-6 border border-t-1 border-b-0 border-x-0 border-cream-dark">
+            <div className="flex flex-col md:flex-row mb-6 border border-t-1 border-b-0 border-x-0 border-cream-dark">
               <div className="md:flex-1 px-3 text-center md:text-right">
-              <button
+                <button
                   type="submit"
                   onClick=""
-                  className="text-lg w-1/5 shadow appearance-none rounded-xl py-3 px-3 font-bold bg-yellow-400 text-black hover:bg-yellow-500"
+                  className="text-lg w-full sm:w-1/2 md:w-1/3 shadow appearance-none rounded-xl py-3 px-3 font-bold bg-yellow-400 text-black hover:bg-yellow-500"
                 >
                   Submit
                 </button>

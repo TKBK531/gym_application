@@ -19,6 +19,7 @@ const MemberStaff = () => {
             </h2>
           </div>
           <form>
+            {/* Personal Details */}
             <div className="md:flex mb-8">
               <div className="md:w-1/3">
                 <legend className="tracking-wide text-sm">Personal</legend>
@@ -26,7 +27,7 @@ const MemberStaff = () => {
               <div className="md:flex-1 mt-2 mb:mt-0 md:px-3">
                 <div className="mb-4">
                   <label className={`${formStyles.formLable}`}>
-                    Name(Mr./Mrs./Miss)
+                    Name (Mr./Mrs./Miss)
                   </label>
                   <input
                     className={`${formStyles.formTextInput}`}
@@ -68,17 +69,16 @@ const MemberStaff = () => {
                       className={`${formStyles.formTextInput}`}
                       type="date"
                       name="appointment"
-                      placeholder="2000/01/01"
                     />
                   </div>
                   <div className="md:flex-1 md:pl-3">
                     <label className={`${formStyles.formLable}`}>
-                      Period of Apt.(if temporary)
+                      Period of Appointment (if temporary)
                     </label>
                     <input
                       className={`${formStyles.formTextInput}`}
                       type="text"
-                      name="tempory"
+                      name="temporary"
                       placeholder="1 year"
                     />
                   </div>
@@ -130,6 +130,8 @@ const MemberStaff = () => {
                 </div>
               </div>
             </div>
+
+            {/* Contact Details */}
             <div className="md:flex mb-8">
               <div className="md:w-1/3">
                 <legend className="tracking-wide text-sm">Contact</legend>
@@ -145,7 +147,7 @@ const MemberStaff = () => {
                       placeholder="0771122333"
                     />
                   </div>
-                  <div className="md:flex-1 md:pr-3">
+                  <div className="md:flex-1 md:pl-3">
                     <label className={`${formStyles.formLable}`}>
                       Residence
                     </label>
@@ -178,22 +180,25 @@ const MemberStaff = () => {
               </div>
             </div>
 
+            {/* Family Details */}
             {category !== "individual" && <FamilyDetails />}
 
+            {/* Total Price */}
             <div className="py-5 md:flex">
               <div className="md:w-1/3">
                 <legend className="tracking-wide text-sm">Total Price</legend>
               </div>
-              <div className="mb-4">
+              <div className="md:flex-1">
                 <input
                   className={`${formStyles.formTextInput}`}
                   type="text"
-                  name="name"
+                  name="totalPrice"
                   placeholder="Auto filled"
                 />
               </div>
             </div>
 
+            {/* Image Upload */}
             <div className="py-4 md:flex mb-6">
               <div className="md:w-1/3">
                 <legend className="tracking-wide text-sm">
@@ -201,7 +206,7 @@ const MemberStaff = () => {
                 </legend>
               </div>
               <div className="md:flex-1 px-3 text-center">
-                <div className="button bg-gold hover:bg-gold-dark text-cream mx-auto cursor-pointer relative">
+                <div className="bg-gold hover:bg-gold-dark text-cream mx-auto cursor-pointer relative">
                   <input
                     className={`${formStyles.formTextInput}`}
                     type="file"
@@ -211,12 +216,13 @@ const MemberStaff = () => {
               </div>
             </div>
 
-            <div className="md:flex mb-6 border border-t-1 border-b-0 border-x-0 border-cream-dark">
+            {/* Submit Button */}
+            <div className="flex flex-col md:flex-row mb-6 border border-t-1 border-b-0 border-x-0 border-cream-dark">
               <div className="md:flex-1 px-3 text-center md:text-right">
                 <button
                   type="submit"
                   onClick=""
-                  className="text-lg w-1/5 shadow appearance-none rounded-xl py-3 px-3 font-bold bg-yellow-400 text-black hover:bg-yellow-500"
+                  className="text-lg w-full sm:w-1/2 md:w-1/3 shadow appearance-none rounded-xl py-3 px-3 font-bold bg-yellow-400 text-black hover:bg-yellow-500"
                 >
                   Submit
                 </button>

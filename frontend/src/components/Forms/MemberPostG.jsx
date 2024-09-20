@@ -4,22 +4,22 @@ const MemberPostG = () => {
   return (
     <div>
       <div className="bg-cream text-charcoal min-h-screen font-sans leading-normal overflow-x-hidden lg:overflow-auto">
-        <main className="flex-1 md:p-0 lg:pt-8 lg:px-8 md:ml-24 flex flex-col">
+        <main className="flex-1 p-4 lg:pt-8 lg:px-8 md:ml-24 flex flex-col">
           <section className="bg-cream-lighter p-4 shadow">
-            <div className="md:flex">
-              <h2 className="md:w-1/2 uppercase tracking-wide text-sm sm:text-lg mb-6">
+            <div className="flex flex-col md:flex-row">
+              <h2 className="w-full md:w-1/2 uppercase tracking-wide text-base sm:text-lg mb-6">
                 University Post Graduate Form
               </h2>
             </div>
             <form>
-              <div className="md:flex mb-8">
-                <div className="md:w-1/3">
+              <div className="flex flex-col md:flex-row mb-8">
+                <div className="w-full md:w-1/3">
                   <legend className="tracking-wide text-sm">Personal</legend>
                 </div>
-                <div className="md:flex-1 mt-2 mb:mt-0 md:px-3">
+                <div className="w-full md:w-2/3 mt-2 md:mt-0 md:px-3">
                   <div className="mb-4">
                     <label className={`${formStyles.formLable}`}>
-                      Name(Mr./Ms.)
+                      Name (Mr./Ms.)
                     </label>
                     <input
                       className={`${formStyles.formTextInput}`}
@@ -39,8 +39,8 @@ const MemberPostG = () => {
                       placeholder="11111111111"
                     />
                   </div>
-                  <div className="md:flex mb-4">
-                    <div className="md:flex-1 md:pr-3">
+                  <div className="flex flex-col md:flex-row mb-4">
+                    <div className="w-full md:w-1/2 md:pr-3 mb-4 md:mb-0">
                       <label className={`${formStyles.formLable}`}>
                         Date of Birth
                       </label>
@@ -51,7 +51,7 @@ const MemberPostG = () => {
                         placeholder="2000/01/01"
                       />
                     </div>
-                    <div className="md:flex-1 md:pl-3">
+                    <div className="w-full md:w-1/2">
                       <label className={`${formStyles.formLable}`}>
                         Age
                       </label>
@@ -66,13 +66,13 @@ const MemberPostG = () => {
                 </div>
               </div>
 
-              <div className="md:flex mb-8">
-                <div className="md:w-1/3">
+              <div className="flex flex-col md:flex-row mb-8">
+                <div className="w-full md:w-1/3">
                   <legend className="tracking-wide text-sm">Contact</legend>
                 </div>
-                <div className="md:flex-1 mt-2 mb:mt-0 md:px-3">
-                  <div className="md:flex mb-4">
-                    <div className="md:flex-1 md:pr-3">
+                <div className="w-full md:w-2/3 mt-2 md:mt-0 md:px-3">
+                  <div className="flex flex-col md:flex-row mb-4">
+                    <div className="w-full md:w-1/2 md:pr-3 mb-4 md:mb-0">
                       <label className={`${formStyles.formLable}`}>
                         Mobile
                       </label>
@@ -83,7 +83,7 @@ const MemberPostG = () => {
                         placeholder="0771122333"
                       />
                     </div>
-                    <div className="md:flex-1 md:pr-3">
+                    <div className="w-full md:w-1/2">
                       <label className={`${formStyles.formLable}`}>
                         Residence
                       </label>
@@ -120,13 +120,13 @@ const MemberPostG = () => {
                 </div>
               </div>
 
-              <div className="md:flex mb-8">
-                <div className="md:w-1/3">
+              <div className="flex flex-col md:flex-row mb-8">
+                <div className="w-full md:w-1/3">
                   <legend className="tracking-wide text-sm">
                     Postgraduate Institute
                   </legend>
                 </div>
-                <div className="md:flex-1 mt-2 mb:mt-0 md:px-3">
+                <div className="w-full md:w-2/3 mt-2 md:mt-0 md:px-3">
                   <div className="mb-4">
                     <label className={`${formStyles.formLable}`}>
                       Postgraduate Institute Name
@@ -138,8 +138,8 @@ const MemberPostG = () => {
                       placeholder="PGIS"
                     />
                   </div>
-                  <div className="md:flex mb-4">
-                    <div className="md:flex-1 md:pr-3">
+                  <div className="flex flex-col md:flex-row mb-4">
+                    <div className="w-full md:w-1/2 md:pr-3 mb-4 md:mb-0">
                       <label className={`${formStyles.formLable}`}>
                         Registration No.
                       </label>
@@ -150,7 +150,7 @@ const MemberPostG = () => {
                         placeholder="22222"
                       />
                     </div>
-                    <div className="md:flex-1 md:pr-3">
+                    <div className="w-full md:w-1/2">
                       <label className={`${formStyles.formLable}`}>
                         Students Identity Card No.
                       </label>
@@ -163,8 +163,8 @@ const MemberPostG = () => {
                     </div>
                   </div>
 
-                  <div className="md:flex mb-4">
-                    <div className="md:flex-1 md:pr-3">
+                  <div className="flex flex-col md:flex-row mb-4">
+                    <div className="w-full md:w-1/2 md:pr-3 mb-4 md:mb-0">
                       <label className={`${formStyles.formLable}`}>
                         Date of commencement of the course
                       </label>
@@ -174,7 +174,7 @@ const MemberPostG = () => {
                         name="commencement"
                       />
                     </div>
-                    <div className="md:flex-1 md:pr-3">
+                    <div className="w-full md:w-1/2">
                       <label className={`${formStyles.formLable}`}>
                         Date of completion of the course
                       </label>
@@ -188,11 +188,11 @@ const MemberPostG = () => {
                 </div>
               </div>
 
-              <div className="py-5 md:flex">
-                <div className="md:w-1/3">
+              <div className="py-5 flex flex-col md:flex-row">
+                <div className="w-full md:w-1/3">
                   <legend className="tracking-wide text-sm">Total Price</legend>
                 </div>
-                <div className="mb-4">
+                <div className="w-full mb-4">
                   <input
                     className={`${formStyles.formTextInput}`}
                     type="text"
@@ -202,11 +202,11 @@ const MemberPostG = () => {
                 </div>
               </div>
 
-              <div className="py-4 md:flex mb-6">
-                <div className="md:w-1/3">
+              <div className="py-4 flex flex-col md:flex-row mb-6">
+                <div className="w-full md:w-1/3">
                   <legend className="tracking-wide text-sm">Add Your Image</legend>
                 </div>
-                <div className="md:flex-1 px-3 text-center">
+                <div className="w-full md:w-2/3 text-center md:text-left">
                   <div className="button bg-gold hover:bg-gold-dark text-cream mx-auto cursor-pointer relative">
                     <input
                       className={`${formStyles.formTextInput}`}
@@ -216,15 +216,15 @@ const MemberPostG = () => {
                   </div>
                 </div>
               </div>
-              <div className="md:flex mb-6 border border-t-1 border-b-0 border-x-0 border-cream-dark">
-                <div className="md:flex-1 px-3 text-center md:text-right">
-                <button
-                  type="submit"
-                  onClick=""
-                  className="text-lg w-1/5 shadow appearance-none rounded-xl py-3 px-3 font-bold bg-yellow-400 text-black hover:bg-yellow-500"
-                >
-                  Submit
-                </button>
+
+              <div className="flex flex-col md:flex-row mb-6 border-t border-b-0 border-l-0 border-r-0 border-cream-dark">
+                <div className="w-full md:w-2/3 px-3 text-center md:text-right">
+                  <button
+                    type="submit"
+                    className="text-lg w-full md:w-1/3 shadow appearance-none rounded-xl py-3 px-3 font-bold bg-yellow-400 text-black hover:bg-yellow-500"
+                  >
+                    Submit
+                  </button>
                 </div>
               </div>
             </form>
