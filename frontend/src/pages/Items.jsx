@@ -4,14 +4,14 @@ import ItemImage from '../assets/itemPage/Item1.jpg';
 
 const Items = () => {
   const [activeTab, setActiveTab] = useState('Indoor');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortSport, setSortSport] = useState(true);
-  const [sortCount, setSortCount] = useState('asc');
+  const [searchQuery, setSearchQuery] = useState(''); // This will handle the search input
+  const [sortSport, setSortSport] = useState(true);   // Sort by sport or not
+  const [sortCount, setSortCount] = useState('asc');  // Sort count in 'asc' or 'desc'
 
   const handleTabChange = (tab) => setActiveTab(tab);
   const handleSearchChange = (e) => setSearchQuery(e.target.value);
-  const handleSortSportChange = () => setSortSport(!sortSport);
-  const handleSortCountChange = (e) => setSortCount(e.target.value);
+  const handleSortSportChange = () => setSortSport(!sortSport); // Toggle sorting by sport
+  const handleSortCountChange = (e) => setSortCount(e.target.value); // Set 'asc' or 'desc'
 
   return (
     <div className="container mx-auto p-4">
@@ -49,7 +49,7 @@ const Items = () => {
           type="text"
           className="border p-2 rounded w-full max-w-xs"
           placeholder="Search"
-          value={searchQuery}
+          value={searchQuery}  // Controlled component for search query
           onChange={handleSearchChange}
         />
         <div className="flex items-center">
@@ -62,7 +62,7 @@ const Items = () => {
           </button>
           <select
             className="ml-2 border p-2 rounded"
-            value={sortCount}
+            value={sortCount}  // Controlled component for sorting count
             onChange={handleSortCountChange}
           >
             <option value="asc">Count Ascending</option>
@@ -70,7 +70,8 @@ const Items = () => {
           </select>
         </div>
       </div>
-      <ItemTable />
+      {/* Pass search and sort states as props */}
+      <ItemTable searchQuery={searchQuery} sortSport={sortSport} sortCount={sortCount} />
     </div>
   );
 };
