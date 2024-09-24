@@ -15,6 +15,7 @@ const Form = ({ isOpen, onClose }) => {
   const [court, setCourt] = useState('');
   const [requiredDate, setRequiredDate] = useState('');
   const [emailError, setEmailError] = useState('');
+  const [phoneNumberError, setPhoneNumberError] = useState('');
 
   const navigate = useNavigate();
 
@@ -26,8 +27,15 @@ const Form = ({ isOpen, onClose }) => {
     const { value } = event.target;
     if (/^\d*$/.test(value)) {
       setPhoneNumber(value);
+  
+      if (value.length === 10) {
+        setPhoneNumberError('');
+      } else {
+        setPhoneNumberError('Phone number must be exactly 10 digits');
+      }
     }
   };
+  
 
   const handleEmailChange = (event) => {
     const { value } = event.target;
@@ -226,7 +234,9 @@ const Form = ({ isOpen, onClose }) => {
                   className="p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
                   required
                 />
+                {phoneNumberError && <span className="text-red-500">{phoneNumberError}</span>}
               </div>
+
 
               {/* Additional fields */}
               <div className='mb-2'>

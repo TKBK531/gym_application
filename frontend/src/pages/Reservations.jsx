@@ -1,4 +1,3 @@
-// Reservations.js
 import React, { useState } from "react";
 import { BsPinMapFill } from "react-icons/bs";
 import { FaRegCalendarPlus } from "react-icons/fa";
@@ -18,66 +17,54 @@ const statusColors = {
 const Reservations = () => {
   const [isFormOpen, setFormOpen] = useState(false);
   
-  const handleOpenForm = () =>{
+  const handleOpenForm = () => {
     setFormOpen(true);
-  }
+  };
 
-  const handleCloseForm = () =>{
+  const handleCloseForm = () => {
     setFormOpen(false);
-  }
+  };
 
   return (
-    <div>
-      <h1>Hello Alesia K 👋 </h1>
+    <div className="p-4">
+      <h1 className="text-xl md:text-2xl lg:text-3xl mb-4">Hello Alesia K 👋</h1>
 
-      <div className="boxes flex flex-row gap-32 m-4">
+      <div className="boxes flex flex-col md:flex-row gap-6 md:gap-32 m-4">
         <StatWidge name="Your reservations" count="4" iconName={faUsers} />
         <StatWidge name="Pending reservations" count="3" iconName={faUsers} />
         <StatWidge name="Confirmed reservations" count="1" iconName={faUsers} />
       </div>
 
-      <div className="schedule-body bg-white rounded-xl flex flex-row">
+      <div className="schedule-body bg-white rounded-xl flex flex-col md:flex-row">
         {/* left side choice bar */}
-        <div className="1">
-          <div className="side-choice-bar flex flex-col p-3 gap-y-6 bg-transparent">
-            <div className="by-court">
-              <BsPinMapFill fontSize={36} className="cursor-pointer" />
-            </div>
-            <div className="by-date">
-              <FaRegCalendarPlus fontSize={36} className="cursor-pointer" />
-            </div>
+        <div className="flex flex-row md:flex-col p-3 gap-6 bg-transparent">
+          <div className="by-court">
+            <BsPinMapFill fontSize={36} className="cursor-pointer" />
+          </div>
+          <div className="by-date">
+            <FaRegCalendarPlus fontSize={36} className="cursor-pointer" />
           </div>
         </div>
 
-        {/* Schedule table and date-picker*/}
-        <div className="2 flex flex-col gap-4 p-1">
-          <div
-            className="date-picker-today-holder pb-3"
-            style={{ height: "7%" }}
-          >
-            <div className="today-holder">
-              <Date />
-            </div>
+        {/* Schedule table and date-picker */}
+        <div className="flex flex-col gap-4 p-1 flex-1">
+          <div className="date-picker-today-holder pb-3" style={{ height: "7%" }}>
+            <Date />
           </div>
           <Schedule />
         </div>
 
         {/* color palette */}
-        <div className="3">
-          <div className="color-palette-holder pr-6 flex flex-col">
-            {Object.entries(statusColors).map(([status, color]) => (
+        <div className="flex flex-col pr-6">
+          {Object.entries(statusColors).map(([status, color]) => (
+            <div key={status} className="legend-item flex flex-row p-2 gap-2">
+              <span className="color-label flex-1">{status}</span>
               <div
-                key={status}
-                className="legend-item flex flex-row p-2 gap-2"
-              >
-                <span className="color-label flex-1">{status}</span>
-                <div
-                  className="color-box p-3 rounded-full"
-                  style={{ backgroundColor: color, width: "2vh", height: "2vh" }}
-                ></div>
-              </div>
-            ))}
-          </div>
+                className="color-box p-3 rounded-full"
+                style={{ backgroundColor: color, width: "2vh", height: "2vh" }}
+              ></div>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -92,9 +79,6 @@ const Reservations = () => {
 
         <Form isOpen={isFormOpen} onClose={handleCloseForm} />
       </div>
-
-     
-      
     </div>
   );
 };
