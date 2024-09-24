@@ -65,11 +65,11 @@ const Events = () => {
           <>
           {console.log(showDetails)}
             <div className="sm:col-span-2">
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-5 mt-5 px-2 sm:px-4 md:px-7">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-5">
                 <div className="text-lg sm:text-xl md:text-xl lg:text-xl">
                   <DateCard title={"On going Events"} events={"Football match, hockey match"} img={datebox1}/>
                 </div>
-                <div className="text-lg sm:text-xl md:text-xl lg:text-xl" >
+                <div className="text-lg sm:text-xl md:text-xl lg:text-xl h-full" >
                   <DateCard title={"Holidays"} events={"Navam Fullmoon poya day"} img={datebox2}/>
                 </div>
               </div>
