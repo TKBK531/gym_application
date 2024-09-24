@@ -14,6 +14,7 @@ import {
   Login,
   Logout,
   PageNotFound,
+  LandingPage,
 } from "./pages";
 import Register from "./pages/Register";
 import BaseLayout from "./components/Layouts/BaseLayout";
@@ -24,6 +25,10 @@ import Table from "./components/Table";
 
 const router = createBrowserRouter([
   // Dashboard route
+  {
+    path: "/",
+    element: <LandingPage />,
+  },
   {
     path: "/dashboard",
     element: <BaseLayout />,
