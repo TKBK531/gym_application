@@ -9,6 +9,7 @@ import Login from "./Login"; // Import the Login component
 import Logout from "./Logout";
 import Register from "./Register";
 import PageNotFound from "./PageNotFound";
+import LandingPage from "./LandingPage";
 
 export {
   Home,
@@ -22,4 +23,5 @@ export {
   Logout,
   Register,
   PageNotFound,
+  LandingPage,
 };
