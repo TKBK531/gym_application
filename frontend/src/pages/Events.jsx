@@ -14,7 +14,6 @@ import datebox2 from '../assets/eventPage/Card8.jpg';
 
 const Events = () => {
   const [showDetails, setShowDetails] = useState(false);
-  // eslint-disable-next-line no-unused-vars
   const [selectedCategory, setSelectedCategory] = useState(null);
 
   const handleReadMoreClick = (categoryName) => {
@@ -29,33 +28,38 @@ const Events = () => {
 
   return (
     <div className="flex flex-col">
-      <div>
-        <h1 className="text-lg sm:text-xl md:text-xl lg:text-xl">Hello, Hasaranga Abeywickrama. 👋 </h1>
-        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-4 mt-10 px-4">
-          <div className='transition transform hover:scale-105'>
+      {/* Header Section */}
+      <div className="bg-gray-100 px-6 py-8">
+      <h1 className="text-lg sm:text-xl md:text-xl lg:text-xl">Hello, Hasaranga Abeywickrama. 👋 </h1>
+
+        {/* Active Cards Section */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-10">
+          <div className='transition transform hover:scale-105 hover:shadow-lg'>
             <ActiveCard title={"All Event"} img={cup}/>
           </div>
-          <div className='transition transform hover:scale-105'>
+          <div className='transition transform hover:scale-105 hover:shadow-lg'>
             <ActiveCard title={"On going"} img={cup}/>
           </div>
-          <div className='transition transform hover:scale-105'>
+          <div className='transition transform hover:scale-105 hover:shadow-lg'>
             <ActiveCard title={"Upcoming"} img={cup}/>
           </div>
-      </div>
+        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 xs:grid-cols-1 gap-6 mt-8 px-2 sm:px-4 md:px-10">
-          <div className='transition transform hover:scale-105'> 
+        {/* Event Cards Section */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-8">
+          <div className='transition transform hover:scale-105 hover:shadow-lg'> 
             <EventCard title={"Sports"} img={sportEvent} handleReadMoreClick={handleReadMoreClick} categoryName={"Sport"}/>
           </div>
-          <div className='transition transform hover:scale-105'>
+          <div className='transition transform hover:scale-105 hover:shadow-lg'>
             <EventCard title={"Musical Shows"} img={musicalEvent} handleReadMoreClick={handleReadMoreClick} categoryName={"Shows"}/>
           </div>
-          <div className='transition transform hover:scale-105'>
-            <EventCard title={"Other Funtions"} img={otherEvents} handleReadMoreClick={handleReadMoreClick} categoryName={"Functions"}/>
+          <div className='transition transform hover:scale-105 hover:shadow-lg'>
+            <EventCard title={"Other Functions"} img={otherEvents} handleReadMoreClick={handleReadMoreClick} categoryName={"Functions"}/>
           </div>
-      </div>
+        </div>
       </div>
 
+      {/* Date and Events Section */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-1 mt-1 mb-4 px-2 sm:px-4">
         {!showDetails ? (
           <>
