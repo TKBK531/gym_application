@@ -30,31 +30,31 @@ const Events = () => {
     <div className="flex flex-col">
       {/* Header Section */}
       <div className="bg-gray-100 px-6 py-8">
-      <h1 className="text-lg sm:text-xl md:text-xl lg:text-xl">Hello, Hasaranga Abeywickrama. 👋 </h1>
+        <h1 className="text-lg sm:text-xl md:text-xl lg:text-xl">Hello, Hasaranga Abeywickrama. 👋 </h1>
 
         {/* Active Cards Section */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-10">
           <div className='transition transform hover:scale-105 hover:shadow-lg'>
-            <ActiveCard title={"All Event"} img={cup}/>
+            <ActiveCard title={"All Event"} img={cup} />
           </div>
           <div className='transition transform hover:scale-105 hover:shadow-lg'>
-            <ActiveCard title={"On going"} img={cup}/>
+            <ActiveCard title={"On going"} img={cup} />
           </div>
           <div className='transition transform hover:scale-105 hover:shadow-lg'>
-            <ActiveCard title={"Upcoming"} img={cup}/>
+            <ActiveCard title={"Upcoming"} img={cup} />
           </div>
         </div>
 
         {/* Event Cards Section */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-8">
           <div className='transition transform hover:scale-105 hover:shadow-lg'> 
-            <EventCard title={"Sports"} img={sportEvent} handleReadMoreClick={handleReadMoreClick} categoryName={"Sport"}/>
+            <EventCard title={"Sports"} img={sportEvent} handleReadMoreClick={handleReadMoreClick} categoryName={"Sport"} />
           </div>
           <div className='transition transform hover:scale-105 hover:shadow-lg'>
-            <EventCard title={"Musical Shows"} img={musicalEvent} handleReadMoreClick={handleReadMoreClick} categoryName={"Shows"}/>
+            <EventCard title={"Musical Shows"} img={musicalEvent} handleReadMoreClick={handleReadMoreClick} categoryName={"Shows"} />
           </div>
           <div className='transition transform hover:scale-105 hover:shadow-lg'>
-            <EventCard title={"Other Functions"} img={otherEvents} handleReadMoreClick={handleReadMoreClick} categoryName={"Functions"}/>
+            <EventCard title={"Other Functions"} img={otherEvents} handleReadMoreClick={handleReadMoreClick} categoryName={"Functions"} />
           </div>
         </div>
       </div>
@@ -63,43 +63,47 @@ const Events = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-1 mt-1 mb-4 px-2 sm:px-4">
         {!showDetails ? (
           <>
-          {console.log(showDetails)}
+            {console.log(showDetails)}
             <div className="sm:col-span-2">
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-5">
-                <div className="text-lg sm:text-xl md:text-xl lg:text-xl">
-                  <DateCard title={"On going Events"} events={"Football match, hockey match"} img={datebox1}/>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                {/* Set equal height for both cards */}
+                <div className="text-lg sm:text-xl md:text-xl lg:text-xl h-full flex flex-col justify-between">
+                  <DateCard title={"On going Events"} events={"Football match, hockey"} img={datebox1} />
                 </div>
-                <div className="text-lg sm:text-xl md:text-xl lg:text-xl h-full" >
-                  <DateCard title={"Holidays"} events={"Navam Fullmoon poya day"} img={datebox2}/>
+                <div className="text-lg sm:text-xl md:text-xl lg:text-xl h-full flex flex-col justify-between">
+                  <DateCard title={"Holidays"} events={"Navam Fullmoon poya day"} img={datebox2} />
                 </div>
               </div>
             </div>
-            <div className="mt-4 px-2 sm:px-4">
-                <div className="border border-gray-300 p-2 w-100 h-100 flex items-center justify-center bg-white mb-4 px-2 ">
-                  <CustomDatePicker
-                    style={{
-                      backgroundColor: "white",
-                      width: "100%",
-                      height: "100%",
-                    }}
-                  />
-                </div>
+            
+            {/* Container for CustomDatePicker and DateCards */}
+            <div className="mt-4 sm:mt-0 flex items-start px-2 sm:px-4">
+              <div className="border border-gray-300 p-2 w-full h-auto flex items-center justify-center bg-white mb-4">
+                <CustomDatePicker
+                  style={{
+                    backgroundColor: "white",
+                    width: "100%",
+                    height: "100%",
+                  }}
+                />
+              </div>
             </div>
-            <br />
           </>
         ) : (
-          <div className="col-span-3 mt-8 px-10">
-          <Table />
-          <div className="flex justify-center mt-4">
-            <button onClick={handleBackClick} className="bg-yellow-300 text-black  hover:bg-yellow-500 px-4 py-2 rounded w-full">
-              Back
-            </button>
+          <div className="col-span-3 mt-8 sm:px-2 md:px-4">
+            {/* Align the table within the grid system */}
+            <div className="w-full">
+              <Table />
+            </div>
+            <div className="flex justify-center mt-4">
+              <button onClick={handleBackClick} className="bg-yellow-300 text-black hover:bg-yellow-500 px-4 py-2 rounded w-full">
+                Back
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
       </div>
     </div>
-    
   );
 };
 
