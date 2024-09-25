@@ -1,0 +1,18 @@
+{
+    "courtBookings": {
+      "January": 120,
+      "February": 150,
+      "March": 100,
+      "April": 170,
+      "May": 130,
+      "June": 160
+    },
+    "revenue": {
+      "January": 3000,
+      "February": 4500,
+      "March": 2500,
+      "April": 5000,
+      "May": 3500,
+      "June": 4800
+    }
+  }

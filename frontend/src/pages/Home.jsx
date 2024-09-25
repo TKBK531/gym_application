@@ -1,22 +1,22 @@
 import InfoCard from "../components/Dashboard/InfoCard";
+import DonutChart from "../components/Charts/DonutChart";
 
 const Home = () => {
   const userData = JSON.parse(localStorage.getItem("userData"));
-  console.log(userData);
+
   return (
-    <div className="p-4">
-      <header className="mb-4">
-        <h1 className="text-2xl font-bold">
+    <div className="p-4 bg-gray-100 min-h-screen">
+      <header className="mb-6">
+        <h1 className="text-3xl font-bold text-gray-800">
           Welcome, {userData?.user.last_name || "User"}!
         </h1>
-        <p className="text-gray-600">
-          Here's a summary of your account activity.
+        <p className="text-gray-600 mt-2">
+          Here&apos;s a summary of your account activity.
         </p>
       </header>
 
-      <section className="mb-4">
-        {/* <h2 className="text-xl font-semibold mb-2">Quick Stats</h2> */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <section className="mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           <InfoCard
             title="Total Users"
             value="1,234"
@@ -40,22 +40,27 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="mb-4">
-        <h2 className="text-xl font-semibold mb-2">Activity Overview</h2>
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <p>Graph content here (e.g., a chart component).</p>
+      <section className="mb-6 flex flex-col lg:flex-row gap-6">
+        <div className="lg:w-1/2">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+            Activity Overview
+          </h2>
+          <div className="bg-white p-6 rounded-lg shadow-lg flex justify-center items-center">
+            <DonutChart />
+          </div>
         </div>
-      </section>
-
-      <section>
-        <h2 className="text-xl font-semibold mb-2">Recent Activity</h2>
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <ul className="list-disc list-inside">
-            <li>User A signed up</li>
-            <li>User B made a purchase</li>
-            <li>User C updated their profile</li>
-            <li>More activity...</li>
-          </ul>
+        <div className="lg:w-1/2">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+            Recent Activity
+          </h2>
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <ul className="list-disc list-inside text-gray-700">
+              <li>User A signed up</li>
+              <li>User B made a purchase</li>
+              <li>User C updated their profile</li>
+              <li>More activity...</li>
+            </ul>
+          </div>
         </div>
       </section>
     </div>
