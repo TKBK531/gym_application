@@ -21,6 +21,7 @@ import MembersGym from "./pages/MembersGym";
 import MembersGround from "./pages/MembersGround";
 import MembersPool from "./pages/MembersPool";
 import Table from "./components/Table";
+import { router } from "./routes";
 
 const router = createBrowserRouter([
   // Dashboard route
@@ -173,7 +174,6 @@ const router = createBrowserRouter([
   { path: "/register", element: <Register /> },
   { path: "*", element: <PageNotFound /> },
 ]);
-import { router } from "./routes";
 
 function App() {
   return <RouterProvider router={router} />;
