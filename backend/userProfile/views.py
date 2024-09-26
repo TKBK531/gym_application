@@ -141,55 +141,6 @@ class UserProfileCreateView(generics.CreateAPIView):
         )
 
 
-# class UserProfileCreateView(generics.CreateAPIView):
-#     queryset = UserProfile.objects.all()
-#     serializer_class = UserProfileSerializer
-#     permission_classes = [AllowAny]
-#     parser_classes = (MultiPartParser, FormParser)
-
-#     def create(self, request, *args, **kwargs):
-#         identifier = request.data.get("identifier")
-#         user_data = cache.get(identifier)
-#         if not user_data:
-#             return Response(
-#                 {"error": "Invalid or expired identifier."},
-#                 status=status.HTTP_400_BAD_REQUEST,
-#             )
-
-#         user_data.save()
-
-#         user = User.objects.get(email=user_data.email)
-#         request.data["user"] = user.id
-
-#         # Process the profile picture if it exists
-#         profile_picture = request.FILES.get("profile_picture")
-#         if profile_picture:
-#             image = Image.open(profile_picture)
-#             output = BytesIO()
-#             image.save(output, format="WEBP", quality=75)
-#             output.seek(0)
-
-#             # Create new filename based on the user's first and last name
-#             filename = f"{user.first_name.lower}_{user.last_name.lower}.webp"
-#             # Replace the original file with the processed one in the request
-#             processed_file = InMemoryUploadedFile(
-#                 output, "ImageField", filename, "image/webp", output.tell(), None
-#             )
-#             request.FILES["profile_picture"] = processed_file
-
-#         serializer = self.get_serializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         serializer.save()
-
-#         return_resp = {
-#             "status": "success",
-#             "message": "UserProfile created successfully.",
-#             "data": serializer.data,
-#         }
-
-#         return JsonResponse(return_resp, status=status.HTTP_201_CREATED)
-
-
 # -------------CreateAcademicStaffUserView-------------
 class CreateAcademicStaffUserView(generics.CreateAPIView):
     queryset = AcademicStaffUser.objects.all()
@@ -642,6 +593,36 @@ class CityListView(generics.ListAPIView):
                 "status": "success",
                 "message": "Cities retrieved successfully.",
                 "data": serializer.data,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+# -------------UserDeleteView-------------
+class UserDeleteView(generics.DestroyAPIView):
+    queryset = UserProfile.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        user = self.request.user
+        try:
+            profile = UserProfile.objects.get(user=user)
+            return profile
+        except UserProfile.DoesNotExist:
+            raise NotFound("User Profile not found")
+
+    def destroy(self, request, *args, **kwargs):
+        profile = self.get_object()
+        user = profile.user
+
+        # Delete the user profile and the user
+        profile.delete()
+        user.delete()
+
+        return JsonResponse(
+            {
+                "status": "success",
+                "message": "User and associated data deleted successfully.",
             },
             status=status.HTTP_200_OK,
         )

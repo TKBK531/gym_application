@@ -26,6 +26,7 @@ const Profile = () => {
   const [allProfiles, setAllProfiles] = useState([]);
   const [userTypeData, setUserTypeData] = useState({});
   const popupRef = useRef(null);
+
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
@@ -88,7 +89,7 @@ const Profile = () => {
     <div className="w-full mx-auto p-6 bg-white rounded-lg shadow-lg">
       {profileData.user_type === "admin" && (
         <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          className="bg-secondary-golden-shade-1 hover:bg-secondary-golden py-2 px-4 rounded transition ease-in-out duration-300"
           onClick={fetchAllProfiles}
         >
           Get All Profiles

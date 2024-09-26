@@ -32,7 +32,7 @@ const SportCard = ({ sport, onClick, className }) => {
             ? `In charge: ${sport.in_charge_name}`
             : "No in charge assigned yet"}
         </p>
-        <button className="mt-auto bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 hover:scale-105">
+        <button className="mt-auto bg-primary-red hover:bg-secondary-golden hover:text-black text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300 transform hover:scale-105 hover:shadow-lg">
           Learn More
         </button>
       </div>

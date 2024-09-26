@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import api from "../../api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
+import ConfirmationPopup from "../Popups/ConfirmationPopup";
 
 const ProfileDataContainer = ({
   userData,
@@ -22,6 +23,7 @@ const ProfileDataContainer = ({
   const [originalProfileData, setOriginalProfileData] = useState({});
   const [originalUserData, setOriginalUserData] = useState({});
   const [imagePreview, setImagePreview] = useState("");
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   useEffect(() => {
     const filterCities = cities.filter(
@@ -49,6 +51,22 @@ const ProfileDataContainer = ({
 
     console.log("Cities:", cities);
     console.log("Provinces:", provinces);
+  };
+
+  const handleDeleteButtonClick = async () => {
+    setShowConfirmation(true); // Show the confirmation popup
+  };
+
+  const handleConfirmDelete = async () => {
+    setShowConfirmation(false); // Hide the confirmation popup
+    try {
+      const response = await api.delete("/user/profile/delete/");
+      if (response.status === 200) {
+        window.location.href = "/logout";
+      }
+    } catch (error) {
+      console.error("Error deleting user profile:", error);
+    }
   };
 
   const handleSaveButtonClick = async () => {
@@ -393,28 +411,45 @@ const ProfileDataContainer = ({
               <>
                 <button
                   onClick={handleSaveButtonClick}
-                  className="p-2 bg-violet-500 rounded-lg w-[250px]"
+                  className="p-2 bg-secondary-golden-shade-1 hover:bg-secondary-golden rounded-lg w-[250px] transition ease-in-out duration-300"
                 >
                   Save
                 </button>
                 <button
                   onClick={handleCancelButtonClick}
-                  className="p-2 bg-violet-500 rounded-lg w-[250px]"
+                  className="p-2 bg-primary-red hover:bg-primary-shade-2 text-white rounded-lg w-[250px] transition ease-in-out duration-300"
                 >
                   Cancel
                 </button>
               </>
             ) : (
-              <button
-                onClick={handleEditButtonClick}
-                className="p-2 bg-violet-500 rounded-lg w-[250px]"
-              >
-                Edit
-              </button>
+              <div className="flex space-x-4">
+                <button
+                  onClick={handleEditButtonClick}
+                  className="p-2 bg-secondary-golden-shade-1 hover:bg-secondary-golden rounded-lg w-[250px] transition ease-in-out duration-300"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={handleDeleteButtonClick}
+                  className="p-2 bg-primary-red hover:bg-primary-shade-2 text-white rounded-lg w-[250px] transition ease-in-out duration-300"
+                >
+                  Delete
+                </button>
+              </div>
             )}
           </div>
         </div>
       </div>
+
+      {showConfirmation && (
+        <ConfirmationPopup
+          className="animate-popup"
+          message="Are you sure you want to delete your account?"
+          onConfirm={handleConfirmDelete}
+          onCancel={() => setShowConfirmation(false)}
+        />
+      )}
     </>
   );
 };

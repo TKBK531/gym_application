@@ -4,6 +4,15 @@ export default {
   mode: "jit", // Enable JIT mode for faster compilation
   theme: {
     extend: {
+      keyframes: {
+        popupAnimation: {
+          "0%": { opacity: 0, transform: "scale(0.9)" },
+          "100%": { opacity: 1, transform: "scale(1)" },
+        },
+      },
+      animation: {
+        popup: "popupAnimation 0.3s ease-out",
+      },
       colors: {
         "primary-red": "#8B0000",
         "primary-shade-1": "#EB0000",
