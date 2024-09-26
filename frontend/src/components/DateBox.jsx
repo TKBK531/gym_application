@@ -14,7 +14,12 @@ export default function DateBox({ count, test,image}) {
     <Card sx={{ display: 'flex', width: 400, height:80,marginLeft : 0, padding:2}}>
       <CardMedia
         component="img"
-        sx={{ width:10, height: 50, minWidth:50, objectFit: 'cover', marginLeft: 4}} 
+        sx={{ 
+          width: 50, 
+          height: 'auto', 
+          objectFit: 'contain', 
+          marginLeft: 5
+        }} 
         image= {image}
         alt="Live from space album cover"
       />
