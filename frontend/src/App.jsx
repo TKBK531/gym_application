@@ -1,4 +1,4 @@
-import { RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
 import ProtectedRoute from "./components/ProtectedRoute";
 import GoogleLoginLoading from "./components/Loading/GoogleLoginLoading";
