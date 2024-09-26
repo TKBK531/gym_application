@@ -3,7 +3,6 @@ import { formStyles } from "../../styles";
 import FamilyDetails from "../Table/FamilyDetails";
 
 const MemberStaff = () => {
-
   const [formData, setFormData] = useState({
     name: "",
     faculty: "",
