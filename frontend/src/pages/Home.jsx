@@ -1,5 +1,6 @@
 import InfoCard from "../components/Dashboard/InfoCard";
 import DonutChart from "../components/Charts/DonutChart";
+import { FaUserPlus, FaShoppingCart, FaUserEdit } from "react-icons/fa"; // Import icons
 
 const Home = () => {
   const userData = JSON.parse(localStorage.getItem("userData"));
@@ -54,11 +55,35 @@ const Home = () => {
             Recent Activity
           </h2>
           <div className="bg-white p-6 rounded-lg shadow-lg">
-            <ul className="list-disc list-inside text-gray-700">
-              <li>User A signed up</li>
-              <li>User B made a purchase</li>
-              <li>User C updated their profile</li>
-              <li>More activity...</li>
+            <ul className="space-y-4">
+              <li className="flex items-center space-x-4">
+                <FaUserPlus className="text-green-500" />
+                <div>
+                  <p className="text-gray-700">User A signed up</p>
+                  <p className="text-gray-500 text-sm">2 hours ago</p>
+                </div>
+              </li>
+              <li className="flex items-center space-x-4">
+                <FaShoppingCart className="text-blue-500" />
+                <div>
+                  <p className="text-gray-700">User B made a purchase</p>
+                  <p className="text-gray-500 text-sm">5 hours ago</p>
+                </div>
+              </li>
+              <li className="flex items-center space-x-4">
+                <FaUserEdit className="text-yellow-500" />
+                <div>
+                  <p className="text-gray-700">User C updated their profile</p>
+                  <p className="text-gray-500 text-sm">1 day ago</p>
+                </div>
+              </li>
+              <li className="flex items-center space-x-4">
+                <FaUserPlus className="text-green-500" />
+                <div>
+                  <p className="text-gray-700">More activity...</p>
+                  <p className="text-gray-500 text-sm">2 days ago</p>
+                </div>
+              </li>
             </ul>
           </div>
         </div>
