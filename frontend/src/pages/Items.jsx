@@ -13,6 +13,25 @@ const Items = () => {
   const handleSortSportChange = () => setSortSport(!sortSport); // Toggle sorting by sport
   const handleSortCountChange = (e) => setSortCount(e.target.value); // Set 'asc' or 'desc'
 
+  const handleAddItemClick = () => setShowModal(true); // Show the modal when 'Add Item' is clicked
+
+  const handleCloseModal = () => setShowModal(false); // Close modal handler
+
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setNewItem((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    console.log("New item details:", newItem);
+    const response = await api.post("/items/add/");
+
+    console.log(response);
+
+    setShowModal(false);
+  };
+
   return (
     <div className="container mx-auto p-4">
       <div className="mb-4">
@@ -30,6 +49,7 @@ const Items = () => {
           </div>
         </div>
       </div>
+
       <div className="flex mb-4">
         <button
           className={`px-4 py-2 ${
@@ -76,6 +96,7 @@ const Items = () => {
           </select>
         </div>
       </div>
+
       {/* Pass search and sort states as props */}
       <ItemTable
         searchQuery={searchQuery}
