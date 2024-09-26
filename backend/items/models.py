@@ -9,7 +9,7 @@ class ItemType(models.Model):
     sport = models.ForeignKey(Sport, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.item_id
+        return self.label
 
 
 class Item(models.Model):
