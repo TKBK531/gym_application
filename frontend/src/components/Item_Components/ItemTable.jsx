@@ -43,9 +43,35 @@ const ItemTable = ({
         <tbody>
           {filteredItems.map((item, index) => (
             <tr key={index} className="border-b hover:bg-gray-100">
-              <td className="py-2 px-4">{item.item}</td>
+              <td className="py-2 px-4 flex items-center">
+                {/* Display + and - icons for staff members only */}
+                {isStaff && (
+                  <>
+                    <button className="mr-2 text-green-500">
+                      <FaPlus />
+                    </button>
+                    <button className="mr-2 text-red-500">
+                      <FaMinus />
+                    </button>
+                  </>
+                )}
+                {item.item}
+              </td>
               <td className="py-2 px-4">{item.sport}</td>
-              <td className="py-2 px-4">{item.count}</td>
+              <td className="py-2 px-4">
+                {item.count}
+                {/* Display + and - icons for staff members only */}
+                {isStaff && (
+                  <div className="flex items-center">
+                    <button className="ml-2 text-green-500">
+                      <FaPlus />
+                    </button>
+                    <button className="ml-2 text-red-500">
+                      <FaMinus />
+                    </button>
+                  </div>
+                )}
+              </td>
             </tr>
           ))}
         </tbody>
