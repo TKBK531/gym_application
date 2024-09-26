@@ -26,6 +26,7 @@ const Profile = () => {
   const [allProfiles, setAllProfiles] = useState([]);
   const [userTypeData, setUserTypeData] = useState({});
   const popupRef = useRef(null);
+
   useEffect(() => {
     const fetchProfileData = async () => {
       try {

@@ -51,6 +51,17 @@ const ProfileDataContainer = ({
     console.log("Provinces:", provinces);
   };
 
+  const handleDeleteButtonClick = async () => {
+    try {
+      const response = await api.delete("/user/profile/delete/");
+      if (response.status === 200) {
+        window.location.href = "/login";
+      }
+    } catch (error) {
+      console.error("Error deleting user profile:", error);
+    }
+  };
+
   const handleSaveButtonClick = async () => {
     setIsEditing(false);
     const formData = new FormData();
@@ -405,12 +416,20 @@ const ProfileDataContainer = ({
                 </button>
               </>
             ) : (
-              <button
-                onClick={handleEditButtonClick}
-                className="p-2 bg-violet-500 rounded-lg w-[250px]"
-              >
-                Edit
-              </button>
+              <div className="flex space-x-4">
+                <button
+                  onClick={handleEditButtonClick}
+                  className="p-2 bg-violet-500 rounded-lg w-[250px]"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={handleDeleteButtonClick}
+                  className="p-2 bg-red-500 rounded-lg w-[250px]"
+                >
+                  Delete
+                </button>
+              </div>
             )}
           </div>
         </div>
