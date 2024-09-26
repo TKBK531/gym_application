@@ -411,13 +411,13 @@ const ProfileDataContainer = ({
               <>
                 <button
                   onClick={handleSaveButtonClick}
-                  className="p-2 bg-violet-500 rounded-lg w-[250px]"
+                  className="p-2 bg-secondary-golden-shade-1 hover:bg-secondary-golden rounded-lg w-[250px] transition ease-in-out duration-300"
                 >
                   Save
                 </button>
                 <button
                   onClick={handleCancelButtonClick}
-                  className="p-2 bg-violet-500 rounded-lg w-[250px]"
+                  className="p-2 bg-primary-red hover:bg-primary-shade-2 text-white rounded-lg w-[250px] transition ease-in-out duration-300"
                 >
                   Cancel
                 </button>
