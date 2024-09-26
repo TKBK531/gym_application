@@ -2,7 +2,6 @@ import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api";
 import SportCard from "../components/Sport/SportCard";
-import { userTypes } from "../constants/index";
 
 const Sports = () => {
   const [allSports, setAllSports] = useState([]);
@@ -28,8 +27,6 @@ const Sports = () => {
 
   const handleSportClick = (sportId) => {
     const sport = allSports.find((sport) => sport.id === sportId);
-    // setSelectedSport(sport);
-    // console.log("Selected sport:", sport);
     console.log("Navigating to sport:", sport.id);
     navigate(
       `/sports/${sport.label.toLowerCase().replace(/\s+/g, "-")}?id=${sportId}`

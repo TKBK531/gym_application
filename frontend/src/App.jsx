@@ -21,6 +21,7 @@ import MembersGym from "./pages/MembersGym";
 import MembersGround from "./pages/MembersGround";
 import MembersPool from "./pages/MembersPool";
 import Table from "./components/Table";
+import SportCardPage from "./components/Sport/SportCardPage";
 
 const router = createBrowserRouter([
   // Dashboard route
@@ -132,6 +133,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <Sports />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: ":sportLabel",
+        element: (
+          <ProtectedRoute>
+            <SportCardPage />
           </ProtectedRoute>
         ),
       },
