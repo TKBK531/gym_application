@@ -5,18 +5,18 @@ import { faUsers } from "@fortawesome/free-solid-svg-icons";
 import StatWidge from "../components/Members/StatWidge";
 import Schedule from "../components/Schedule/Schedule";
 import Date from "../components/Schedule/Date";
-import Form from "../components/Schedule/Form"; 
+import Form from "../components/Schedule/Form";
 
 const statusColors = {
   "Team Practices": "#1EA7FF",
-  "Confirmed": "#0ACF83",
-  "Pending": "#F6BC0C",
-  "Unavailable": "#D2D3F8",
+  Confirmed: "#0ACF83",
+  Pending: "#F6BC0C",
+  Unavailable: "#D2D3F8",
 };
-
+const userData = JSON.parse(localStorage.getItem("userData"));
 const Reservations = () => {
   const [isFormOpen, setFormOpen] = useState(false);
-  
+
   const handleOpenForm = () => {
     setFormOpen(true);
   };
@@ -27,7 +27,9 @@ const Reservations = () => {
 
   return (
     <div className="p-4">
-      <h1 className="text-xl md:text-2xl lg:text-3xl mb-4">Hello Alesia K 👋</h1>
+      <h1 className="text-lg sm:text-xl md:text-xl lg:text-xl">
+        Hello, {userData.user.first_name} {userData.user.last_name}👋{" "}
+      </h1>
 
       <div className="boxes flex flex-col md:flex-row gap-6 md:gap-32 m-4">
         <StatWidge name="Your reservations" count="4" iconName={faUsers} />
@@ -48,7 +50,10 @@ const Reservations = () => {
 
         {/* Schedule table and date-picker */}
         <div className="flex flex-col gap-4 p-1 flex-1">
-          <div className="date-picker-today-holder pb-3" style={{ height: "7%" }}>
+          <div
+            className="date-picker-today-holder pb-3"
+            style={{ height: "7%" }}
+          >
             <Date />
           </div>
           <Schedule />

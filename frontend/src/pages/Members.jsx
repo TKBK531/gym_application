@@ -15,12 +15,14 @@ const Members = () => {
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKTlfKV-33el_swtTqaO63TRfmeDEUb55zlA&s";
   const imageUrlGym =
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKDWg1zq64xccwiMYVtHxmAty40QKKBxIahw&s";
+  const userData = JSON.parse(localStorage.getItem("userData"));
+
   return (
     <div className="container mx-auto">
       <div>
-        <h3 className="text-xl md:text-2xl font-bold pb-4">
-          Hello Sathija 👋🏼,
-        </h3>
+        <h1 className="text-lg sm:text-xl md:text-xl lg:text-xl">
+          Hello, {userData.user.first_name} {userData.user.last_name}👋{" "}
+        </h1>
       </div>
 
       {/* Stat Widgets Section */}

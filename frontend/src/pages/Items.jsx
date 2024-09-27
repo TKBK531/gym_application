@@ -23,7 +23,7 @@ const Items = () => {
     "Wrestling",
     "Cricket",
   ]; // Add specific sports here
-
+  const userData = JSON.parse(localStorage.getItem("userData"));
   const handleTabChange = (tab) => setActiveTab(tab);
   const handleSearchChange = (e) => setSearchQuery(e.target.value);
   const handleSortSportChange = () => setSortSport(!sortSport); // Toggle sorting by sport
@@ -51,9 +51,9 @@ const Items = () => {
   return (
     <div className="container mx-auto p-4">
       <div className="mb-4">
-        <div className="text-xl mb-2">
-          <span>Hello, Hasaranga Abeywickrama 👋</span>
-        </div>
+        <h1 className="text-lg sm:text-xl md:text-xl lg:text-xl">
+          Hello, {userData.user.first_name} {userData.user.last_name}👋{" "}
+        </h1>
         <div className="relative">
           <img
             src={ItemImage}
