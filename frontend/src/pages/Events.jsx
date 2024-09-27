@@ -28,6 +28,7 @@ const Events = () => {
 
   return (
     <div className="flex flex-col">
+<<<<<<< HEAD
       {/* Header Section */}
       <div className="bg-gray-100 px-6 py-8">
         <h1 className="text-lg sm:text-xl md:text-xl lg:text-xl">
@@ -45,6 +46,14 @@ const Events = () => {
           <div className="transition transform hover:scale-105 hover:shadow-lg">
             <ActiveCard title={"Upcoming"} img={cup} />
           </div>
+=======
+      <div>
+        <h3>Hello {userData.user.last_name} 👋🏼,</h3>
+        <div className="grid grid-cols-3 gap-4 mt-10 px-4">
+          {countingCards.map((card) => (
+            <CountingCard key={card.id} count={card.count} test={card.test} />
+          ))}
+>>>>>>> dfdcd75 (FIX: Fixed the greeting message to show the logged in user name)
         </div>
 
         {/* Event Cards Section */}
