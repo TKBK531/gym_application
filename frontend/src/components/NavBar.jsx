@@ -36,7 +36,7 @@ const NavBar = ({ onHamburgerClick, isLeftbarVisible }) => {
 
   return (
     <nav className="bg-white p-4 sticky top-0">
-      <div className="container mx-auto flex items-center">
+      <div className="flex items-center">
         {/* Hamburger Menu Icon */}
         <button className="block md:hidden mr-4" onClick={onHamburgerClick}>
           {isLeftbarVisible ? (
