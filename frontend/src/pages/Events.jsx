@@ -15,6 +15,7 @@ import datebox2 from "../assets/eventPage/Card8.jpg";
 const Events = () => {
   const [showDetails, setShowDetails] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const userData = JSON.parse(localStorage.getItem("userData"));
 
   const handleReadMoreClick = (categoryName) => {
     setSelectedCategory(categoryName);
@@ -31,7 +32,7 @@ const Events = () => {
       {/* Header Section */}
       <div className="bg-gray-100 px-6 py-8">
         <h1 className="text-lg sm:text-xl md:text-xl lg:text-xl">
-          Hello, Hasaranga Abeywickrama. 👋{" "}
+          Hello, {userData.user.first_name} {userData.user.last_name}👋{" "}
         </h1>
 
         {/* Active Cards Section */}
