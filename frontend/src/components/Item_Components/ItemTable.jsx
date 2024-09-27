@@ -1,18 +1,19 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { FaPlus, FaMinus } from "react-icons/fa"; // Import FontAwesome icons
+import api from "../../api"; // Assuming you have a properly configured Axios instance here
 
 const ItemTable = ({
   searchQuery = "",
   sortSport = true,
   sortCount = "asc",
 }) => {
-  const items = [
-    { item: "Badminton Racket", sport: "Badminton", count: 12 },
-    { item: "Shuttlecock", sport: "Badminton", count: 5 },
-    { item: "Basketball", sport: "Basketball", count: 3 },
-    { item: "Paddle", sport: "Table Tennis", count: 8 },
-    { item: "Volleyball", sport: "Volleyball", count: 3 },
-  ];
-
+  const [items, setItems] = useState([]); // State to store the fetched items
+  const [loading, setLoading] = useState(true); // State to handle loading status
+  const [error, setError] = useState(null); // State to handle errors
+  const userData = JSON.parse(localStorage.getItem("userData")); // Get user data from local storage
+  const isStaff =
+    userData?.profile.user_type === "staff" ||
+    userData?.profile.user_type === "admin"; // Check if the user is a staff member
   // Fetch items from the backend on component mount
   useEffect(() => {
     fetchAllItems();
