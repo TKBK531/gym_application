@@ -20,10 +20,7 @@ import BaseLayout from "./components/Layouts/BaseLayout";
 import MembersGym from "./pages/MembersGym";
 import MembersGround from "./pages/MembersGround";
 import MembersPool from "./pages/MembersPool";
-<<<<<<< HEAD
 import Table from "./components/Table";
-=======
->>>>>>> 643b479 (WIP : created the relavent pages for cards)
 
 const router = createBrowserRouter([
   // Dashboard route
@@ -89,7 +86,7 @@ const router = createBrowserRouter([
   // Members route
   {
     path: "/members",
-    element: <BaseLayout />, 
+    element: <BaseLayout />,
     children: [
       {
         index: true,
