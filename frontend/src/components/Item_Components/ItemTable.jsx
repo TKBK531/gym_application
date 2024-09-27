@@ -6,14 +6,12 @@ const ItemTable = ({
   searchQuery = "",
   sortSport = true,
   sortCount = "asc",
+  isStaff = true,
 }) => {
   const [items, setItems] = useState([]); // State to store the fetched items
   const [loading, setLoading] = useState(true); // State to handle loading status
   const [error, setError] = useState(null); // State to handle errors
-  const userData = JSON.parse(localStorage.getItem("userData")); // Get user data from local storage
-  const isStaff =
-    userData?.profile.user_type === "staff" ||
-    userData?.profile.user_type === "admin"; // Check if the user is a staff member
+
   // Fetch items from the backend on component mount
   useEffect(() => {
     fetchAllItems();
@@ -37,10 +35,8 @@ const ItemTable = ({
 
   // Filter and sort the items based on search query and sorting conditions
   const filteredItems = items
-    .filter(
-      (item) =>
-        item.item.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.sport.toLowerCase().includes(searchQuery.toLowerCase())
+    .filter((item) =>
+      item.item_id.toLowerCase().includes(searchQuery.toLowerCase())
     )
     .sort((a, b) => {
       if (sortSport) {
