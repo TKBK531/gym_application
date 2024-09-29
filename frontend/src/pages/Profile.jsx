@@ -67,13 +67,13 @@ const Profile = () => {
   }, [showFinilizePopup]);
 
   const fetchAllProfiles = async () => {
-    // try {
-    //   const response = await api.get("/user/profile/all-profiles/");
-    //   setAllProfiles(response.data.data);
-    //   console.log(allProfiles);
-    // } catch (error) {
-    //   console.error("Error fetching profile data:", error.message);
-    // }
+    try {
+      const response = await api.get("/user/profile/all-profiles/");
+      setAllProfiles(response.data.data);
+      console.log(allProfiles);
+    } catch (error) {
+      console.error("Error fetching profile data:", error.message);
+    }
   };
 
   const onProfileClick = (profileID) => {
