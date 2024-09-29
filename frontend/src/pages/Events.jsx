@@ -11,17 +11,17 @@ const Events = () => {
     {
       name: "Sports",
       description: "Details about sports events.",
-      image: "https://superblog.supercdn.cloud/site_cuid_clr6oh1no0006rmr89yhkxgu8/images/various-sport-equipments-generative-ai-1706958639790-original.jpg", // Replace with actual image URL
+      image: "https://superblog.supercdn.cloud/site_cuid_clr6oh1no0006rmr89yhkxgu8/images/various-sport-equipments-generative-ai-1706958639790-original.jpg",
     },
     {
       name: "Musical Shows",
       description: "Details about music events.",
-      image: "https://weezevent.com/wp-content/uploads/2018/08/27184514/organiser-un-concert-en-7-etapes.jpg", // Replace with actual image URL
+      image: "https://weezevent.com/wp-content/uploads/2018/08/27184514/organiser-un-concert-en-7-etapes.jpg",
     },
     {
       name: "Other Functions",
       description: "Details about other functions.",
-      image: "https://bmkltsly13vb.compat.objectstorage.ap-mumbai-1.oraclecloud.com/cdn.edu.dailymirror.lk/uploads/articles_14_b7e63065df.jpg", // Replace with actual image URL
+      image: "https://bmkltsly13vb.compat.objectstorage.ap-mumbai-1.oraclecloud.com/cdn.edu.dailymirror.lk/uploads/articles_14_b7e63065df.jpg",
     },
   ];
 
@@ -51,7 +51,7 @@ const Events = () => {
             {categories.map((category, index) => (
               <div
                 key={index}
-                className="bg-white p-4 shadow rounded-lg overflow-hidden"
+                className="bg-white p-4 shadow rounded-lg overflow-hidden transition-transform transform hover:scale-105"
               >
                 {/* Category Image */}
                 <img
