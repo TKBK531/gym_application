@@ -18,6 +18,8 @@
     "@mui/material": "^5.16.5",
     "@mui/styled-engine-sc": "^6.0.0-alpha.18",
     "@mui/x-date-pickers": "^7.11.1",
+    "@radix-ui/react-avatar": "^1.1.0",
+    "@radix-ui/react-select": "^2.1.1",
     "@radix-ui/react-slot": "^1.1.0",
     "axios": "^1.6.8",
     "chart.js": "^4.4.4",

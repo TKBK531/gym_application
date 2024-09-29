@@ -142,6 +142,20 @@ export const router = createBrowserRouter([
     ],
   },
   {
+    path: "/all-profiles",
+    element: <BaseLayout />,
+    children: [
+      {
+        index: true,
+        element: (
+          <ProtectedRoute>
+            <AllProfiles />
+          </ProtectedRoute>
+        ),
+      },
+    ],
+  },
+  {
     path: "/table",
     element: <BaseLayout />,
     children: [
@@ -159,6 +173,5 @@ export const router = createBrowserRouter([
   { path: "/login", element: <Login /> },
   { path: "/logout", element: <Logout /> },
   { path: "/register", element: <Register /> },
-  { path: "/all-profiles", element: <AllProfiles /> },
   { path: "*", element: <PageNotFound /> },
 ]);
