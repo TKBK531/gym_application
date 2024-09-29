@@ -13,6 +13,7 @@ import {
   Login,
   Logout,
   PageNotFound,
+  // AllProfiles,
 } from "./pages";
 import Register from "./pages/Register";
 import BaseLayout from "./components/Layouts/BaseLayout";
@@ -21,6 +22,7 @@ import MembersGround from "./pages/MembersGround";
 import MembersPool from "./pages/MembersPool";
 import Table from "./components/Table";
 import SportCardPage from "./components/Sport/SportCardPage";
+import { AllProfiles } from "./pages";
 
 export const router = createBrowserRouter([
   {
@@ -157,5 +159,6 @@ export const router = createBrowserRouter([
   { path: "/login", element: <Login /> },
   { path: "/logout", element: <Logout /> },
   { path: "/register", element: <Register /> },
+  { path: "/all-profiles", element: <AllProfiles /> },
   { path: "*", element: <PageNotFound /> },
 ]);
