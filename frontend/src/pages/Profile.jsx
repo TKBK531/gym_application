@@ -4,8 +4,10 @@ import api from "../api";
 import ProfileDataContainer from "../components/Profile/ProfileDataContainer";
 import ProfileTable from "../components/Profile/ProfileTable";
 import FinilizeProfile from "../components/Popups/FinilizeProfile";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
+  const navigate = useNavigate();
   const [profileData, setProfileData] = useState({
     date_of_birth: "",
     city: "",
@@ -67,13 +69,7 @@ const Profile = () => {
   }, [showFinilizePopup]);
 
   const fetchAllProfiles = async () => {
-    try {
-      const response = await api.get("/user/profile/all-profiles/");
-      setAllProfiles(response.data.data);
-      console.log(allProfiles);
-    } catch (error) {
-      console.error("Error fetching profile data:", error.message);
-    }
+    navigate("/profile/all-profiles");
   };
 
   const onProfileClick = (profileID) => {

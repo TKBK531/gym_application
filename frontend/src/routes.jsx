@@ -139,14 +139,8 @@ export const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
-    ],
-  },
-  {
-    path: "/all-profiles",
-    element: <BaseLayout />,
-    children: [
       {
-        index: true,
+        path: "all-profiles",
         element: (
           <ProtectedRoute>
             <AllProfiles />
@@ -155,6 +149,20 @@ export const router = createBrowserRouter([
       },
     ],
   },
+  // {
+  //   path: "/all-profiles",
+  //   element: <BaseLayout />,
+  //   children: [
+  //     {
+  //       index: true,
+  //       element: (
+  //         <ProtectedRoute>
+  //           <AllProfiles />
+  //         </ProtectedRoute>
+  //       ),
+  //     },
+  //   ],
+  // },
   {
     path: "/table",
     element: <BaseLayout />,
