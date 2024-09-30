@@ -64,7 +64,7 @@ const Events = () => {
                   <h2 className="text-lg font-semibold">{category.name}</h2>
                   <button
                     onClick={() => handleReadMoreClick(category.name)}
-                    className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                    className="mt-4 bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
                   >
                     Read More
                   </button>
