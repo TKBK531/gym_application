@@ -18,6 +18,7 @@ import {
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { ChevronLeft, ChevronRight, Search } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 import api from "../api";
 import { userTypes } from "../constants/index";
 
@@ -28,6 +29,7 @@ export default function Component() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedUserType, setSelectedUserType] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const { toast } = useToast();
 
   const filteredUsers = useMemo(() => {
     return allProfiles.filter((user) => {
@@ -56,10 +58,6 @@ export default function Component() {
         throw new Error("Invalid user type selected");
       }
 
-      console.log("Sending request to update user type:", {
-        user_type: userTypeObject.name,
-      });
-
       const response = await api.put(
         `/user/profile/${userId}/update-user-type/`,
         {
@@ -67,7 +65,7 @@ export default function Component() {
         }
       );
 
-      console.log("Response from server:", response.data);
+      console.log("User type updated:", response.data);
 
       setAllProfiles(
         allProfiles.map((user) =>
@@ -76,6 +74,12 @@ export default function Component() {
             : user
         )
       );
+
+      toast({
+        title: "User Type Updated",
+        description: `User type has been successfully changed to ${userTypeObject.label}.`,
+        variant: "success",
+      });
     } catch (error) {
       console.error("Error updating user type:", error.message);
       if (error.response) {
@@ -83,6 +87,11 @@ export default function Component() {
         console.error("Response status:", error.response.status);
         console.error("Response headers:", error.response.headers);
       }
+      toast({
+        title: "Error",
+        description: "Failed to update user type. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -102,6 +111,11 @@ export default function Component() {
       setAllProfiles(response.data.data);
     } catch (error) {
       console.error("Error fetching profile data:", error.message);
+      toast({
+        title: "Error",
+        description: "Failed to fetch user profiles. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
