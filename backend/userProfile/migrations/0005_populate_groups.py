@@ -7,10 +7,15 @@ def populate_groups(apps, schema_editor):
     Group = apps.get_model("auth", "Group")
     Group.objects.bulk_create(
         [
-            Group(name="admin"),
-            Group(name="staff"),
+            Group(name="student"),
+            Group(name="academic"),
+            Group(name="postgraduate"),
             Group(name="external"),
             Group(name="internal"),
+            Group(name="approval"),
+            Group(name="payment"),
+            Group(name="staff"),
+            Group(name="admin"),
         ]
     )
 
