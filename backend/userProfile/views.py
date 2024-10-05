@@ -518,25 +518,40 @@ class UserTypeUpdateView(generics.UpdateAPIView):
 
     def update(self, request, *args, **kwargs):
         user_profile_id = self.kwargs.get("pk")
-        user_profile = UserProfile.objects.get(pk=user_profile_id)
+
+        try:
+            user_profile = UserProfile.objects.get(pk=user_profile_id)
+        except UserProfile.DoesNotExist:
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": "User Profile not found",
+                },
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
         serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
-            user_type_name = serializer.validated_data["user_type"]
-            group = Group.objects.get(name=user_type_name.lower())
+            user_type = serializer.validated_data["user_type"]
+            user_type_name = user_type.name
+            group = Group.objects.get(name=user_type_name)
 
             try:
-                user_type = UserType.objects.get(name=user_type_name)
                 user_profile.user_type = user_type
                 user_profile.save()
                 user_profile.user.groups.add(group)
+
+                resp_data = {
+                    "user": user_profile.user.email,
+                    "user_type": user_type_name,  # Convert to string representation
+                }
 
                 return JsonResponse(
                     {
                         "status": "success",
                         "message": "User type updated",
-                        "data": serializer.data,
+                        "data": resp_data,
                     },
                     status=status.HTTP_200_OK,
                 )

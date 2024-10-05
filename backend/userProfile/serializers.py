@@ -284,6 +284,13 @@ class UserDataSerializer(serializers.ModelSerializer):
 class UserTypeUpdateSerializer(serializers.Serializer):
     user_type = serializers.CharField()
 
+    def validate_user_type(self, value):
+        try:
+            user_type = UserType.objects.get(name=value)
+        except UserType.DoesNotExist:
+            raise serializers.ValidationError("Invalid user type")
+        return user_type
+
 
 class ProvinceSerializer(serializers.ModelSerializer):
     class Meta:

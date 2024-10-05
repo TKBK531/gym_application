@@ -8,6 +8,7 @@ import Profile from "./Profile"; // Import the Profile component
 import Login from "./Login"; // Import the Login component
 import Logout from "./Logout";
 import Register from "./Register";
+import AllProfiles from "./AllProfiles";
 import PageNotFound from "./PageNotFound";
 
 export {
@@ -22,4 +23,5 @@ export {
   Logout,
   Register,
   PageNotFound,
+  AllProfiles,
 };
