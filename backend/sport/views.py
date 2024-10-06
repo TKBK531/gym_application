@@ -3,6 +3,8 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework import generics
+
+from userProfile.models import UserProfile
 from .models import Sport
 from .serializers import SportSerializer
 from django.http import JsonResponse
@@ -74,9 +76,10 @@ class UpdateInChargeView(generics.UpdateAPIView):
     serializer_class = SportSerializer
     permission_classes = [IsAuthenticated]
 
-    def get_user(self, user_id):
+    def get_user(self, user_profile_id):
         try:
-            in_charge = User.objects.get(id=user_id)
+            in_charge_profile = UserProfile.objects.get(id=user_profile_id)
+            in_charge = in_charge_profile.user
             if in_charge.groups.filter(name="staff").exists():
                 return in_charge
             else:

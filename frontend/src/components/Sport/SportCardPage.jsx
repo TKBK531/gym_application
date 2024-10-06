@@ -172,6 +172,8 @@ export default function SportCardPage() {
   const searchParams = new URLSearchParams(location.search);
   const sportId = searchParams.get("id");
 
+  const userData = JSON.parse(localStorage.getItem("userData"));
+  console.log(sportData);
   useEffect(() => {
     const fetchSportData = async () => {
       if (!sportId) {
@@ -204,11 +206,12 @@ export default function SportCardPage() {
       const response = await api.get("/user/profile/all-profiles/");
       if (response.data.status === "success") {
         console.log("Staff members:", response.data.data);
-        // const staffMembers = response.data.data.filter(
-        //   (user) => user.user_type === userTypes.name
-        // );
-        // setStaffMembers(staffMembers);
-        // setFilteredStaffMembers(staffMembers);
+        const staffUsers = response.data.data.filter(
+          (user) => user.user_type === 8
+        );
+        setStaffMembers(staffUsers);
+        setFilteredStaffMembers(staffUsers);
+        console.log("Staff members:", filteredStaffMembers);
       } else {
         console.error("Error fetching staff members:", response.data.message);
       }
@@ -225,8 +228,11 @@ export default function SportCardPage() {
   const handleSearch = (event) => {
     const searchTerm = event.target.value.toLowerCase();
     setSearchTerm(searchTerm);
-    const filtered = staffMembers.filter((staff) =>
-      staff.name.toLowerCase().includes(searchTerm)
+
+    const filtered = staffMembers.filter(
+      (staff) =>
+        staff.first_name.toLowerCase().includes(searchTerm) ||
+        staff.last_name.toLowerCase().includes(searchTerm)
     );
     setFilteredStaffMembers(filtered);
   };
@@ -239,14 +245,23 @@ export default function SportCardPage() {
     if (!selectedStaffMember) return;
 
     try {
-      const response = await api.put(`/sport/${sportId}/assign-in-charge/`, {
-        in_charge_id: selectedStaffMember.id,
-      });
+      const req_data = {
+        in_charge: selectedStaffMember.id,
+      };
+      console.log("Req data:", req_data);
+      console.log("Sport ID:", sportId);
+      const response = await api.put(
+        `/sport/${sportId}/assign-in-charge/`,
+        req_data
+      );
       if (response.data.status === "success") {
         setSportData({
           ...sportData,
-          in_charge_name: selectedStaffMember.name,
-          in_charge_id: selectedStaffMember.id,
+          in_charge_name:
+            selectedStaffMember.first_name +
+            " " +
+            selectedStaffMember.last_name,
+          in_charge: selectedStaffMember.id,
         });
         setShowInChargeDialog(false);
         setSelectedStaffMember(null);
@@ -289,7 +304,7 @@ export default function SportCardPage() {
           <p className="text-gray-700">
             In Charge: {sportData.in_charge_name || "No in charge assigned yet"}
           </p>
-          {isAdmin && (
+          {userData.profile.user_type == "admin" && (
             <Button onClick={handleSetInCharge}>Set In Charge</Button>
           )}
         </div>
@@ -318,7 +333,7 @@ export default function SportCardPage() {
                 }`}
                 onClick={() => handleSelectStaffMember(staff)}
               >
-                {staff.name}
+                {staff.first_name} {staff.last_name}
               </div>
             ))}
           </ScrollArea>
