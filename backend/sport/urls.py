@@ -5,6 +5,7 @@ from .views import (
     UpdateInChargeView,
     AddSportView,
     DeleteSportView,
+    UpdateSportImageView,
 )
 
 urlpatterns = [
@@ -17,4 +18,5 @@ urlpatterns = [
     ),
     path("add-sport/", AddSportView.as_view(), name="add-sport"),
     path("delete-sport/", DeleteSportView.as_view(), name="delete-sport"),
+    path("update-sport-image/", UpdateSportImageView.as_view(), name="update-sport"),
 ]

@@ -203,3 +203,40 @@ class DeleteSportView(generics.DestroyAPIView):
             "message": "Sport deleted successfully",
         }
         return JsonResponse(resp, status=204)
+
+
+class UpdateSportImageView(generics.UpdateAPIView):
+    queryset = Sport.objects.all()
+    serializer_class = SportSerializer
+    permission_classes = [IsAuthenticated]
+
+    def update(self, request, *args, **kwargs):
+        sport_id = kwargs.get("pk")
+        try:
+            sport = Sport.objects.get(id=sport_id)
+        except Sport.DoesNotExist:
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": "Sport does not exist",
+                },
+                status=404,
+            )
+
+        if not request.user.groups.filter(name="admin").exists():
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": "You are not authorized to perform this action",
+                },
+                status=403,
+            )
+
+        sport.image = request.FILES.get("image")
+        sport.save()
+
+        resp = {
+            "status": "success",
+            "message": "Sport image updated successfully",
+        }
+        return JsonResponse(resp)
