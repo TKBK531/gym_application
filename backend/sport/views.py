@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import render
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
@@ -238,5 +239,8 @@ class UpdateSportImageView(generics.UpdateAPIView):
         resp = {
             "status": "success",
             "message": "Sport image updated successfully",
+            "data": {
+                "image": f"{settings.BASE_API_URL}{sport.image.url}",
+            },
         }
         return JsonResponse(resp)

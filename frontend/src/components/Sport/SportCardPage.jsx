@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Skeleton } from "../ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Edit } from "lucide-react";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -17,26 +17,26 @@ import { Input } from "../ui/input";
 import { ScrollArea } from "../ui/scroll-area";
 import api from "../../api";
 import { userTypes } from "../../constants/index";
-// import Announcements from "./tabs/announcements";
-// import Team from "./tabs/team";
-// import Schedule from "./tabs/schedule";
 
 export default function SportCardPage() {
   const [sportData, setSportData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showInChargeDialog, setShowInChargeDialog] = useState(false);
+  const [showImageUploadDialog, setShowImageUploadDialog] = useState(false);
   const [staffMembers, setStaffMembers] = useState([]);
   const [filteredStaffMembers, setFilteredStaffMembers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStaffMember, setSelectedStaffMember] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const sportId = searchParams.get("id");
 
   const userData = JSON.parse(localStorage.getItem("userData"));
-  console.log(sportData);
+  const fileInputRef = useRef(null);
+
   useEffect(() => {
     const fetchSportData = async () => {
       if (!sportId) {
@@ -67,13 +67,11 @@ export default function SportCardPage() {
     try {
       const response = await api.get("/user/profile/all-profiles/");
       if (response.data.status === "success") {
-        console.log("Staff members:", response.data.data);
         const staffUsers = response.data.data.filter(
           (user) => user.user_type === 8
         );
         setStaffMembers(staffUsers);
         setFilteredStaffMembers(staffUsers);
-        console.log("Staff members:", filteredStaffMembers);
       } else {
         console.error("Error fetching staff members:", response.data.message);
       }
@@ -110,8 +108,6 @@ export default function SportCardPage() {
       const req_data = {
         in_charge: selectedStaffMember.id,
       };
-      console.log("Req data:", req_data);
-      console.log("Sport ID:", sportId);
       const response = await api.put(
         `/sport/${sportId}/assign-in-charge/`,
         req_data
@@ -132,6 +128,46 @@ export default function SportCardPage() {
       }
     } catch (error) {
       console.error("Error assigning in-charge:", error);
+    }
+  };
+
+  const handleUpdateImage = () => {
+    setShowImageUploadDialog(true);
+  };
+
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    setSelectedImage(file);
+  };
+
+  const handleConfirmImageUpload = async () => {
+    if (!selectedImage) return;
+
+    const formData = new FormData();
+    formData.append("image", selectedImage);
+    try {
+      const response = await api.put(
+        `/sport/${sportId}/update-sport-image/`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log("Image upload response", response.data.data);
+      if (response.data.status === "success") {
+        setSportData({
+          ...sportData,
+          image: response.data.data.image,
+        });
+        setShowImageUploadDialog(false);
+        setSelectedImage(null);
+      } else {
+        console.error("Error updating sport image:", response.data.message);
+      }
+    } catch (error) {
+      console.error("Error updating sport image:", error);
     }
   };
 
@@ -161,12 +197,21 @@ export default function SportCardPage() {
             alt={sportData.label}
             className="object-cover rounded-md w-full h-full"
           />
+          {userData.profile.user_type === "admin" && (
+            <div
+              className="absolute bottom-4 right-4 p-2 bg-primary-foreground rounded-full cursor-pointer hover:bg-secondary-golden transition-colors duration-200"
+              onClick={handleUpdateImage}
+            >
+              <Edit className="h-6 w-6 text-primary" />
+              <span className="sr-only">Update Image</span>
+            </div>
+          )}
         </div>
         <div className="flex justify-between items-center mb-6">
           <p className="text-gray-700">
             In Charge: {sportData.in_charge_name || "No in charge assigned yet"}
           </p>
-          {userData.profile.user_type == "admin" && (
+          {userData.profile.user_type === "admin" && (
             <Button onClick={handleSetInCharge}>Set In Charge</Button>
           )}
         </div>
@@ -205,6 +250,31 @@ export default function SportCardPage() {
               disabled={!selectedStaffMember}
             >
               Confirm
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={showImageUploadDialog}
+        onOpenChange={setShowImageUploadDialog}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Update Sport Image</DialogTitle>
+          </DialogHeader>
+          <Input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            ref={fileInputRef}
+          />
+          <DialogFooter>
+            <Button
+              onClick={handleConfirmImageUpload}
+              disabled={!selectedImage}
+            >
+              Upload Image
             </Button>
           </DialogFooter>
         </DialogContent>
