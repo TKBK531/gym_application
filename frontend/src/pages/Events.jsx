@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Table from "../components/Table"; // Ensure the correct path to Table.jsx
+import DateCard from "../components/Event_Components/DateCard"; 
 
 const Events = () => {
   const [showDetails, setShowDetails] = useState(false);
@@ -46,6 +47,7 @@ const Events = () => {
 
       {/* Main Content Section */}
       <div className="p-6">
+        {/* Display Category Grid or Selected Category Details */}
         {!showDetails ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {categories.map((category, index) => (
@@ -78,7 +80,7 @@ const Events = () => {
               {selectedCategory.name} Details
             </h2>
             <p>{selectedCategory.description}</p>
-            {/* Render Table component here */}
+            {/* Render Table component based on selected category */}
             <Table selectedCategory={selectedCategory.name} />
             <button
               onClick={handleBackClick}
@@ -88,6 +90,15 @@ const Events = () => {
             </button>
           </div>
         )}
+      </div>
+
+      {/* DateCard Section */}
+      <div className="bg-gray-100 px-6 py-4">
+        <h1 className="text-xl font-semibold mb-4">Event Schedule</h1>
+        <div className="bg-red-300">
+        
+        <DateCard />
+        </div>
       </div>
     </div>
   );
