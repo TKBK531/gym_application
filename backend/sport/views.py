@@ -137,6 +137,38 @@ class UpdateInChargeView(generics.UpdateAPIView):
             return JsonResponse(resp_data, status=403)
 
 
+class GetInChargeSportsView(generics.ListAPIView):
+    serializer_class = SportSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self, in_charge_id):
+        in_charge = User.objects.get(id=in_charge_id)
+        return Sport.objects.filter(in_charge=in_charge)
+
+    def list(self, request, *args, **kwargs):
+        if request.user.groups.filter(name="staff").exists():
+            in_charge_id = request.user.id
+
+            queryset = self.get_queryset(in_charge_id=in_charge_id)
+            serializer = self.get_serializer(queryset, many=True)
+            sports_data = serializer.data
+
+            return JsonResponse(
+                {
+                    "status": "success",
+                    "data": sports_data,
+                }
+            )
+        else:
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": "You are not authorized to perform this action",
+                },
+                status=403,
+            )
+
+
 class AddSportView(generics.CreateAPIView):
     queryset = Sport.objects.all()
     serializer_class = SportSerializer
@@ -315,3 +347,49 @@ class GetSportPostsView(generics.ListAPIView):
             },
             safe=False,
         )
+
+
+class UpdateSportPostView(generics.UpdateAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated]
+
+    def update(self, request, *args, **kwargs):
+        post_id = kwargs.get("pk")
+        try:
+            post = Post.objects.get(id=post_id)
+        except Post.DoesNotExist:
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": "Post does not exist",
+                },
+                status=404,
+            )
+
+        if not request.user.groups.filter(name="staff").exists():
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": "You are not authorized to perform this action",
+                },
+                status=403,
+            )
+
+        post.title = request.data.get("title")
+        post.description = request.data.get("description")
+        post.content = request.data.get("content")
+        post.image = request.FILES.get("image")
+        post.save()
+
+        resp = {
+            "status": "success",
+            "message": "Post updated successfully",
+            "data": {
+                "title": post.title,
+                "description": post.description,
+                "content": post.content,
+                "image": f"{settings.BASE_API_URL}{post.image.url}",
+            },
+        }
+        return JsonResponse(resp)
