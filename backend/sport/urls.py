@@ -6,6 +6,8 @@ from .views import (
     AddSportView,
     DeleteSportView,
     UpdateSportImageView,
+    GetSportPostsView,
+    CreateSportPostView,
 )
 
 urlpatterns = [
@@ -23,4 +25,6 @@ urlpatterns = [
         UpdateSportImageView.as_view(),
         name="update-sport",
     ),
+    path("<int:pk>/posts/", GetSportPostsView.as_view(), name="get-sport-posts"),
+    path("create-post/", CreateSportPostView.as_view(), name="create-sport-post"),
 ]

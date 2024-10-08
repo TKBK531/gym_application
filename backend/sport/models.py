@@ -18,7 +18,7 @@ class Post(models.Model):
     title = models.CharField(max_length=100)
     sport = models.ForeignKey(Sport, on_delete=models.CASCADE)
     description = models.TextField()
-    image = models.ImageField(upload_to="images/")
+    image = models.ImageField(upload_to="images/sport_posts/")
     content = models.TextField()
 
     def __str__(self):

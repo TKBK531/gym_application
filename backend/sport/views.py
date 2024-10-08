@@ -6,8 +6,8 @@ from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework import generics
 
 from userProfile.models import UserProfile
-from .models import Sport
-from .serializers import SportSerializer
+from .models import Sport, Post
+from .serializers import SportSerializer, PostSerializer
 from django.http import JsonResponse
 
 
@@ -244,3 +244,74 @@ class UpdateSportImageView(generics.UpdateAPIView):
             },
         }
         return JsonResponse(resp)
+
+
+class CreateSportPostView(generics.CreateAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        sport_id = self.request.data.get("sport")
+        sport = Sport.objects.get(id=sport_id)
+        serializer.save(sport=sport)
+
+    def create(self, request, *args, **kwargs):
+        if request.user.groups.filter(name="staff").exists():
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            try:
+                self.perform_create(serializer)
+            except ValidationError as e:
+                resp = {
+                    "status": "error",
+                    "message": e.message,
+                }
+                return JsonResponse(resp, status=400)
+
+            resp = {
+                "status": "success",
+                "data": serializer.data,
+                "message": "Post added successfully",
+            }
+            return JsonResponse(resp, status=201)
+        else:
+            resp = {
+                "status": "error",
+                "message": "You are not authorized to perform this action",
+            }
+            return JsonResponse(resp, status=403)
+
+
+class GetSportPostsView(generics.ListAPIView):
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        sport_id = self.kwargs.get("pk")
+        return Post.objects.filter(sport_id=sport_id)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        posts_data = serializer.data
+
+        # Add sport name to each post's data
+        for post in posts_data:
+            sport_id = post.get("sport")
+            if sport_id:
+                try:
+                    sport = Sport.objects.get(id=sport_id)
+                    post["sport_name"] = sport.label
+                except Sport.DoesNotExist:
+                    post["sport_name"] = None
+            else:
+                post["sport_name"] = None
+
+        return JsonResponse(
+            {
+                "status": "success",
+                "data": posts_data,
+            },
+            safe=False,
+        )
