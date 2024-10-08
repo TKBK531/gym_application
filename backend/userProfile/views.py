@@ -1,13 +1,9 @@
-from PIL import Image
-from io import BytesIO
-
 from django.conf import settings
 from urllib.parse import urlencode
 from django.core.cache import cache
-from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.http import JsonResponse
 from django.shortcuts import redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import login
 from django.contrib.auth.models import User, Group
 
 from rest_framework import views, generics, status

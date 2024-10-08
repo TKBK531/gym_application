@@ -1,8 +1,7 @@
 from django.conf import settings
-from django.shortcuts import render
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
-from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import generics
 
 from userProfile.models import UserProfile
