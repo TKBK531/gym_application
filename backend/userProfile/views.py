@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.contrib.auth import login
 from django.contrib.auth.models import User, Group
+from sport.models import Sport
 
 from rest_framework import views, generics, status
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -534,6 +535,11 @@ class UserTypeUpdateView(generics.UpdateAPIView):
             group = Group.objects.get(name=user_type_name)
 
             try:
+                if user_profile.user_type.name == "staff" and user_type_name != "staff":
+                    Sport.objects.filter(in_charge=user_profile.user).update(
+                        in_charge=None
+                    )
+
                 user_profile.user_type = user_type
                 user_profile.save()
                 user_profile.user.groups.add(group)
