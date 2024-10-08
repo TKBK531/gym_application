@@ -9,6 +9,7 @@ from .views import (
     UpdateSportImageView,
     GetSportPostsView,
     CreateSportPostView,
+    UpdateSportPostView,
 )
 
 urlpatterns = [
@@ -33,4 +34,9 @@ urlpatterns = [
     ),
     path("<int:pk>/posts/", GetSportPostsView.as_view(), name="get-sport-posts"),
     path("create-post/", CreateSportPostView.as_view(), name="create-sport-post"),
+    path(
+        "<int:pk>/update-post/",
+        UpdateSportPostView.as_view(),
+        name="update-sport-post",
+    ),
 ]

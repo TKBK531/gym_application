@@ -376,10 +376,15 @@ class UpdateSportPostView(generics.UpdateAPIView):
                 status=403,
             )
 
-        post.title = request.data.get("title")
-        post.description = request.data.get("description")
-        post.content = request.data.get("content")
-        post.image = request.FILES.get("image")
+        if "title" in request.data:
+            post.title = request.data.get("title")
+        if "description" in request.data:
+            post.description = request.data.get("description")
+        if "content" in request.data:
+            post.content = request.data.get("content")
+        if "image" in request.FILES:
+            post.image = request.FILES.get("image")
+
         post.save()
 
         resp = {
@@ -389,7 +394,9 @@ class UpdateSportPostView(generics.UpdateAPIView):
                 "title": post.title,
                 "description": post.description,
                 "content": post.content,
-                "image": f"{settings.BASE_API_URL}{post.image.url}",
+                "image": (
+                    f"{settings.BASE_API_URL}{post.image.url}" if post.image else None
+                ),
             },
         }
         return JsonResponse(resp)
