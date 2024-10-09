@@ -409,6 +409,18 @@ class CreateTeamView(generics.CreateAPIView):
     def perform_create(self, serializer):
         sport_id = self.request.data.get("sport")
         sport = Sport.objects.get(id=sport_id)
+        captain_id = self.request.data.get("captain")
+
+        if captain_id:
+            try:
+                captain_profile = UserProfile.objects.get(user_id=captain_id)
+                if (
+                    captain_profile.user_type.name != "student"
+                ):  # Assuming 'Student' is the label for student user type
+                    raise ValidationError("The captain must be a student user.")
+            except UserProfile.DoesNotExist:
+                raise ValidationError("Captain's user profile does not exist.")
+
         serializer.save(sport=sport)
 
     def create(self, request, *args, **kwargs):
@@ -422,20 +434,35 @@ class CreateTeamView(generics.CreateAPIView):
                     "status": "error",
                     "message": e.message,
                 }
-                return JsonResponse(resp, status=400)
+                return JsonResponse(resp)
+            except Sport.DoesNotExist:
+                resp = {
+                    "status": "error",
+                    "message": "Sport does not exist.",
+                }
+                return JsonResponse(resp)
+            except Exception as e:
+                resp = {
+                    "status": "error",
+                    "message": str(e),
+                }
+                return JsonResponse(resp)
 
             resp = {
                 "status": "success",
                 "data": serializer.data,
                 "message": "Team added successfully",
             }
-            return JsonResponse(resp, status=201)
+            return JsonResponse(resp)
         else:
             resp = {
                 "status": "error",
                 "message": "You are not authorized to perform this action",
             }
-            return JsonResponse(resp, status=403)
+            return JsonResponse(resp)
+
+
+# class UpdateTeamCaptainView(generics.UpdateAPIView):
 
 
 class TeamListView(generics.ListAPIView):
