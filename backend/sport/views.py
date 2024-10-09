@@ -467,3 +467,37 @@ class TeamListView(generics.ListAPIView):
             },
             safe=False,
         )
+
+
+class SportTeamListView(generics.ListAPIView):
+    serializer_class = TeamSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        sport_id = self.kwargs.get("pk")
+        return Team.objects.filter(sport_id=sport_id)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        teams_data = serializer.data
+
+        # Add captain_name to each team's data
+        for team in teams_data:
+            captain_id = team.get("captain")
+            if captain_id:
+                try:
+                    captain_user = User.objects.get(id=captain_id)
+                    team["captain_name"] = captain_user.get_full_name()
+                except User.DoesNotExist:
+                    team["captain_name"] = None
+            else:
+                team["captain_name"] = None
+
+        return JsonResponse(
+            {
+                "status": "success",
+                "data": teams_data,
+            },
+            safe=False,
+        )
