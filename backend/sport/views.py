@@ -436,5 +436,3 @@ class CreateTeamView(generics.CreateAPIView):
                 "message": "You are not authorized to perform this action",
             }
             return JsonResponse(resp, status=403)
-
-
