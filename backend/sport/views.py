@@ -5,8 +5,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import generics
 
 from userProfile.models import UserProfile
-from .models import Sport, Post
-from .serializers import SportSerializer, PostSerializer
+from .models import Sport, Post, Team
+from .serializers import SportSerializer, PostSerializer, TeamSerializer
 from django.http import JsonResponse
 
 
@@ -399,3 +399,42 @@ class UpdateSportPostView(generics.UpdateAPIView):
             },
         }
         return JsonResponse(resp)
+
+
+class CreateTeamView(generics.CreateAPIView):
+    queryset = Team.objects.all()
+    serializer_class = TeamSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        sport_id = self.request.data.get("sport")
+        sport = Sport.objects.get(id=sport_id)
+        serializer.save(sport=sport)
+
+    def create(self, request, *args, **kwargs):
+        if request.user.groups.filter(name="staff").exists():
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            try:
+                self.perform_create(serializer)
+            except ValidationError as e:
+                resp = {
+                    "status": "error",
+                    "message": e.message,
+                }
+                return JsonResponse(resp, status=400)
+
+            resp = {
+                "status": "success",
+                "data": serializer.data,
+                "message": "Team added successfully",
+            }
+            return JsonResponse(resp, status=201)
+        else:
+            resp = {
+                "status": "error",
+                "message": "You are not authorized to perform this action",
+            }
+            return JsonResponse(resp, status=403)
+
+

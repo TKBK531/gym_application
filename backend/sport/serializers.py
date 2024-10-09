@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Sport, Post
+from .models import Sport, Post, Team
 
 
 class SportSerializer(serializers.ModelSerializer):
@@ -13,4 +13,10 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
+        fields = "__all__"
+
+
+class TeamSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Team
         fields = "__all__"

@@ -28,7 +28,7 @@ class Post(models.Model):
 class Team(models.Model):
     name = models.CharField(max_length=100)
     sport = models.ForeignKey(Sport, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to="images/")
+    image = models.ImageField(upload_to="images/team_image/")
     captain = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
