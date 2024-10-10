@@ -462,7 +462,99 @@ class CreateTeamView(generics.CreateAPIView):
             return JsonResponse(resp)
 
 
-# class UpdateTeamCaptainView(generics.UpdateAPIView):
+class UpdateTeamView(generics.UpdateAPIView):
+    queryset = Team.objects.all()
+    serializer_class = TeamSerializer
+    permission_classes = [IsAuthenticated]
+
+    def update(self, request, *args, **kwargs):
+        team_id = kwargs.get("pk")
+        try:
+            team = Team.objects.get(id=team_id)
+        except Team.DoesNotExist:
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": "Team does not exist",
+                },
+                status=404,
+            )
+
+        if not request.user.groups.filter(name="staff").exists():
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": "You are not authorized to perform this action",
+                },
+                status=403,
+            )
+
+        if "name" in request.data:
+            team.name = request.data.get("name")
+        if "image" in request.FILES:
+            team.image = request.FILES.get("image")
+        if "captain" in request.data:
+            captain_id = request.data.get("captain")
+            if captain_id:
+                try:
+                    captain_profile = UserProfile.objects.get(user_id=captain_id)
+                    if (
+                        captain_profile.user_type.name != "student"
+                    ):  # Assuming 'Student' is the label for student user type
+                        raise ValidationError("The captain must be a student user.")
+                except UserProfile.DoesNotExist:
+                    raise ValidationError("Captain's user profile does not exist.")
+            team.captain = captain_id
+
+        team.save()
+
+        resp = {
+            "status": "success",
+            "message": "Team updated successfully",
+            "data": {
+                "name": team.name,
+                "image": (
+                    f"{settings.BASE_API_URL}{team.image.url}" if team.image else None
+                ),
+                "captain": team.captain,
+            },
+        }
+        return JsonResponse(resp)
+
+
+class DeleteTeamView(generics.DestroyAPIView):
+    queryset = Team.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def destroy(self, request, *args, **kwargs):
+        team_id = self.request.data.get("team_id")
+        try:
+            instance = Team.objects.get(id=team_id)
+        except Team.DoesNotExist:
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": "Team does not exist",
+                },
+                status=404,
+            )
+
+        # Additional check: Is the authenticated user the 'captain' of this team?
+        if not request.user.groups.filter(name="admin").exists():
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": "You are not authorized to perform this action",
+                },
+                status=403,
+            )
+
+        self.perform_destroy(instance)
+        resp = {
+            "status": "success",
+            "message": "Team deleted successfully",
+        }
+        return JsonResponse(resp, status=204)
 
 
 class TeamListView(generics.ListAPIView):
