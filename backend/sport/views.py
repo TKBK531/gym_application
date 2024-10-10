@@ -401,6 +401,41 @@ class UpdateSportPostView(generics.UpdateAPIView):
         return JsonResponse(resp)
 
 
+class DeleteSportPostView(generics.DestroyAPIView):
+    queryset = Post.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def destroy(self, request, *args, **kwargs):
+        post_id = self.request.data.get("post_id")
+        try:
+            instance = Post.objects.get(id=post_id)
+        except Post.DoesNotExist:
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": "Post does not exist",
+                },
+                status=404,
+            )
+
+        # Additional check: Is the authenticated user the 'author' of this post?
+        if not request.user.groups.filter(name="staff").exists():
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": "You are not authorized to perform this action",
+                },
+                status=403,
+            )
+
+        self.perform_destroy(instance)
+        resp = {
+            "status": "success",
+            "message": "Post deleted successfully",
+        }
+        return JsonResponse(resp, status=204)
+
+
 class CreateTeamView(generics.CreateAPIView):
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
