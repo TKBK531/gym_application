@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from userProfile.models import UserProfile
+from django.core.exceptions import ValidationError
+
 
 # Create your models here.
 class Sport(models.Model):
@@ -18,7 +21,7 @@ class Post(models.Model):
     title = models.CharField(max_length=100)
     sport = models.ForeignKey(Sport, on_delete=models.CASCADE)
     description = models.TextField()
-    image = models.ImageField(upload_to="images/")
+    image = models.ImageField(upload_to="images/sport_posts/")
     content = models.TextField()
 
     def __str__(self):
@@ -28,11 +31,21 @@ class Post(models.Model):
 class Team(models.Model):
     name = models.CharField(max_length=100)
     sport = models.ForeignKey(Sport, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to="images/")
+    image = models.ImageField(upload_to="images/team_image/")
     captain = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.name
+
+    def clean(self):
+        if self.captain:
+            user_profile = UserProfile.objects.get(user=self.captain)
+            if user_profile.user_type.name != "student":
+                raise ValidationError("The captain must be a student user.")
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
 
 
 class TeamMember(models.Model):
@@ -41,6 +54,17 @@ class TeamMember(models.Model):
 
     def __str__(self):
         return f"{self.user.username} in {self.team.name}"
+
+    def clean(self):
+        user_profile = UserProfile.objects.get(user=self.user)
+        if (
+            user_profile.user_type.label != "student"
+        ):  # Assuming 'Student' is the label for student user type
+            raise ValidationError("Team members must be student users.")
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
 
 
 class Subscription(models.Model):
