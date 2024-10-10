@@ -1,10 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { Skeleton } from "../ui/skeleton";
-import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
-import { AlertCircle, Edit } from "lucide-react";
+import { Edit } from "lucide-react";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -16,7 +13,9 @@ import {
 import { Input } from "../ui/input";
 import { ScrollArea } from "../ui/scroll-area";
 import api from "../../api";
-import { userTypes } from "../../constants/index";
+import LoadingSkeleton from "./LoadingSkeleton";
+import ErrorAlert from "./ErrorAlert";
+import SportTabs from "./SportTabs";
 
 export default function SportCardPage() {
   const [sportData, setSportData] = useState(null);
@@ -280,54 +279,5 @@ export default function SportCardPage() {
         </DialogContent>
       </Dialog>
     </Card>
-  );
-}
-
-function LoadingSkeleton() {
-  return (
-    <Card className="w-full max-w-4xl mx-auto">
-      <CardHeader>
-        <Skeleton className="h-8 w-3/4 mx-auto" />
-      </CardHeader>
-      <CardContent>
-        <Skeleton className="w-full h-[50vh] mb-6" />
-        <Skeleton className="h-4 w-1/2 mb-6" />
-        <Skeleton className="h-10 w-full" />
-      </CardContent>
-    </Card>
-  );
-}
-
-function ErrorAlert({ message }) {
-  return (
-    <Alert variant="destructive">
-      <AlertCircle className="h-4 w-4" />
-      <AlertTitle>Error</AlertTitle>
-      <AlertDescription>{message}</AlertDescription>
-    </Alert>
-  );
-}
-
-function SportTabs({ sportData }) {
-  return (
-    <Tabs defaultValue="announcements">
-      <TabsList className="grid w-full grid-cols-3">
-        <TabsTrigger value="announcements">Announcements</TabsTrigger>
-        <TabsTrigger value="team">Team</TabsTrigger>
-        <TabsTrigger value="schedule">Schedule</TabsTrigger>
-      </TabsList>
-      <TabsContent value="announcements">
-        {/* <Announcements sportData={sportData} /> */}
-        Announcements
-      </TabsContent>
-      <TabsContent value="team">
-        {/* <Team sportData={sportData} /> */}
-        Team
-      </TabsContent>
-      <TabsContent value="schedule">
-        {/* <Schedule sportData={sportData} /> */}
-        Schedule
-      </TabsContent>
-    </Tabs>
   );
 }
