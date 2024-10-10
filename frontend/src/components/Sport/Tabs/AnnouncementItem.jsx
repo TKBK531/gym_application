@@ -8,10 +8,10 @@ import {
 } from "../../ui/card";
 import { Button } from "../../ui/button";
 import { Badge } from "../../ui/badge";
-import { Edit, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
 import PropTypes from "prop-types";
 
-function AnnouncementItem({ announcement, onEdit, onDelete }) {
+function AnnouncementItem({ announcement, onDelete }) {
   return (
     <Card className="mb-4 hover:shadow-lg transition-shadow duration-300">
       {/* {console.log(announcement)} */}
@@ -38,13 +38,13 @@ function AnnouncementItem({ announcement, onEdit, onDelete }) {
         </div> */}
       </CardContent>
       <CardFooter className="flex justify-end space-x-2">
-        <Button
+        {/* <Button
           variant="outline"
           size="sm"
           onClick={() => onEdit(announcement)}
         >
           <Edit className="mr-2 h-4 w-4" /> Edit
-        </Button>
+        </Button> */}
         <Button
           variant="destructive"
           size="sm"
@@ -66,7 +66,6 @@ AnnouncementItem.propTypes = {
     sport_name: PropTypes.string,
     createdAt: PropTypes.string,
   }).isRequired,
-  onEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
 };
 

@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import PropTypes from "prop-types";
 import api from "../../../api";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
@@ -24,14 +26,13 @@ const Announcements = ({ sportId }) => {
     description: "",
     sport: sportId,
   });
-  // eslint-disable-next-line no-unused-vars
-  const [editingId, setEditingId] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
   const userData = JSON.parse(localStorage.getItem("userData"));
 
   useEffect(() => {
     fetchAnnouncements();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sportId]);
 
   const fetchAnnouncements = async () => {
@@ -41,53 +42,48 @@ const Announcements = ({ sportId }) => {
       setAnnouncements(data);
     } catch (error) {
       console.error("Error fetching announcements:", error);
+      toast.error("Error fetching announcements");
     }
   };
 
   const handleCreate = async () => {
-    console.log(newAnnouncement);
     try {
       const response = await api.post(`/sport/create-post/`, newAnnouncement);
-      console.log(response.data);
       if (response.data.status === "success") {
         setNewAnnouncement({
           title: "",
           content: "",
           description: "",
-          sport_name: "",
+          sport: sportId,
         });
         fetchAnnouncements();
         setIsDialogOpen(false);
+        toast.success("Announcement created successfully");
       }
     } catch (error) {
       console.error("Error creating announcement:", error);
+      toast.error("Error creating announcement");
     }
   };
 
-  const handleUpdate = async (id, updatedAnnouncement) => {
+  const handleDelete = async () => {
     try {
-      const response = await api.put(
-        `/sport/${sportId}/posts/${id}`,
-        updatedAnnouncement
-      );
-      if (response.data.success) {
-        setEditingId(null);
+      const response = await api.delete(`/sport/${deleteId}/delete-post/`);
+      if (response.status === 204) {
+        setIsDeleteDialogOpen(false);
+        setDeleteId(null);
         fetchAnnouncements();
-      }
-    } catch (error) {
-      console.error("Error updating announcement:", error);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      const response = await api.delete(`/sport/${sportId}/posts/${id}`);
-      if (response.data.success) {
-        fetchAnnouncements();
+        toast.success("Announcement deleted successfully");
       }
     } catch (error) {
       console.error("Error deleting announcement:", error);
+      toast.error("Error deleting announcement");
     }
+  };
+
+  const confirmDelete = (id) => {
+    setDeleteId(id);
+    setIsDeleteDialogOpen(true);
   };
 
   return (
@@ -161,24 +157,38 @@ const Announcements = ({ sportId }) => {
               <AnnouncementItem
                 key={announcement.id}
                 announcement={announcement}
-                onEdit={(updatedAnnouncement) => {
-                  setEditingId(announcement.id);
-                  handleUpdate(announcement.id, updatedAnnouncement);
-                }}
-                onDelete={() => handleDelete(announcement.id)}
+                onDelete={() => confirmDelete(announcement.id)}
               />
             ))}
           </div>
         ) : (
           <Alert>
             <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              There are no announcements yet. Click the &quot;Create
-              Announcement&quot; button to add one.
-            </AlertDescription>
+            <AlertDescription>There are no announcements yet.</AlertDescription>
           </Alert>
         )}
       </CardContent>
+
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Deletion</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <p>Are you sure you want to delete this announcement?</p>
+            <div className="flex justify-end space-x-2">
+              <Button onClick={() => setIsDeleteDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleDelete} className="bg-red-500 text-white">
+                Delete
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <ToastContainer />
     </Card>
   );
 };
