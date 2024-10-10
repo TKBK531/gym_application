@@ -406,7 +406,7 @@ class DeleteSportPostView(generics.DestroyAPIView):
     permission_classes = [IsAuthenticated]
 
     def destroy(self, request, *args, **kwargs):
-        post_id = self.request.data.get("post_id")
+        post_id = kwargs.get("pk")
         try:
             instance = Post.objects.get(id=post_id)
         except Post.DoesNotExist:
@@ -434,6 +434,37 @@ class DeleteSportPostView(generics.DestroyAPIView):
             "message": "Post deleted successfully",
         }
         return JsonResponse(resp, status=204)
+
+
+class GetAllSportPostsView(generics.ListAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = [AllowAny]
+
+    def list(self, request):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        posts_data = serializer.data
+
+        # Add sport name to each post's data
+        for post in posts_data:
+            sport_id = post.get("sport")
+            if sport_id:
+                try:
+                    sport = Sport.objects.get(id=sport_id)
+                    post["sport_name"] = sport.label
+                except Sport.DoesNotExist:
+                    post["sport_name"] = None
+            else:
+                post["sport_name"] = None
+
+        return JsonResponse(
+            {
+                "status": "success",
+                "data": posts_data,
+            },
+            safe=False,
+        )
 
 
 class CreateTeamView(generics.CreateAPIView):

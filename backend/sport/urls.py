@@ -10,6 +10,8 @@ from .views import (
     GetSportPostsView,
     CreateSportPostView,
     UpdateSportPostView,
+    DeleteSportPostView,
+    GetAllSportPostsView,
     CreateTeamView,
     TeamListView,
     SportTeamListView,
@@ -45,4 +47,10 @@ urlpatterns = [
     path("create-team/", CreateTeamView.as_view(), name="create-team"),
     path("all-teams/", TeamListView.as_view(), name="all-teams"),
     path("<int:pk>/teams/", SportTeamListView.as_view(), name="sport-teams"),
+    path(
+        "<int:pk>/delete-post/",
+        DeleteSportPostView.as_view(),
+        name="delete-sport-post",
+    ),
+    path("all-posts/", GetAllSportPostsView.as_view(), name="all-sport-posts"),
 ]
