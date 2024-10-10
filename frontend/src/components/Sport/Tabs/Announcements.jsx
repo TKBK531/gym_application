@@ -12,7 +12,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../../ui/dialog";
-import { PlusCircle } from "lucide-react";
+import { PlusCircle, AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "../../ui/alert";
 import AnnouncementItem from "./AnnouncementItem";
 
 const Announcements = ({ sportId }) => {
@@ -21,13 +22,16 @@ const Announcements = ({ sportId }) => {
     title: "",
     content: "",
     description: "",
-    sport_name: "",
+    sport: sportId,
   });
+  // eslint-disable-next-line no-unused-vars
   const [editingId, setEditingId] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const userData = JSON.parse(localStorage.getItem("userData"));
 
   useEffect(() => {
     fetchAnnouncements();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sportId]);
 
   const fetchAnnouncements = async () => {
@@ -41,12 +45,11 @@ const Announcements = ({ sportId }) => {
   };
 
   const handleCreate = async () => {
+    console.log(newAnnouncement);
     try {
-      const response = await api.post(
-        `/sport/${sportId}/posts/`,
-        newAnnouncement
-      );
-      if (response.data.success) {
+      const response = await api.post(`/sport/create-post/`, newAnnouncement);
+      console.log(response.data);
+      if (response.data.status === "success") {
         setNewAnnouncement({
           title: "",
           content: "",
@@ -91,81 +94,90 @@ const Announcements = ({ sportId }) => {
     <Card className="w-full max-w-4xl mx-auto">
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="text-2xl font-bold">Announcements</CardTitle>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <PlusCircle className="mr-2 h-4 w-4" /> Create Announcement
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Create New Announcement</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4 py-4">
-              <Input
-                type="text"
-                value={newAnnouncement.title}
-                onChange={(e) =>
-                  setNewAnnouncement({
-                    ...newAnnouncement,
-                    title: e.target.value,
-                  })
-                }
-                placeholder="Title"
-              />
-              <Textarea
-                value={newAnnouncement.content}
-                onChange={(e) =>
-                  setNewAnnouncement({
-                    ...newAnnouncement,
-                    content: e.target.value,
-                  })
-                }
-                placeholder="Content"
-              />
-              <Input
-                type="text"
-                value={newAnnouncement.description}
-                onChange={(e) =>
-                  setNewAnnouncement({
-                    ...newAnnouncement,
-                    description: e.target.value,
-                  })
-                }
-                placeholder="Description"
-              />
-              <Input
-                type="text"
-                value={newAnnouncement.sport_name}
-                onChange={(e) =>
-                  setNewAnnouncement({
-                    ...newAnnouncement,
-                    sport_name: e.target.value,
-                  })
-                }
-                placeholder="Sport Name"
-              />
-              <Button onClick={handleCreate} className="w-full">
-                Create Announcement
+        {userData.profile.user_type === "admin" && (
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <PlusCircle className="mr-2 h-4 w-4" /> Create Announcement
               </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Create New Announcement</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <Input
+                  type="text"
+                  value={newAnnouncement.title}
+                  onChange={(e) =>
+                    setNewAnnouncement({
+                      ...newAnnouncement,
+                      title: e.target.value,
+                    })
+                  }
+                  placeholder="Title"
+                />
+                <Input
+                  type="text"
+                  value={newAnnouncement.description}
+                  onChange={(e) =>
+                    setNewAnnouncement({
+                      ...newAnnouncement,
+                      description: e.target.value,
+                    })
+                  }
+                  placeholder="Description"
+                />
+                <Textarea
+                  value={newAnnouncement.content}
+                  onChange={(e) =>
+                    setNewAnnouncement({
+                      ...newAnnouncement,
+                      content: e.target.value,
+                    })
+                  }
+                  placeholder="Content"
+                />
+                <Button
+                  onClick={handleCreate}
+                  className="w-full"
+                  disabled={
+                    !newAnnouncement.title ||
+                    !newAnnouncement.description ||
+                    !newAnnouncement.content
+                  }
+                >
+                  Create Announcement
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        )}
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
-          {announcements.map((announcement) => (
-            <AnnouncementItem
-              key={announcement.id}
-              announcement={announcement}
-              onEdit={(updatedAnnouncement) => {
-                setEditingId(announcement.id);
-                handleUpdate(announcement.id, updatedAnnouncement);
-              }}
-              onDelete={() => handleDelete(announcement.id)}
-            />
-          ))}
-        </div>
+        {announcements.length > 0 ? (
+          <div className="space-y-4">
+            {announcements.map((announcement) => (
+              <AnnouncementItem
+                key={announcement.id}
+                announcement={announcement}
+                onEdit={(updatedAnnouncement) => {
+                  setEditingId(announcement.id);
+                  handleUpdate(announcement.id, updatedAnnouncement);
+                }}
+                onDelete={() => handleDelete(announcement.id)}
+              />
+            ))}
+          </div>
+        ) : (
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              There are no announcements yet. Click the &quot;Create
+              Announcement&quot; button to add one.
+            </AlertDescription>
+          </Alert>
+        )}
       </CardContent>
     </Card>
   );
