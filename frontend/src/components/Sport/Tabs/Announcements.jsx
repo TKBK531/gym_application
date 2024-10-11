@@ -90,7 +90,8 @@ const Announcements = ({ sportId }) => {
     <Card className="w-full max-w-4xl mx-auto">
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="text-2xl font-bold">Announcements</CardTitle>
-        {userData.profile.user_type === "admin" && (
+        {(userData.profile.user_type === "admin" ||
+          userData.profile.user_type === "staff") && (
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button>

@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-
+import api from "../../../api";
+import { toast } from "react-toastify";
 const Team = ({ sportId }) => {
   const [teams, setTeams] = useState([]);
   const [selectedTeam, setSelectedTeam] = useState(null);
@@ -12,15 +13,12 @@ const Team = ({ sportId }) => {
 
   const fetchTeams = async () => {
     try {
-      const response = await fetch(`/api/teams/${sportId}`);
-      const data = await response.json();
+      const response = await api.get(`/sport/${sportId}/teams/`);
+      const data = response.data.data;
       setTeams(data);
-      if (data.length > 0) {
-        setSelectedTeam(data[0].id);
-        fetchTeamMembers(data[0].id);
-      }
     } catch (error) {
       console.error("Error fetching teams:", error);
+      toast.error("Error fetching teams");
     }
   };
 

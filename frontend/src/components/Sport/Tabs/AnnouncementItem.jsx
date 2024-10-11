@@ -12,6 +12,7 @@ import { Trash } from "lucide-react";
 import PropTypes from "prop-types";
 
 function AnnouncementItem({ announcement, onDelete }) {
+  const userData = JSON.parse(localStorage.getItem("userData"));
   return (
     <Card className="mb-4 hover:shadow-lg transition-shadow duration-300">
       {/* {console.log(announcement)} */}
@@ -37,21 +38,18 @@ function AnnouncementItem({ announcement, onDelete }) {
           <span>{new Date(announcement.createdAt).toLocaleDateString()}</span>
         </div> */}
       </CardContent>
+
       <CardFooter className="flex justify-end space-x-2">
-        {/* <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onEdit(announcement)}
-        >
-          <Edit className="mr-2 h-4 w-4" /> Edit
-        </Button> */}
-        <Button
-          variant="destructive"
-          size="sm"
-          onClick={() => onDelete(announcement.id)}
-        >
-          <Trash className="mr-2 h-4 w-4" /> Delete
-        </Button>
+        {(userData.profile.user_type === "admin" ||
+          userData.profile.user_type === "staff") && (
+          <Button
+            variant="destructive"
+            size="sm"
+            onClick={() => onDelete(announcement.id)}
+          >
+            <Trash className="mr-2 h-4 w-4" /> Delete
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );
