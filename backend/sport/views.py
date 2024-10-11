@@ -476,6 +476,12 @@ class CreateTeamView(generics.CreateAPIView):
         sport_id = self.request.data.get("sport")
         sport = Sport.objects.get(id=sport_id)
         captain_id = self.request.data.get("captain")
+        team_name = self.request.data.get("name")
+
+        if Team.objects.filter(name=team_name, sport=sport).exists():
+            raise ValidationError(
+                "A team with this name already exists for this sport."
+            )
 
         if captain_id:
             try:
@@ -593,7 +599,7 @@ class DeleteTeamView(generics.DestroyAPIView):
     permission_classes = [IsAuthenticated]
 
     def destroy(self, request, *args, **kwargs):
-        team_id = self.request.data.get("team_id")
+        team_id = kwargs.get("pk")
         try:
             instance = Team.objects.get(id=team_id)
         except Team.DoesNotExist:
