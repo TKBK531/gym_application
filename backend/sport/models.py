@@ -58,7 +58,7 @@ class TeamMember(models.Model):
     def clean(self):
         user_profile = UserProfile.objects.get(user=self.user)
         if (
-            user_profile.user_type.label != "student"
+            user_profile.user_type.name != "student"
         ):  # Assuming 'Student' is the label for student user type
             raise ValidationError("Team members must be student users.")
 
