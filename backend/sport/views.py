@@ -13,6 +13,7 @@ from .serializers import (
     TeamMemberSerializer,
 )
 from django.http import JsonResponse
+from rest_framework.exceptions import NotFound
 
 
 # Create your views here.
@@ -757,3 +758,57 @@ class AddTeamMemberView(generics.CreateAPIView):
                 "message": "You are not authorized to perform this action",
             }
             return JsonResponse(resp)
+
+
+class GetTeamMembersView(generics.ListAPIView):
+    serializer_class = TeamMemberSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        team_id = self.kwargs.get("pk")
+        if not team_id:
+            raise NotFound("Team ID not provided.")
+        return TeamMember.objects.filter(team_id=team_id)
+
+    def list(self, request, *args, **kwargs):
+        try:
+            queryset = self.get_queryset()
+            serializer = self.get_serializer(queryset, many=True)
+            team_members_data = serializer.data
+
+            # Add user_name to each team member's data
+            for team_member in team_members_data:
+                user_id = team_member.get("user")
+                if user_id:
+                    try:
+                        user = User.objects.get(id=user_id)
+                        team_member["member_name"] = user.get_full_name()
+                    except User.DoesNotExist:
+                        team_member["member_name"] = None
+                else:
+                    team_member["member_name"] = None
+
+            return JsonResponse(
+                {
+                    "status": "success",
+                    "data": team_members_data,
+                },
+                safe=False,
+            )
+        except NotFound as e:
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": str(e),
+                },
+                status=404,
+            )
+        except Exception as e:
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": "An unexpected error occurred.",
+                    "details": str(e),
+                },
+                status=500,
+            )
