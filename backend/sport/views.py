@@ -17,6 +17,9 @@ from rest_framework.exceptions import NotFound
 
 
 # Create your views here.
+
+
+# Get all sports
 class SportListView(generics.ListAPIView):
     queryset = Sport.objects.all()
     serializer_class = SportSerializer
@@ -48,6 +51,7 @@ class SportListView(generics.ListAPIView):
         )
 
 
+# Get specific sport details
 class SportDetailView(generics.RetrieveAPIView):
     queryset = Sport.objects.all()
     serializer_class = SportSerializer
@@ -77,6 +81,7 @@ class SportDetailView(generics.RetrieveAPIView):
         )
 
 
+# Update in charge of a sport
 class UpdateInChargeView(generics.UpdateAPIView):
     queryset = Sport.objects.all()
     serializer_class = SportSerializer
@@ -142,6 +147,7 @@ class UpdateInChargeView(generics.UpdateAPIView):
             return JsonResponse(resp_data, status=403)
 
 
+# Get all sports in charge by a user
 class GetInChargeSportsView(generics.ListAPIView):
     serializer_class = SportSerializer
     permission_classes = [IsAuthenticated]
@@ -174,6 +180,7 @@ class GetInChargeSportsView(generics.ListAPIView):
             )
 
 
+# Add a sport
 class AddSportView(generics.CreateAPIView):
     queryset = Sport.objects.all()
     serializer_class = SportSerializer
@@ -208,6 +215,7 @@ class AddSportView(generics.CreateAPIView):
         return JsonResponse(resp, status=201)
 
 
+# Delete a sport
 class DeleteSportView(generics.DestroyAPIView):
     queryset = Sport.objects.all()
     permission_classes = [IsAuthenticated]  # Or a custom permission
@@ -243,6 +251,7 @@ class DeleteSportView(generics.DestroyAPIView):
         return JsonResponse(resp, status=204)
 
 
+# Update sport image
 class UpdateSportImageView(generics.UpdateAPIView):
     queryset = Sport.objects.all()
     serializer_class = SportSerializer
@@ -283,6 +292,7 @@ class UpdateSportImageView(generics.UpdateAPIView):
         return JsonResponse(resp)
 
 
+# Create a sport post
 class CreateSportPostView(generics.CreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
@@ -320,6 +330,7 @@ class CreateSportPostView(generics.CreateAPIView):
             return JsonResponse(resp, status=403)
 
 
+# Get all posts for a sport
 class GetSportPostsView(generics.ListAPIView):
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated]
@@ -354,6 +365,7 @@ class GetSportPostsView(generics.ListAPIView):
         )
 
 
+# Update a sport post
 class UpdateSportPostView(generics.UpdateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
@@ -407,6 +419,7 @@ class UpdateSportPostView(generics.UpdateAPIView):
         return JsonResponse(resp)
 
 
+# Delete a sport post
 class DeleteSportPostView(generics.DestroyAPIView):
     queryset = Post.objects.all()
     permission_classes = [IsAuthenticated]
@@ -442,6 +455,7 @@ class DeleteSportPostView(generics.DestroyAPIView):
         return JsonResponse(resp, status=204)
 
 
+# Get all sport posts
 class GetAllSportPostsView(generics.ListAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
@@ -473,6 +487,7 @@ class GetAllSportPostsView(generics.ListAPIView):
         )
 
 
+# Get specific sport post details
 class CreateTeamView(generics.CreateAPIView):
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
@@ -540,6 +555,7 @@ class CreateTeamView(generics.CreateAPIView):
             return JsonResponse(resp)
 
 
+# Update a team
 class UpdateTeamView(generics.UpdateAPIView):
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
@@ -600,6 +616,7 @@ class UpdateTeamView(generics.UpdateAPIView):
         return JsonResponse(resp)
 
 
+# Delete a team
 class DeleteTeamView(generics.DestroyAPIView):
     queryset = Team.objects.all()
     permission_classes = [IsAuthenticated]
@@ -635,6 +652,7 @@ class DeleteTeamView(generics.DestroyAPIView):
         return JsonResponse(resp, status=204)
 
 
+# Get all teams
 class TeamListView(generics.ListAPIView):
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
@@ -666,6 +684,7 @@ class TeamListView(generics.ListAPIView):
         )
 
 
+# Get specific team details
 class SportTeamListView(generics.ListAPIView):
     serializer_class = TeamSerializer
     permission_classes = [IsAuthenticated]
@@ -700,6 +719,7 @@ class SportTeamListView(generics.ListAPIView):
         )
 
 
+# Add a team member
 class AddTeamMemberView(generics.CreateAPIView):
 
     queryset = Team.objects.all()
@@ -760,6 +780,7 @@ class AddTeamMemberView(generics.CreateAPIView):
             return JsonResponse(resp)
 
 
+# Get all team members
 class GetTeamMembersView(generics.ListAPIView):
     serializer_class = TeamMemberSerializer
     permission_classes = [IsAuthenticated]
