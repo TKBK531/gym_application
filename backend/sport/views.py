@@ -797,17 +797,28 @@ class GetTeamMembersView(generics.ListAPIView):
             serializer = self.get_serializer(queryset, many=True)
             team_members_data = serializer.data
 
-            # Add user_name to each team member's data
+            # Add member_name and profile_picture to each team member's data
             for team_member in team_members_data:
                 user_id = team_member.get("user")
                 if user_id:
                     try:
                         user = User.objects.get(id=user_id)
+                        user_profile = UserProfile.objects.get(user_id=user_id)
                         team_member["member_name"] = user.get_full_name()
+                        team_member["profile_picture"] = (
+                            user_profile.profile_picture.url
+                            if user_profile.profile_picture
+                            else None
+                        )
                     except User.DoesNotExist:
                         team_member["member_name"] = None
+                        team_member["profile_picture"] = None
+                    except UserProfile.DoesNotExist:
+                        team_member["member_name"] = user.get_full_name()
+                        team_member["profile_picture"] = None
                 else:
                     team_member["member_name"] = None
+                    team_member["profile_picture"] = None
 
             return JsonResponse(
                 {
