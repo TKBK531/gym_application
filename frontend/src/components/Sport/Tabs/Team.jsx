@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
   Select,
@@ -44,6 +44,7 @@ function TeamSelector({ sportId }) {
   const fetchTeamMembers = async (teamId) => {
     try {
       const response = await api.get(`sport/${teamId}/get-team-members/`);
+      console.log(response.data.data);
       setTeamMembers(response.data.data);
     } catch (error) {
       console.error("Error fetching team members:", error);
@@ -73,19 +74,23 @@ function TeamSelector({ sportId }) {
   };
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold">Team</h2>
+    <div className="space-y-6 p-6 bg-white shadow-md rounded-lg">
+      <h2 className="text-2xl font-bold text-gray-800">Team</h2>
       <div className="team-dropdown">
         <Select
           onValueChange={handleTeamChange}
           value={selectedTeam || undefined}
         >
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="w-full border border-gray-300 rounded-md shadow-sm p-2">
             <SelectValue placeholder="Select a team" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-white border border-gray-300 rounded-md shadow-lg">
             {teams.map((team) => (
-              <SelectItem key={team.id} value={team.id.toString()}>
+              <SelectItem
+                key={team.id}
+                value={team.id.toString()}
+                className="p-2 hover:bg-gray-100"
+              >
                 {team.name}
               </SelectItem>
             ))}
@@ -93,38 +98,49 @@ function TeamSelector({ sportId }) {
         </Select>
       </div>
       {selectedTeam && captain && (
-        <div className="captain-info">
-          <h3 className="text-xl font-semibold mb-2">Team Captain</h3>
-          <p>
-            {captain.name} (ID: {captain.id})
-          </p>
+        <div className="captain-info bg-gray-100 p-4 rounded-md shadow-sm">
+          <h3 className="text-xl font-semibold mb-2 text-gray-700">
+            Team Captain
+          </h3>
+          <p className="text-gray-600">{captain.name}</p>
         </div>
       )}
       {selectedTeam && teamMembers.length > 0 && (
         <div className="team-members">
-          <h3 className="text-xl font-semibold mb-2">Team Members</h3>
-          <Table>
-            <TableHeader>
+          <h3 className="text-xl font-semibold mb-2 text-gray-700">
+            Team Members
+          </h3>
+          <Table className="min-w-full bg-white border border-gray-200 rounded-md shadow-sm">
+            <TableHeader className="bg-gray-50">
               <TableRow>
-                <TableHead>Profile Picture</TableHead>
-                <TableHead>Name</TableHead>
+                <TableHead className="p-2 text-left text-gray-600">
+                  Profile Picture
+                </TableHead>
+                <TableHead className="p-2 text-left text-gray-600">
+                  Name
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {teamMembers.map((member) => (
-                <TableRow key={member.user}>
-                  <TableCell>
-                    <Avatar>
+                <TableRow key={member.user} className="hover:bg-gray-50">
+                  <TableCell className="p-2">
+                    <Avatar className="w-10 h-10">
                       <AvatarImage
-                        src={member.profile_picture}
+                        src={`${import.meta.env.VITE_API_URL}${
+                          member.profile_picture
+                        }`}
                         alt={member.member_name}
+                        className="rounded-full"
                       />
-                      <AvatarFallback>
+                      <AvatarFallback className="bg-gray-200 text-gray-600">
                         {member.member_name.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
                   </TableCell>
-                  <TableCell>{member.member_name}</TableCell>
+                  <TableCell className="p-2 text-gray-700">
+                    {member.member_name}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
