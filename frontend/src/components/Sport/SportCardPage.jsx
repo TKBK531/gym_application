@@ -16,6 +16,8 @@ import api from "../../api";
 import LoadingSkeleton from "./LoadingSkeleton";
 import ErrorAlert from "./ErrorAlert";
 import SportTabs from "./SportTabs";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function SportCardPage() {
   const [sportData, setSportData] = useState(null);
@@ -101,7 +103,10 @@ export default function SportCardPage() {
   };
 
   const handleConfirmInCharge = async () => {
-    if (!selectedStaffMember) return;
+    if (!selectedStaffMember) {
+      toast.error("Please select a staff member.");
+      return;
+    }
 
     try {
       const req_data = {
@@ -122,11 +127,14 @@ export default function SportCardPage() {
         });
         setShowInChargeDialog(false);
         setSelectedStaffMember(null);
+        toast.success("In-charge assigned successfully.");
       } else {
         console.error("Error assigning in-charge:", response.data.message);
+        toast.error(`Error: ${response.data.message}`);
       }
     } catch (error) {
       console.error("Error assigning in-charge:", error);
+      toast.error("An unexpected error occurred. Please try again.");
     }
   };
 
@@ -278,6 +286,8 @@ export default function SportCardPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <ToastContainer />
     </Card>
   );
 }
