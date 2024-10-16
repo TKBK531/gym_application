@@ -30,7 +30,14 @@ class AddSportEvent(generics.CreateAPIView):
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(
+            {
+                "status": "success",
+                "message": "Add Sport event successfully.",
+                "data": serializer.data,
+            },
+            status=status.HTTP_200_OK,
+        )
 
 # Generic view to handle creating a musical show event
 class AddMusicalShowEvent(generics.CreateAPIView):
@@ -43,7 +50,14 @@ class AddMusicalShowEvent(generics.CreateAPIView):
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(
+            {
+                "status": "success",
+                "message": "Add musical show event successfully.",
+                "data": serializer.data,
+            },
+            status=status.HTTP_200_OK,
+        )
 
 # Generic view to handle creating other function events
 class AddOtherFunctionEvent(generics.CreateAPIView):
@@ -56,4 +70,11 @@ class AddOtherFunctionEvent(generics.CreateAPIView):
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(
+            {
+                "status": "success",
+                "message": "Add musical show event successfully.",
+                "data": serializer.data,
+            },
+            status=status.HTTP_200_OK,
+        )
