@@ -45,7 +45,11 @@ class AddSportEvent(generics.CreateAPIView):
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
             return Response(
-                {"status": "success", "message": "Sport event added.", "data": serializer.data},
+                {
+                    "status": "success", 
+                    "message": "Sport event added.", 
+                    "data": serializer.data
+                },
                 status=status.HTTP_200_OK,
             )
         except ValidationError as e:
