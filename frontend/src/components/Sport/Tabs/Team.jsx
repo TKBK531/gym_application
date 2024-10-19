@@ -16,15 +16,19 @@ import {
   TableRow,
 } from "../../ui/table";
 import { Avatar, AvatarImage, AvatarFallback } from "../../ui/avatar";
+import { Button } from "../../ui/button";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import api from "../../../api"; // Adjust this import based on your project structure
+// import GeneralPopup from "../GeneralPopup"; // Adjust this import based on your project structure
 
-function TeamSelector({ sportId }) {
+function Team({ sportId }) {
   const [teams, setTeams] = useState([]);
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [teamMembers, setTeamMembers] = useState([]);
   const [captain, setCaptain] = useState(null);
+  const [showAddTeamMembersDialog, setShowAddTeamMembersDialog] =
+    useState(false);
 
   useEffect(() => {
     fetchTeams();
@@ -70,6 +74,30 @@ function TeamSelector({ sportId }) {
     } else {
       setTeamMembers([]);
       setCaptain(null);
+    }
+  };
+
+  const handleAddTeamMembers = () => {
+    // setShowAddTeamMembersDialog(true);
+  };
+
+  const handleConfirmAddTeamMember = async (selectedStudent) => {
+    try {
+      const req_data = {
+        team: selectedTeam,
+        user: selectedStudent.id,
+      };
+      const response = await api.post(`/team/add-member/`, req_data);
+      if (response.data.status === "success") {
+        setTeamMembers([...teamMembers, selectedStudent]);
+        toast.success("Team member added successfully.");
+      } else {
+        console.error("Error adding team member:", response.data.message);
+        toast.error(`Error: ${response.data.message}`);
+      }
+    } catch (error) {
+      console.error("Error adding team member:", error);
+      toast.error("An unexpected error occurred. Please try again.");
     }
   };
 
@@ -145,6 +173,9 @@ function TeamSelector({ sportId }) {
               ))}
             </TableBody>
           </Table>
+          <Button onClick={handleAddTeamMembers} className="mt-4">
+            Add Team Members
+          </Button>
         </div>
       )}
       <ToastContainer position="bottom-right" />
@@ -152,8 +183,8 @@ function TeamSelector({ sportId }) {
   );
 }
 
-TeamSelector.propTypes = {
+Team.propTypes = {
   sportId: PropTypes.number.isRequired,
 };
 
-export default TeamSelector;
+export default Team;

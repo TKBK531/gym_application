@@ -466,6 +466,49 @@ class UserListView(generics.ListAPIView):
         )
 
 
+# -------------StudentUserListView-------------
+class GetStudentUsersView(generics.ListAPIView):
+    serializer_class = UserDataSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = PageNumberPagination
+
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return UserProfile.objects.filter(user_type__name="student")
+        else:
+            return UserProfile.objects.none()
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        if (
+            not request.user.groups.filter(name="admin").exists()
+            or not request.user.groups.filter(name="staff").exists()
+        ):
+            return Response(
+                {
+                    "status": "error",
+                    "message": "You do not have permission to perform this action.",
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(
+            {
+                "status": "success",
+                "message": "All student profiles retrieved successfully.",
+                "data": serializer.data,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
 # --------------------------------Update Views--------------------------------
 # -------------UserProfileUpdateView-------------
 class UserProfileUpdateView(generics.UpdateAPIView):
