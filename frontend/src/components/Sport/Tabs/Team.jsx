@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+
 import PropTypes from "prop-types";
 import {
   Select,
@@ -19,14 +20,15 @@ import { Avatar, AvatarImage, AvatarFallback } from "../../ui/avatar";
 import { Button } from "../../ui/button";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import api from "../../../api"; // Adjust this import based on your project structure
-// import GeneralPopup from "../GeneralPopup"; // Adjust this import based on your project structure
+import api from "@/api"; // Adjust this import based on your project structure
+import AddTeamMembersPopup from "../AddTeamMembersPopup"; // Make sure this path is correct
 
 function Team({ sportId }) {
   const [teams, setTeams] = useState([]);
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [teamMembers, setTeamMembers] = useState([]);
   const [captain, setCaptain] = useState(null);
+  const [students, setStudents] = useState([]);
   const [showAddTeamMembersDialog, setShowAddTeamMembersDialog] =
     useState(false);
 
@@ -77,26 +79,48 @@ function Team({ sportId }) {
     }
   };
 
-  const handleAddTeamMembers = () => {
-    // setShowAddTeamMembersDialog(true);
+  const handleAddTeamMembers = async () => {
+    try {
+      const response = await api.get(`/user/student-users/`);
+      setStudents(response.data.data);
+      setShowAddTeamMembersDialog(true);
+    } catch (error) {
+      console.error("Error fetching students:", error);
+      toast.error("Failed to fetch students. Please try again.");
+    }
   };
 
-  const handleConfirmAddTeamMember = async (selectedStudent) => {
+  const handleConfirmAddTeamMember = async (selectedStudentIds) => {
+    console.log("Selected student IDs:", selectedStudentIds);
     try {
-      const req_data = {
-        team: selectedTeam,
-        user: selectedStudent.id,
-      };
-      const response = await api.post(`/team/add-member/`, req_data);
-      if (response.data.status === "success") {
-        setTeamMembers([...teamMembers, selectedStudent]);
-        toast.success("Team member added successfully.");
-      } else {
-        console.error("Error adding team member:", response.data.message);
-        toast.error(`Error: ${response.data.message}`);
+      for (const studentId of selectedStudentIds) {
+        const req_data = {
+          team: selectedTeam,
+          user: studentId,
+        };
+        const response = await api.post(`/team/add-member/`, req_data);
+        if (response.data.status === "success") {
+          const newMember = students.find(
+            (student) => student.id === studentId
+          );
+          if (newMember) {
+            setTeamMembers((prev) => [
+              ...prev,
+              {
+                user: newMember.id,
+                member_name: newMember.name,
+                profile_picture: newMember.profile_picture,
+              },
+            ]);
+          }
+        } else {
+          console.error("Error adding team member:", response.data.message);
+          toast.error(`Error: ${response.data.message}`);
+        }
       }
+      toast.success("Team members added successfully.");
     } catch (error) {
-      console.error("Error adding team member:", error);
+      console.error("Error adding team members:", error);
       toast.error("An unexpected error occurred. Please try again.");
     }
   };
@@ -155,7 +179,7 @@ function Team({ sportId }) {
                   <TableCell className="p-2">
                     <Avatar className="w-10 h-10">
                       <AvatarImage
-                        src={`${import.meta.env.VITE_API_URL}${
+                        src={`${import.meta.env.VITE_REACT_APP_API_URL}${
                           member.profile_picture
                         }`}
                         alt={member.member_name}
@@ -178,6 +202,12 @@ function Team({ sportId }) {
           </Button>
         </div>
       )}
+      <AddTeamMembersPopup
+        isOpen={showAddTeamMembersDialog}
+        onClose={() => setShowAddTeamMembersDialog(false)}
+        onConfirm={handleConfirmAddTeamMember}
+        students={students}
+      />
       <ToastContainer position="bottom-right" />
     </div>
   );
