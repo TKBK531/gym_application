@@ -720,64 +720,140 @@ class SportTeamListView(generics.ListAPIView):
 
 
 # Add a team member
-class AddTeamMemberView(generics.CreateAPIView):
+# class AddTeamMemberView(generics.CreateAPIView):
 
+#     queryset = Team.objects.all()
+#     serializer_class = TeamMemberSerializer
+#     permission_classes = [IsAuthenticated]
+
+#     def perform_create(self, serializer):
+#         print("AddTeamMemberView")
+#         team_id = self.request.data.get("team")
+#         team = Team.objects.get(id=team_id)
+#         user_id = self.request.data.get("user")
+
+#         if TeamMember.objects.filter(team=team, user=user_id).exists():
+#             raise ValidationError("User is already a member of this team.")
+
+#         user_profile = UserProfile.objects.get(user_id=user_id)
+#         if user_profile.user_type.name != "student":
+#             raise ValidationError("Team members must be student users.")
+
+#         serializer.save(team=team)
+
+#     def create(self, request, *args, **kwargs):
+#         if request.user.groups.filter(name="staff").exists():
+#             serializer = self.get_serializer(data=request.data)
+#             serializer.is_valid(raise_exception=True)
+#             try:
+#                 self.perform_create(serializer)
+#             except ValidationError as e:
+#                 resp = {
+#                     "status": "error",
+#                     "message": e.message,
+#                 }
+#                 return JsonResponse(resp)
+#             except Team.DoesNotExist:
+#                 resp = {
+#                     "status": "error",
+#                     "message": "Team does not exist.",
+#                 }
+#                 return JsonResponse(resp)
+#             except UserProfile.DoesNotExist:
+#                 resp = {
+#                     "status": "error",
+#                     "message": "User profile does not exist.",
+#                 }
+#                 return JsonResponse(resp)
+
+#             resp = {
+#                 "status": "success",
+#                 "data": serializer.data,
+#                 "message": "Team member added successfully",
+#             }
+#             return JsonResponse(resp)
+#         else:
+#             resp = {
+#                 "status": "error",
+#                 "message": "You are not authorized to perform this action",
+#             }
+#             return JsonResponse(resp)
+
+
+class AddTeamMemberView(generics.CreateAPIView):
     queryset = Team.objects.all()
     serializer_class = TeamMemberSerializer
     permission_classes = [IsAuthenticated]
 
-    def perform_create(self, serializer):
-        print("AddTeamMemberView")
-        team_id = self.request.data.get("team")
-        team = Team.objects.get(id=team_id)
-        user_id = self.request.data.get("user")
-
+    def perform_create(self, serializer, team, user_id):
         if TeamMember.objects.filter(team=team, user=user_id).exists():
-            raise ValidationError("User is already a member of this team.")
+            raise ValidationError(f"User {user_id} is already a member of this team.")
 
         user_profile = UserProfile.objects.get(user_id=user_id)
         if user_profile.user_type.name != "student":
-            raise ValidationError("Team members must be student users.")
+            raise ValidationError(
+                f"User {user_id} is not a student and cannot be added to the team."
+            )
 
-        serializer.save(team=team)
+        serializer.save(team=team, user_id=user_id)
 
     def create(self, request, *args, **kwargs):
         if request.user.groups.filter(name="staff").exists():
-            serializer = self.get_serializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            try:
-                self.perform_create(serializer)
-            except ValidationError as e:
-                resp = {
-                    "status": "error",
-                    "message": e.message,
-                }
-                return JsonResponse(resp)
-            except Team.DoesNotExist:
-                resp = {
-                    "status": "error",
-                    "message": "Team does not exist.",
-                }
-                return JsonResponse(resp)
-            except UserProfile.DoesNotExist:
-                resp = {
-                    "status": "error",
-                    "message": "User profile does not exist.",
-                }
-                return JsonResponse(resp)
+            team_id = request.data.get("team")
+            user_ids = request.data.get("users", [])
 
-            resp = {
-                "status": "success",
-                "data": serializer.data,
-                "message": "Team member added successfully",
-            }
-            return JsonResponse(resp)
+            try:
+                team = Team.objects.get(id=team_id)
+            except Team.DoesNotExist:
+                return JsonResponse(
+                    {
+                        "status": "error",
+                        "message": "Team does not exist.",
+                    },
+                    status=400,
+                )
+
+            responses = []
+            for user_id in user_ids:
+                serializer = self.get_serializer(
+                    data={"team": team_id, "user": user_id}
+                )
+                serializer.is_valid(raise_exception=True)
+                try:
+                    self.perform_create(serializer, team, user_id)
+                    responses.append(
+                        {
+                            "status": "success",
+                            "user_id": user_id,
+                            "message": "Team member added successfully",
+                        }
+                    )
+                except ValidationError as e:
+                    responses.append(
+                        {
+                            "status": "error",
+                            "user_id": user_id,
+                            "message": str(e),
+                        }
+                    )
+                except UserProfile.DoesNotExist:
+                    responses.append(
+                        {
+                            "status": "error",
+                            "user_id": user_id,
+                            "message": "User profile does not exist.",
+                        }
+                    )
+
+            return JsonResponse(responses, safe=False)
         else:
-            resp = {
-                "status": "error",
-                "message": "You are not authorized to perform this action",
-            }
-            return JsonResponse(resp)
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": "You are not authorized to perform this action",
+                },
+                status=403,
+            )
 
 
 # Get all team members
