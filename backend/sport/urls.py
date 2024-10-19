@@ -17,6 +17,7 @@ from .views import (
     SportTeamListView,
     DeleteTeamView,
     AddTeamMemberView,
+    RemoveTeamMemberView,
     GetTeamMembersView,
 )
 
@@ -63,4 +64,5 @@ urlpatterns = [
         GetTeamMembersView.as_view(),
         name="get-team-members",
     ),
+    path("remove-member/", RemoveTeamMemberView.as_view(), name="remove-member"),
 ]

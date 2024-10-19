@@ -856,6 +856,48 @@ class AddTeamMemberView(generics.CreateAPIView):
             )
 
 
+# Remove Team members
+class RemoveTeamMemberView(generics.DestroyAPIView):
+    queryset = TeamMember.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def destroy(self, request, *args, **kwargs):
+        team_id = request.data.get("team")
+        user_id = request.data.get("user")
+
+        try:
+            team = Team.objects.get(id=team_id)
+        except Team.DoesNotExist:
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": "Team does not exist.",
+                },
+                status=400,
+            )
+
+        try:
+            team_member = TeamMember.objects.get(team=team, user=user_id)
+        except TeamMember.DoesNotExist:
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": "User is not a member of this team.",
+                },
+                status=400,
+            )
+
+        team_member.delete()
+
+        return JsonResponse(
+            {
+                "status": "success",
+                "message": "Team member removed successfully",
+            },
+            status=200,
+        )
+
+
 # Get all team members
 class GetTeamMembersView(generics.ListAPIView):
     serializer_class = TeamMemberSerializer
