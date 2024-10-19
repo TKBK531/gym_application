@@ -1,6 +1,7 @@
 from django.conf import settings
 from urllib.parse import urlencode
 from django.core.cache import cache
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.contrib.auth import login
@@ -40,6 +41,7 @@ from .models import (
     UniversityStudentUser,
     Province,
     City,
+    Faculty,
 )
 from .services import get_user_data
 
@@ -474,7 +476,9 @@ class GetStudentUsersView(generics.ListAPIView):
 
     def get_queryset(self):
         if self.request.user.is_superuser:
-            return UserProfile.objects.filter(user_type__name="student")
+            return UserProfile.objects.filter(user_type__name="student").select_related(
+                "user"
+            )
         else:
             return UserProfile.objects.none()
 
@@ -483,7 +487,7 @@ class GetStudentUsersView(generics.ListAPIView):
 
         if (
             not request.user.groups.filter(name="admin").exists()
-            or not request.user.groups.filter(name="staff").exists()
+            and not request.user.groups.filter(name="staff").exists()
         ):
             return Response(
                 {
@@ -496,17 +500,51 @@ class GetStudentUsersView(generics.ListAPIView):
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
+            student_profiles = serializer.data
+            resp_data = self.customize_response_data(student_profiles)
+            return self.get_paginated_response(resp_data)
 
         serializer = self.get_serializer(queryset, many=True)
+        student_profiles = serializer.data
+        resp_data = self.customize_response_data(student_profiles)
         return Response(
             {
                 "status": "success",
                 "message": "All student profiles retrieved successfully.",
-                "data": serializer.data,
+                "data": resp_data,
             },
             status=status.HTTP_200_OK,
         )
+
+    def customize_response_data(self, data):
+        resp_data = []
+        for student in data:
+            try:
+                user_profile = UserProfile.objects.select_related("user").get(
+                    id=student["id"]
+                )
+                university_student = UniversityStudentUser.objects.select_related(
+                    "faculty"
+                ).get(user=user_profile.user)
+                profile_picture_url = (
+                    user_profile.profile_picture.url
+                    if user_profile.profile_picture
+                    else None
+                )
+                resp_data.append(
+                    {
+                        "id": user_profile.user_id,
+                        "first_name": user_profile.user.first_name,
+                        "last_name": user_profile.user.last_name,
+                        "profile_picture": profile_picture_url,
+                        "reg_number": university_student.registration_number,
+                        "faculty": university_student.faculty.name,
+                    }
+                )
+            except ObjectDoesNotExist as e:
+                # Handle the case where related objects do not exist
+                print(f"Error: {e}")
+        return resp_data
 
 
 # --------------------------------Update Views--------------------------------
