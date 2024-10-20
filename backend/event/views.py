@@ -5,6 +5,7 @@ from rest_framework.exceptions import NotFound, ValidationError
 from django.core.exceptions import ObjectDoesNotExist
 from .models import Event, EventCategory
 from .serializers import EventSerializer
+from .serializers import EventSerializer, EventCategorySerializer
 
 # List all event categories with error handling
 class EventCategoryList(generics.ListAPIView):
@@ -17,6 +18,34 @@ class EventCategoryList(generics.ListAPIView):
         except Exception as e:
             return Response(
                 {"status": "error", "message": f"Failed to list categories: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+# Create a new category with error handling
+class CreateCategory(generics.CreateAPIView):
+    serializer_class = EventCategorySerializer
+
+    def create(self, request, *args, **kwargs):
+        try:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            return Response(
+                {
+                    "status": "success",
+                    "message": "Category created successfully.",
+                    "data": serializer.data,
+                },
+                status=status.HTTP_201_CREATED,
+            )
+        except ValidationError as e:
+            return Response(
+                {"status": "error", "message": str(e)}, 
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except Exception as e:
+            return Response(
+                {"status": "error", "message": f"Error creating category: {str(e)}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
