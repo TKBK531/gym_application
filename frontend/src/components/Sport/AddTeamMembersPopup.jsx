@@ -40,6 +40,7 @@ function AddTeamMembersPopup({ isOpen, onClose, onConfirm, students }) {
   };
 
   const handleConfirm = () => {
+    console.log("Selected student IDs:", selectedStudents);
     onConfirm(selectedStudents);
     onClose();
   };

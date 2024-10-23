@@ -91,34 +91,28 @@ function Team({ sportId }) {
   };
 
   const handleConfirmAddTeamMember = async (selectedStudentIds) => {
-    console.log("Selected student IDs:", selectedStudentIds);
     try {
-      for (const studentId of selectedStudentIds) {
-        const req_data = {
-          team: selectedTeam,
-          user: studentId,
-        };
-        const response = await api.post(`/team/add-member/`, req_data);
-        if (response.data.status === "success") {
-          const newMember = students.find(
-            (student) => student.id === studentId
+      const req_data = {
+        team: selectedTeam,
+        users: selectedStudentIds,
+      };
+      const response = await api.post(`/sport/add-team-member/`, req_data);
+      console.log("Response data:", response.data.status);
+
+      if (response.data.status === "success") {
+        try {
+          await fetchTeamMembers(selectedTeam);
+          toast.success("Team members added successfully.");
+        } catch (fetchError) {
+          console.error("Error fetching team members:", fetchError);
+          toast.error(
+            "Failed to fetch team members after adding. Please try again."
           );
-          if (newMember) {
-            setTeamMembers((prev) => [
-              ...prev,
-              {
-                user: newMember.id,
-                member_name: newMember.name,
-                profile_picture: newMember.profile_picture,
-              },
-            ]);
-          }
-        } else {
-          console.error("Error adding team member:", response.data.message);
-          toast.error(`Error: ${response.data.message}`);
         }
+      } else {
+        console.error("Error adding team member:", response.data.message);
+        toast.error(`Error: ${response.data.message}`);
       }
-      toast.success("Team members added successfully.");
     } catch (error) {
       console.error("Error adding team members:", error);
       toast.error("An unexpected error occurred. Please try again.");
