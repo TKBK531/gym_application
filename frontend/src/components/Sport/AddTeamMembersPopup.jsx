@@ -20,16 +20,15 @@ function AddTeamMembersPopup({ isOpen, onClose, onConfirm, students }) {
   const filteredStudents = students.filter((student) => {
     if (!student || typeof student !== "object") return false;
 
-    const fullName = `${student.first_name} ${student.last_name}`.toLowerCase();
+    const fullName = `${student.first_name || ""} ${
+      student.last_name || ""
+    }`.toLowerCase();
     const nameMatch = fullName.includes(searchTerm.toLowerCase());
-    const emailMatch = student.email
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const idMatch = student.national_id
+    const idMatch = (student.reg_number || "")
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
 
-    return nameMatch || emailMatch || idMatch;
+    return nameMatch || idMatch;
   });
 
   const handleStudentToggle = (studentId) => {
@@ -53,7 +52,7 @@ function AddTeamMembersPopup({ isOpen, onClose, onConfirm, students }) {
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <Input
-            placeholder="Search by name, email, or national ID"
+            placeholder="Search by name or registration number"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -70,19 +69,24 @@ function AddTeamMembersPopup({ isOpen, onClose, onConfirm, students }) {
                 />
                 <Avatar className="h-10 w-10">
                   <AvatarImage
-                    src={student.profile_picture || ""}
-                    alt={`${student.first_name} ${student.last_name}`}
+                    src={`${import.meta.env.VITE_API_URL}${
+                      student.profile_picture || ""
+                    }`}
+                    alt={`${student.first_name || ""} ${
+                      student.last_name || ""
+                    }`}
                   />
                   <AvatarFallback>
-                    {student.first_name.charAt(0)}
-                    {student.last_name.charAt(0)}
+                    {student.first_name ? student.first_name.charAt(0) : ""}
+                    {student.last_name ? student.last_name.charAt(0) : ""}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
-                  <p className="text-sm font-medium">{`${student.first_name} ${student.last_name}`}</p>
-                  <p className="text-sm text-gray-500">{student.email}</p>
+                  <p className="text-sm font-medium">{`${
+                    student.first_name || ""
+                  } ${student.last_name || ""}`}</p>
                   <p className="text-sm text-gray-500">
-                    National ID: {student.national_id}
+                    Registration Number: {student.reg_number || ""}
                   </p>
                 </div>
               </div>
@@ -104,16 +108,11 @@ AddTeamMembersPopup.propTypes = {
   students: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
-      first_name: PropTypes.string.isRequired,
-      last_name: PropTypes.string.isRequired,
-      email: PropTypes.string.isRequired,
-      national_id: PropTypes.string.isRequired,
+      first_name: PropTypes.string,
+      last_name: PropTypes.string,
+      reg_number: PropTypes.string,
       profile_picture: PropTypes.string,
-      date_of_birth: PropTypes.string,
-      user_type: PropTypes.number,
-      username: PropTypes.string,
-      city: PropTypes.number,
-      contact: PropTypes.string,
+      faculty: PropTypes.string,
     })
   ).isRequired,
 };

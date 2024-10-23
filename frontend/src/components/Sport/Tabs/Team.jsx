@@ -50,7 +50,7 @@ function Team({ sportId }) {
   const fetchTeamMembers = async (teamId) => {
     try {
       const response = await api.get(`sport/${teamId}/get-team-members/`);
-      console.log(response.data.data);
+      // console.log(response.data.data);
       setTeamMembers(response.data.data);
     } catch (error) {
       console.error("Error fetching team members:", error);
