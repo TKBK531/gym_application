@@ -6,8 +6,6 @@ import { DatePicker } from '@mui/x-date-pickers'
 import dayjs from 'dayjs';
 
 
-
-
 export default function Date() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [formattedDate, setFormattedDate] = useState('');
@@ -29,7 +27,7 @@ export default function Date() {
   return (
     <div className='flex flex-row-reverse '>
       <div className="mt-4  pr-2 text-lg w-4/5 text-right text-gray-700">
-        {formattedDate}
+        {/* {formattedDate} */}
       </div>
 
       <div className='flex-1 pt-1 '>

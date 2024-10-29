@@ -9,6 +9,8 @@ import {
     Tooltip,
     Paper,
   } from "@mui/material";
+import Date from "../Schedule/Date";
+import WeekPicker from './WeekPicker';
 
 function Schedule() {
 
@@ -108,13 +110,24 @@ function Schedule() {
       ];
 
   return (
-    <TableContainer component={Paper}  elevation={6} className="w-5/5"
+    <>
+      {/* DateSelecter */}
+      <div
+        className="date-picker-today-holder"
+        style={{ height: "6%" }}
+      >
+        <Date />
+      </div>
+
+      {/* ScheduleTable */}
+      <TableContainer component={Paper}  elevation={6} className="w-5/5"
             style={{
             maxHeight: 500, 
             overflowY: 'auto', 
             overflowX: 'auto', 
             padding: "5px"
-          }}>
+          }}
+          >
         <Table>
             <TableHead>
             <TableRow>
@@ -127,10 +140,10 @@ function Schedule() {
             </TableRow>
             </TableHead>
 
-            <TableBody>
+            <TableBody >
             {sports.map((sport, rowIndex) => (
                 <TableRow key={rowIndex} style={{ borderTop: "none" }}>
-                <TableCell style={{ padding: "6px" }}>{sport}</TableCell>
+                <TableCell style={{ padding: "6px" }}  className='text-xs'>{sport}</TableCell>
                 {timeSlots.map((timeSlot, colIndex) => {
                     const booking = getBookingInfo(sport, timeSlot);
                     const bookedBy = booking ? booking.bookedBy : null;
@@ -190,7 +203,9 @@ function Schedule() {
             ))}
             </TableBody>
         </Table>
-    </TableContainer>
+      </TableContainer>
+    </>
+    
   )
 }
 
