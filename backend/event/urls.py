@@ -1,17 +1,26 @@
+# from django.urls import path
+# from .views import (
+#     EventCategoryList, CreateCategory, UpdateCategory, DeleteCategory, 
+#     EventListByCategory, AddSportEvent, AddMusicalShowEvent, AddOtherFunctionEvent
+# )
+
+# urlpatterns = [
+#     path('categories/', EventCategoryList.as_view(), name='category-list'),
+#     path('categories/create/', CreateCategory.as_view(), name='create-category'),
+#     path('categories/<int:pk>/update/', UpdateCategory.as_view(), name='update-category'),
+#     path('categories/<int:pk>/delete/', DeleteCategory.as_view(), name='delete-category'),
+#     path('categories/<int:category_id>/events/', EventListByCategory.as_view(), name='events-by-category'),
+#     path('sport/', AddSportEvent.as_view(), name='add-sport-event'),
+#     path('musical/', AddMusicalShowEvent.as_view(), name='add-musical-show-event'),
+#     path('other/', AddOtherFunctionEvent.as_view(), name='add-other-function-event'),
+# ]
+
 from django.urls import path
-from .views import (
-    EventCategoryList, EventListByCategory,
-    AddSportEvent, AddMusicalShowEvent, AddOtherFunctionEvent,
-    UpdateEvent, DeleteEvent, CreateCategory  # Import new view
-)
+from .views import EventCreateAPIView, EventDetailAPIView, EventListAPIView
 
 urlpatterns = [
-    path('categories/', EventCategoryList.as_view(), name='category-list'),
-    path('categories/add/', CreateCategory.as_view(), name='create-category'),  # New endpoint
-    path('events/<int:category_id>/', EventListByCategory.as_view(), name='event-list-by-category'),
-    path('add/sport/', AddSportEvent.as_view(), name='add-sport-event'),
-    path('add/musical-show/', AddMusicalShowEvent.as_view(), name='add-musical-show-event'),
-    path('add/other-function/', AddOtherFunctionEvent.as_view(), name='add-other-function-event'),
-    path('event/update/<int:pk>/', UpdateEvent.as_view(), name='update-event'),
-    path('event/delete/<int:pk>/', DeleteEvent.as_view(), name='delete-event'),
+    path('create/', EventCreateAPIView.as_view(), name='event-create'),
+    path('eventList/', EventListAPIView.as_view(), name='event-list'),
+    path('singleEvent/<int:pk>/', EventDetailAPIView.as_view(), name='event-detail'),
 ]
+
