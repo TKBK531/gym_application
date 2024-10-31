@@ -266,3 +266,69 @@ class EventDetailAPIView(generics.RetrieveAPIView):
                 },
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+class EventUpdateAPIView(generics.UpdateAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+
+    def update(self, request, *args, **kwargs):
+        try:
+            # Try to retrieve the existing event
+            event = self.get_object()
+            
+            # Serialize the updated data
+            serializer = self.get_serializer(event, data=request.data, partial=True)  # `partial=True` allows partial updates (PATCH)
+            serializer.is_valid(raise_exception=True)
+            
+            # Save the updated event
+            serializer.save()
+            
+            # Return success response
+            return Response(
+                {"success": True, "message": "Event updated successfully", "data": serializer.data},
+                status=status.HTTP_200_OK
+            )
+        except Http404:
+            return Response(
+                {"success": False, "error": "Event not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Exception as e:
+            return Response(
+                {
+                    "success": False,
+                    "error": "An unexpected error occurred.",
+                    "details": str(e)
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+        
+class EventDeleteAPIView(generics.DestroyAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        try:
+            # Attempt to retrieve and delete the event
+            event = self.get_object()
+            event.delete()
+            
+            # Return success response
+            return Response(
+                {"success": True, "message": "Event deleted successfully."},
+                status=status.HTTP_204_NO_CONTENT
+            )
+        except Http404:
+            return Response(
+                {"success": False, "error": "Event not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Exception as e:
+            return Response(
+                {
+                    "success": False,
+                    "error": "An unexpected error occurred.",
+                    "details": str(e)
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
