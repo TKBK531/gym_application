@@ -2,10 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "../ui/dialog";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "../ui/command";
 import { ScrollArea } from "../ui/scroll-area";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 import { toast } from "react-toastify";
@@ -13,11 +11,12 @@ import api from "@/api"; // Adjust this import based on your project structure
 
 function CreateTeam({ sportId, onTeamCreated }) {
     const [isOpen, setIsOpen] = useState(false);
+    const [isCaptainSelectOpen, setIsCaptainSelectOpen] = useState(false);
     const [teamName, setTeamName] = useState('');
     const [selectedCaptain, setSelectedCaptain] = useState('');
     const [students, setStudents] = useState([]);
-    const [openCombobox, setOpenCombobox] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         if (isOpen) {
@@ -30,7 +29,13 @@ function CreateTeam({ sportId, onTeamCreated }) {
         try {
             const response = await api.get('/user/student-users/');
             console.log(response.data.data);
-            setStudents(response.data.data || []);
+            if (Array.isArray(response.data.data)) {
+                setStudents(response.data.data);
+            } else {
+                console.error("Unexpected data format:", response.data);
+                toast.error("Received unexpected data format from server.");
+                setStudents([]);
+            }
         } catch (error) {
             console.error("Error fetching students:", error);
             toast.error("Failed to fetch students. Please try again.");
@@ -68,6 +73,12 @@ function CreateTeam({ sportId, onTeamCreated }) {
         }
     };
 
+    const filteredStudents = students.filter(student =>
+        `${student.first_name} ${student.last_name} ${student.reg_number}`
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase())
+    );
+
     return (
         <>
             <Button onClick={() => setIsOpen(true)}>Create Team</Button>
@@ -87,58 +98,69 @@ function CreateTeam({ sportId, onTeamCreated }) {
                             />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
-                            <Popover open={openCombobox} onOpenChange={setOpenCombobox}>
-                                <PopoverTrigger asChild>
-                                    <Button
-                                        variant="outline"
-                                        role="combobox"
-                                        aria-expanded={openCombobox}
-                                        className="col-span-4 justify-between"
-                                        disabled={isLoading}
-                                    >
-                                        {selectedCaptain
-                                            ? students.find((student) => student.id.toString() === selectedCaptain)?.first_name || "Select team captain"
-                                            : "Select team captain"}
-                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                    </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-[400px] p-0">
-                                    <Command>
-                                        <CommandInput placeholder="Search captain..." />
-                                        <CommandEmpty>No captain found.</CommandEmpty>
-                                        <CommandGroup>
-                                            <ScrollArea className="h-[200px]">
-                                                {students.map((student) => (
-                                                    <CommandItem
-                                                        key={student.id}
-                                                        value={student.id.toString()}
-                                                        onSelect={(currentValue) => {
-                                                            setSelectedCaptain(currentValue === selectedCaptain ? "" : currentValue);
-                                                            setOpenCombobox(false);
-                                                        }}
-                                                    >
-                                                        <Check
-                                                            className={cn(
-                                                                "mr-2 h-4 w-4",
-                                                                selectedCaptain === student.id.toString() ? "opacity-100" : "opacity-0"
-                                                            )}
-                                                        />
-                                                        <Avatar className="h-6 w-6 mr-2">
-                                                            <AvatarImage src={student.profile_picture} alt={`${student.first_name} ${student.last_name}`} />
-                                                            <AvatarFallback>{student.first_name[0]}{student.last_name[0]}</AvatarFallback>
-                                                        </Avatar>
-                                                        {student.first_name} {student.last_name} ({student.reg_number})
-                                                    </CommandItem>
-                                                ))}
-                                            </ScrollArea>
-                                        </CommandGroup>
-                                    </Command>
-                                </PopoverContent>
-                            </Popover>
+                            <Button
+                                variant="outline"
+                                className="col-span-4 justify-between"
+                                onClick={() => setIsCaptainSelectOpen(true)}
+                            >
+                                {selectedCaptain
+                                    ? students.find((student) => student.id.toString() === selectedCaptain)?.first_name || "Select team captain"
+                                    : "Select team captain"}
+                            </Button>
                         </div>
                     </div>
                     <DialogFooter>
                         <Button onClick={handleCreateTeam}>Create Team</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={isCaptainSelectOpen} onOpenChange={setIsCaptainSelectOpen}>
+                <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                        <DialogTitle>Select Team Captain</DialogTitle>
+                    </DialogHeader>
+                    <div className="py-4">
+                        <Input
+                            placeholder="Search students..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="mb-4"
+                        />
+                        <ScrollArea className="h-[300px] w-full rounded-md border p-4">
+                            {isLoading ? (
+                                <div>Loading students...</div>
+                            ) : filteredStudents.length > 0 ? (
+                                filteredStudents.map((student) => (
+                                    <div
+                                        key={student.id}
+                                        className={cn(
+                                            "flex items-center space-x-2 rounded-md p-2 cursor-pointer hover:bg-accent",
+                                            selectedCaptain === student.id.toString() && "bg-accent"
+                                        )}
+                                        onClick={() => {
+                                            setSelectedCaptain(student.id.toString());
+                                            setIsCaptainSelectOpen(false);
+                                        }}
+                                    >
+                                        <Avatar className="h-6 w-6">
+                                            <AvatarImage src={student.profile_picture} alt={`${student.first_name} ${student.last_name}`} />
+                                            <AvatarFallback>{student.first_name[0]}{student.last_name[0]}</AvatarFallback>
+                                        </Avatar>
+                                        <span>{student.first_name} {student.last_name}</span>
+                                        <span className="text-sm text-muted-foreground">({student.reg_number})</span>
+                                        {selectedCaptain === student.id.toString() && (
+                                            <Check className="ml-auto h-4 w-4" />
+                                        )}
+                                    </div>
+                                ))
+                            ) : (
+                                <div>No students available</div>
+                            )}
+                        </ScrollArea>
+                    </div>
+                    <DialogFooter>
+                        <Button onClick={() => setIsCaptainSelectOpen(false)}>Close</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
