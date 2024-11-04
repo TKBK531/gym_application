@@ -394,7 +394,7 @@ function Team({ sportId }) {
                   <TableCell className="p-2">
                     <Avatar className="w-10 h-10">
                       <AvatarImage
-                        src={`${process.env.REACT_APP_API_URL}${member.profile_picture
+                        src={`${import.meta.env.VITE_API_URL}${member.profile_picture
                           }`}
                         alt={member.member_name}
                         className="rounded-full"
@@ -411,11 +411,11 @@ function Team({ sportId }) {
               ))}
             </TableBody>
           </Table>
-          <Button onClick={handleAddTeamMembers} className="mt-4">
-            Add Team Members
-          </Button>
         </div>
       )}
+      <Button onClick={handleAddTeamMembers} className="mt-4">
+        Add Team Members
+      </Button>
       <AddTeamMembersPopup
         isOpen={showAddTeamMembersDialog}
         onClose={() => setShowAddTeamMembersDialog(false)}

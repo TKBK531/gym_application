@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "../ui/dialog";
@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 import { toast } from "react-toastify";
 import api from "@/api"; // Adjust this import based on your project structure
+import PropTypes from "prop-types";
 
 function CreateTeam({ sportId, onTeamCreated }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -167,5 +168,10 @@ function CreateTeam({ sportId, onTeamCreated }) {
         </>
     );
 }
+
+CreateTeam.propTypes = {
+    sportId: PropTypes.number.isRequired,
+    onTeamCreated: PropTypes.func.isRequired
+};
 
 export default CreateTeam;
