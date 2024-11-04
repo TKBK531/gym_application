@@ -240,11 +240,10 @@ export default function SportCardPage() {
             {filteredStaffMembers.map((staff) => (
               <div
                 key={staff.id}
-                className={`p-2 cursor-pointer ${
-                  selectedStaffMember?.id === staff.id
-                    ? "bg-secondary-golden text-primary font-bold"
-                    : ""
-                }`}
+                className={`p-2 cursor-pointer ${selectedStaffMember?.id === staff.id
+                  ? "bg-secondary-golden text-primary font-bold"
+                  : ""
+                  }`}
                 onClick={() => handleSelectStaffMember(staff)}
               >
                 {staff.first_name} {staff.last_name}
