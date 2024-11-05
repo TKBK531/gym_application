@@ -10,21 +10,21 @@ const MemberStaff = () => {
     appointment: "",
     temporary: "",
     upf: "",
-    category: "",
+    household: "",
+    formType: "",
     membership: "",
     mobile: "",
     residence: "",
     address: "",
     email: "",
     totalPrice: "",
-    addImage: null,
   });
 
-  const [category, setCategory] = useState("");
+  const [household, setCategory] = useState("");
 
   const handleCategoryChange = (event) => {
     setCategory(event.target.value);
-    setFormData((prevData) => ({ ...prevData, category: event.target.value }));
+    setFormData((prevData) => ({ ...prevData, household: event.target.value }));
   };
 
   const handleChange = (event) => {
@@ -73,7 +73,7 @@ const MemberStaff = () => {
                     className={`${formStyles.formTextInput}`}
                     type="text"
                     name="name"
-                    placeholder="Acme Mfg. Co."
+                    placeholder="Enter full name"
                     value={formData.name}
                     onChange={handleChange}
                   />
@@ -87,7 +87,7 @@ const MemberStaff = () => {
                       className={`${formStyles.formTextInput}`}
                       type="text"
                       name="faculty"
-                      placeholder="Faculty of Science"
+                      placeholder="Enter faculty name"
                       value={formData.faculty}
                       onChange={handleChange}
                     />
@@ -100,7 +100,7 @@ const MemberStaff = () => {
                       className={`${formStyles.formTextInput}`}
                       type="text"
                       name="designation"
-                      placeholder="Professor"
+                      placeholder="Enter designation (e.g: Professor )"
                       value={formData.designation}
                       onChange={handleChange}
                     />
@@ -121,13 +121,13 @@ const MemberStaff = () => {
                   </div>
                   <div className="md:flex-1 md:pl-3">
                     <label className={`${formStyles.formLable}`}>
-                      Period of Appointment (if temporary)
+                      Temporary
                     </label>
                     <input
                       className={`${formStyles.formTextInput}`}
                       type="text"
                       name="temporary"
-                      placeholder="1 year"
+                      placeholder="Specify if temporary (Yes/No)"
                       value={formData.temporary}
                       onChange={handleChange}
                     />
@@ -139,19 +139,19 @@ const MemberStaff = () => {
                     className={`${formStyles.formTextInput}`}
                     type="text"
                     name="upf"
-                    placeholder="000 000"
+                    placeholder="Enter UPF number"
                     value={formData.upf}
                     onChange={handleChange}
                   />
                 </div>
                 <div className="mb-4">
-                  <label className={`${formStyles.formLable}`}>Category</label>
+                  <label className={`${formStyles.formLable}`}>Household Type</label>
                   <select
-                    value={category}
+                    value={household}
                     onChange={handleCategoryChange}
                     className={`${formStyles.formTextInput}`}
                   >
-                    <option value="">Select Category</option>
+                    <option value="">Select household type</option>
                     <option value="individual">Individual</option>
                     <option value="family">Family</option>
                   </select>
@@ -159,14 +159,14 @@ const MemberStaff = () => {
                 <div className="md:flex mb-4">
                   <div className="md:flex-1 md:pr-3">
                     <label className={`${formStyles.formLable}`}>
-                      Form Category
+                      Form Type
                     </label>
                     <input
                       className={`${formStyles.formTextInput}`}
                       type="text"
-                      name="category"
-                      placeholder="Auto filled"
-                      value={formData.category}
+                      name="formType"
+                      placeholder="Form type"
+                      value={formData.formType}
                       onChange={handleChange}
                     />
                   </div>
@@ -178,7 +178,7 @@ const MemberStaff = () => {
                       className={`${formStyles.formTextInput}`}
                       type="text"
                       name="membership"
-                      placeholder="Auto filled"
+                      placeholder="Membership type"
                       value={formData.membership}
                       onChange={handleChange}
                     />
@@ -200,7 +200,7 @@ const MemberStaff = () => {
                       className={`${formStyles.formTextInput}`}
                       type="tel"
                       name="mobile"
-                      placeholder="0771122333"
+                      placeholder="Enter mobile number"
                       value={formData.mobile}
                       onChange={handleChange}
                     />
@@ -213,7 +213,7 @@ const MemberStaff = () => {
                       className={`${formStyles.formTextInput}`}
                       type="tel"
                       name="residence"
-                      placeholder="0912233444"
+                      placeholder="Enter telephone number"
                       value={formData.residence}
                       onChange={handleChange}
                     />
@@ -225,7 +225,7 @@ const MemberStaff = () => {
                     className={`${formStyles.formTextInput}`}
                     type="text"
                     name="address"
-                    placeholder="425 Galaha Lane, Peradeniya"
+                    placeholder="Enter full address"
                     value={formData.address}
                     onChange={handleChange}
                   />
@@ -236,7 +236,7 @@ const MemberStaff = () => {
                     className={`${formStyles.formTextInput}`}
                     type="email"
                     name="email"
-                    placeholder="contact@acme.co"
+                    placeholder="Enter email address"
                     value={formData.email}
                     onChange={handleChange}
                   />
@@ -245,7 +245,7 @@ const MemberStaff = () => {
             </div>
 
             {/* Family Details */}
-            {category !== "individual" && <FamilyDetails />}
+            {formData.household !== "individual" && <FamilyDetails />}
 
             {/* Total Price */}
             <div className="py-5 md:flex">
@@ -261,25 +261,6 @@ const MemberStaff = () => {
                   value={formData.totalPrice}
                   onChange={handleChange}
                 />
-              </div>
-            </div>
-
-            {/* Image Upload */}
-            <div className="py-4 md:flex mb-6">
-              <div className="md:w-1/3">
-                <legend className="tracking-wide text-sm">
-                  Add Your Image
-                </legend>
-              </div>
-              <div className="md:flex-1 px-3 text-center">
-                <div className="bg-gold hover:bg-gold-dark text-cream mx-auto cursor-pointer relative">
-                  <input
-                    className={`${formStyles.formTextInput}`}
-                    type="file"
-                    name="addImage"
-                    onChange={handleChange}
-                  />
-                </div>
               </div>
             </div>
 

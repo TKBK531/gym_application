@@ -7,6 +7,8 @@ const MemberPostG = () => {
     id: "",
     dob: "",
     age: "",
+    formType: "",
+    membership: "",
     mobile: "",
     residence: "",
     address: "",
@@ -17,7 +19,6 @@ const MemberPostG = () => {
     commencement: "",
     completion: "",
     totalPrice: "",
-    addImage: null, // For the file input
   });
 
   const handleChange = (e) => {
@@ -37,6 +38,8 @@ const MemberPostG = () => {
       id: formData.id,
       dob: formData.dob,
       age: formData.age,
+      formType: formData.formType,
+      membership: formData.membership,
       mobile: formData.mobile,
       residence: formData.residence,
       address: formData.address,
@@ -80,7 +83,7 @@ const MemberPostG = () => {
                       name="name"
                       value={formData.name}
                       onChange={handleChange}
-                      placeholder="Acme Mfg. Co."
+                      placeholder="Enter full name"
                     />
                   </div>
                   <div className="mb-4">
@@ -93,7 +96,7 @@ const MemberPostG = () => {
                       name="id"
                       value={formData.id}
                       onChange={handleChange}
-                      placeholder="11111111111"
+                      placeholder="Enter NIC number"
                     />
                   </div>
                   <div className="flex flex-col md:flex-row mb-4">
@@ -107,7 +110,6 @@ const MemberPostG = () => {
                         name="dob"
                         value={formData.dob}
                         onChange={handleChange}
-                        placeholder="2000/01/01"
                       />
                     </div>
                     <div className="w-full md:w-1/2">
@@ -118,10 +120,39 @@ const MemberPostG = () => {
                         name="age"
                         value={formData.age}
                         onChange={handleChange}
-                        placeholder="25"
+                        placeholder="Enter age"
                       />
                     </div>
                   </div>
+
+                  <div className="md:flex mb-4">
+                  <div className="md:flex-1 md:pr-3">
+                    <label className={`${formStyles.formLable}`}>
+                      Form Type
+                    </label>
+                    <input
+                      className={`${formStyles.formTextInput}`}
+                      type="text"
+                      name="formType"
+                      placeholder="Form type"
+                      value={formData.formType}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="md:flex-1 md:pl-3">
+                    <label className={`${formStyles.formLable}`}>
+                      Membership Type
+                    </label>
+                    <input
+                      className={`${formStyles.formTextInput}`}
+                      type="text"
+                      name="membership"
+                      placeholder="Membership type"
+                      value={formData.membership}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
                 </div>
               </div>
 
@@ -141,7 +172,7 @@ const MemberPostG = () => {
                         name="mobile"
                         value={formData.mobile}
                         onChange={handleChange}
-                        placeholder="0771122333"
+                        placeholder="Enter mobile number"
                       />
                     </div>
                     <div className="w-full md:w-1/2">
@@ -154,7 +185,7 @@ const MemberPostG = () => {
                         name="residence"
                         value={formData.residence}
                         onChange={handleChange}
-                        placeholder="0912233444"
+                        placeholder="Enter telephone number"
                       />
                     </div>
                   </div>
@@ -166,7 +197,7 @@ const MemberPostG = () => {
                       name="address"
                       value={formData.address}
                       onChange={handleChange}
-                      placeholder="425 Galaha Lane, Peradeniya"
+                      placeholder="Enter full address"
                     />
                   </div>
                   <div className="mb-4">
@@ -177,7 +208,7 @@ const MemberPostG = () => {
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
-                      placeholder="contact@acme.co"
+                      placeholder="Enter email address"
                     />
                   </div>
                 </div>
@@ -200,7 +231,7 @@ const MemberPostG = () => {
                       name="pgInstituteName"
                       value={formData.pgInstituteName}
                       onChange={handleChange}
-                      placeholder="PGIS"
+                      placeholder="Enter postgraduate institute name"
                     />
                   </div>
                   <div className="flex flex-col md:flex-row mb-4">
@@ -214,7 +245,7 @@ const MemberPostG = () => {
                         name="registration"
                         value={formData.registration}
                         onChange={handleChange}
-                        placeholder="22222"
+                        placeholder="Enter registration number"
                       />
                     </div>
                     <div className="w-full md:w-1/2">
@@ -227,7 +258,7 @@ const MemberPostG = () => {
                         name="studentId"
                         value={formData.studentId}
                         onChange={handleChange}
-                        placeholder="22222"
+                        placeholder="Enter student ID"
                       />
                     </div>
                   </div>
@@ -274,24 +305,6 @@ const MemberPostG = () => {
                     onChange={handleChange}
                     placeholder="Auto filled"
                   />
-                </div>
-              </div>
-
-              <div className="py-4 flex flex-col md:flex-row mb-6">
-                <div className="w-full md:w-1/3">
-                  <legend className="tracking-wide text-sm">
-                    Add Your Image
-                  </legend>
-                </div>
-                <div className="w-full md:w-2/3 text-center md:text-left">
-                  <div className="button bg-gold hover:bg-gold-dark text-cream mx-auto cursor-pointer relative">
-                    <input
-                      className={`${formStyles.formTextInput}`}
-                      type="file"
-                      name="addImage"
-                      onChange={handleChange}
-                    />
-                  </div>
                 </div>
               </div>
 

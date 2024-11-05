@@ -8,14 +8,23 @@ const MemberOutside = () => {
     nic: "",
     dob: "",
     age: "",
-    category: "",
+    household: "",
+    formType: "",
+    membership: "",
     mobile: "",
     residence: "",
     address: "",
     email: "",
     totalPrice: "",
-    addImage: null,
   });
+
+
+  const [household, setCategory] = useState("");
+
+  const handleCategoryChange = (event) => {
+    setCategory(event.target.value);
+    setFormData((prevData) => ({ ...prevData, household: event.target.value }));
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -56,7 +65,7 @@ const MemberOutside = () => {
                     className={`${formStyles.formTextInput}`}
                     type="text"
                     name="name"
-                    placeholder="Acme Mfg. Co."
+                    placeholder="Enter full name"
                     value={formData.name}
                     onChange={handleInputChange}
                   />
@@ -69,7 +78,7 @@ const MemberOutside = () => {
                     className={`${formStyles.formTextInput}`}
                     type="text"
                     name="nic"
-                    placeholder="Enter NIC"
+                    placeholder="Enter NIC number"
                     value={formData.nic}
                     onChange={handleInputChange}
                   />
@@ -93,7 +102,7 @@ const MemberOutside = () => {
                       className={`${formStyles.formTextInput}`}
                       type="text"
                       name="age"
-                      placeholder="1 year"
+                      placeholder="Enter age"
                       value={formData.age}
                       onChange={handleInputChange}
                     />
@@ -101,18 +110,47 @@ const MemberOutside = () => {
                 </div>
 
                 <div className="mb-4">
-                  <label className={`${formStyles.formLable}`}>Category</label>
+                  <label className={`${formStyles.formLable}`}>Household Type</label>
                   <select
-                    name="category"
-                    value={formData.category}
-                    onChange={handleInputChange}
+                    name="household"
+                    value={formData.household}
+                    onChange={handleCategoryChange}
                     className={`${formStyles.formTextInput}`}
                   >
-                    <option value="">Select Category</option>
+                    <option value="">Select household type</option>
                     <option value="individual">Individual</option>
                     <option value="couple">Couple</option>
                     <option value="family">Family</option>
                   </select>
+                </div>
+
+                <div className="md:flex mb-4">
+                  <div className="md:flex-1 md:pr-3">
+                    <label className={`${formStyles.formLable}`}>
+                      Form Type
+                    </label>
+                    <input
+                      className={`${formStyles.formTextInput}`}
+                      type="text"
+                      name="formType"
+                      placeholder="Form type"
+                      value={formData.formType}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                  <div className="md:flex-1 md:pl-3">
+                    <label className={`${formStyles.formLable}`}>
+                      Membership Type
+                    </label>
+                    <input
+                      className={`${formStyles.formTextInput}`}
+                      type="text"
+                      name="membership"
+                      placeholder="Membership type"
+                      value={formData.membership}
+                      onChange={handleInputChange}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -129,7 +167,7 @@ const MemberOutside = () => {
                       className={`${formStyles.formTextInput}`}
                       type="tel"
                       name="mobile"
-                      placeholder="0771122333"
+                      placeholder="Enter mobile number"
                       value={formData.mobile}
                       onChange={handleInputChange}
                     />
@@ -142,7 +180,7 @@ const MemberOutside = () => {
                       className={`${formStyles.formTextInput}`}
                       type="tel"
                       name="residence"
-                      placeholder="0912233444"
+                      placeholder="Enter telephone number"
                       value={formData.residence}
                       onChange={handleInputChange}
                     />
@@ -154,7 +192,7 @@ const MemberOutside = () => {
                     className={`${formStyles.formTextInput}`}
                     type="text"
                     name="address"
-                    placeholder="425 Galaha Lane, Peradeniya"
+                    placeholder="Enter full address"
                     value={formData.address}
                     onChange={handleInputChange}
                   />
@@ -165,7 +203,7 @@ const MemberOutside = () => {
                     className={`${formStyles.formTextInput}`}
                     type="email"
                     name="email"
-                    placeholder="contact@acme.co"
+                    placeholder="Enter email address"
                     value={formData.email}
                     onChange={handleInputChange}
                   />
@@ -173,7 +211,8 @@ const MemberOutside = () => {
               </div>
             </div>
 
-            {formData.category !== "individual" && <FamilyDetails />}
+            {formData.household !== "individual" && <FamilyDetails />}
+            {/* {category !== "individual" && <FamilyDetails />} */}
 
             <div className="py-5 flex flex-col md:flex-row">
               <div className="md:w-1/3">
@@ -188,24 +227,6 @@ const MemberOutside = () => {
                   value={formData.totalPrice}
                   onChange={handleInputChange}
                 />
-              </div>
-            </div>
-
-            <div className="py-4 flex flex-col md:flex-row mb-6">
-              <div className="md:w-1/3">
-                <legend className="tracking-wide text-sm">
-                  Add Your Image
-                </legend>
-              </div>
-              <div className="md:flex-1 px-3 text-center">
-                <div className="button bg-gold hover:bg-gold-dark text-cream mx-auto cursor-pointer relative">
-                  <input
-                    className={`${formStyles.formTextInput}`}
-                    type="file"
-                    name="addImage"
-                    onChange={handleFileChange}
-                  />
-                </div>
               </div>
             </div>
 
