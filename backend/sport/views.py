@@ -739,20 +739,21 @@ class AddTeamMemberView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         if request.user.groups.filter(name="staff").exists():
             team_id = request.data.get("team")
-            user_ids = request.data.get("users", [])
+            user_ids = request.data.get("user", [])
 
             try:
                 team = Team.objects.get(id=team_id)
             except Team.DoesNotExist:
                 return JsonResponse(
                     {
-                        "status": "error",
+                        "status": "fail",
                         "message": "Team does not exist.",
                     },
                     status=400,
                 )
 
             responses = []
+            overall_status = "success"
             for user_id in user_ids:
                 serializer = self.get_serializer(
                     data={"team": team_id, "user": user_id}
@@ -770,31 +771,38 @@ class AddTeamMemberView(generics.CreateAPIView):
                 except ValidationError as e:
                     responses.append(
                         {
-                            "status": "error",
+                            "status": "fail",
                             "user_id": user_id,
                             "message": str(e),
                         }
                     )
+                    overall_status = "fail"
                 except UserProfile.DoesNotExist:
                     responses.append(
                         {
-                            "status": "error",
+                            "status": "fail",
                             "user_id": user_id,
                             "message": "User profile does not exist.",
                         }
                     )
+                    overall_status = "fail"
 
-            return JsonResponse(responses, safe=False)
+            return JsonResponse(
+                {
+                    "status": overall_status,
+                    "message": "Team members processed",
+                    "responses": responses,
+                },
+                safe=False,
+            )
         else:
             return JsonResponse(
                 {
-                    "status": "error",
+                    "status": "fail",
                     "message": "You are not authorized to perform this action",
                 },
                 status=403,
-            )
-
-
+            )       
 # Remove Team members
 class RemoveTeamMemberView(generics.DestroyAPIView):
     queryset = TeamMember.objects.all()
