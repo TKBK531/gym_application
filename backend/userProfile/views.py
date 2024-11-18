@@ -1,14 +1,12 @@
-from PIL import Image
-from io import BytesIO
-
 from django.conf import settings
 from urllib.parse import urlencode
 from django.core.cache import cache
-from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse
 from django.shortcuts import redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import login
 from django.contrib.auth.models import User, Group
+from sport.models import Sport
 
 from rest_framework import views, generics, status
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -43,6 +41,7 @@ from .models import (
     UniversityStudentUser,
     Province,
     City,
+    Faculty,
 )
 from .services import get_user_data
 
@@ -469,6 +468,85 @@ class UserListView(generics.ListAPIView):
         )
 
 
+# -------------StudentUserListView-------------
+class GetStudentUsersView(generics.ListAPIView):
+    serializer_class = UserDataSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = PageNumberPagination
+
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return UserProfile.objects.filter(user_type__name="student").select_related(
+                "user"
+            )
+        else:
+            return UserProfile.objects.none()
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        if (
+            not request.user.groups.filter(name="admin").exists()
+            and not request.user.groups.filter(name="staff").exists()
+        ):
+            return Response(
+                {
+                    "status": "error",
+                    "message": "You do not have permission to perform this action.",
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            student_profiles = serializer.data
+            resp_data = self.customize_response_data(student_profiles)
+            return self.get_paginated_response(resp_data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        student_profiles = serializer.data
+        resp_data = self.customize_response_data(student_profiles)
+        return Response(
+            {
+                "status": "success",
+                "message": "All student profiles retrieved successfully.",
+                "data": resp_data,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+    def customize_response_data(self, data):
+        resp_data = []
+        for student in data:
+            try:
+                user_profile = UserProfile.objects.select_related("user").get(
+                    id=student["id"]
+                )
+                university_student = UniversityStudentUser.objects.select_related(
+                    "faculty"
+                ).get(user=user_profile.user)
+                profile_picture_url = (
+                    user_profile.profile_picture.url
+                    if user_profile.profile_picture
+                    else None
+                )
+                resp_data.append(
+                    {
+                        "id": user_profile.user_id,
+                        "first_name": user_profile.user.first_name,
+                        "last_name": user_profile.user.last_name,
+                        "profile_picture": profile_picture_url,
+                        "reg_number": university_student.registration_number,
+                        "faculty": university_student.faculty.name,
+                    }
+                )
+            except ObjectDoesNotExist as e:
+                # Handle the case where related objects do not exist
+                print(f"Error: {e}")
+        return resp_data
+
+
 # --------------------------------Update Views--------------------------------
 # -------------UserProfileUpdateView-------------
 class UserProfileUpdateView(generics.UpdateAPIView):
@@ -538,6 +616,11 @@ class UserTypeUpdateView(generics.UpdateAPIView):
             group = Group.objects.get(name=user_type_name)
 
             try:
+                if user_profile.user_type.name == "staff" and user_type_name != "staff":
+                    Sport.objects.filter(in_charge=user_profile.user).update(
+                        in_charge=None
+                    )
+
                 user_profile.user_type = user_type
                 user_profile.save()
                 user_profile.user.groups.add(group)
