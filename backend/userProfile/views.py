@@ -467,6 +467,31 @@ class UserListView(generics.ListAPIView):
             status=status.HTTP_200_OK,
         )
 
+class TotalUserCountView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            total_users = User.objects.count()
+            return Response(
+                {
+                    "status": "success",
+                    "message": "Total number of users retrieved successfully.",
+                    "data": {
+                        "total_users": total_users,
+                    },
+                },
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
+            return Response(
+                {
+                    "status": "error",
+                    "message": "An error occurred while retrieving the total number of users.",
+                    "error": str(e),
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
 
 # -------------StudentUserListView-------------
 class GetStudentUsersView(generics.ListAPIView):

@@ -15,6 +15,7 @@ from .views import (
     ProvinceListView,
     CityListView,
     UserDeleteView,
+    TotalUserCountView,
 )
 
 urlpatterns = [
@@ -49,4 +50,5 @@ urlpatterns = [
     path("provinces/", ProvinceListView.as_view(), name="provinces"),
     path("cities/", CityListView.as_view(), name="cities"),
     path("profile/delete/", UserDeleteView.as_view(), name="profile-delete"),
+    path('total-users/', TotalUserCountView.as_view(), name='total-users'),
 ]

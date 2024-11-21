@@ -12,7 +12,7 @@ const InfoCard = ({ title, value, description }) => {
 
 InfoCard.propTypes = {
   title: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.number.isRequired,
   description: PropTypes.string.isRequired,
 };
 

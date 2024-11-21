@@ -4,6 +4,7 @@ import { FaUserPlus, FaShoppingCart, FaUserEdit } from "react-icons/fa"; // Impo
 
 const Home = () => {
   const userData = JSON.parse(localStorage.getItem("userData"));
+  const numberOfUsers = 1234;
 
   return (
     <div className="p-4 bg-gray-100 min-h-screen">
@@ -20,7 +21,7 @@ const Home = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           <InfoCard
             title="Total Users"
-            value="1,234"
+            value={numberOfUsers}
             description="Number of active users"
           />
           <InfoCard
