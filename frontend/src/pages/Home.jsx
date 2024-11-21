@@ -1,10 +1,30 @@
+import { useState, useEffect } from "react";
 import InfoCard from "../components/Dashboard/InfoCard";
 import DonutChart from "../components/Charts/DonutChart";
-import { FaUserPlus, FaShoppingCart, FaUserEdit } from "react-icons/fa"; // Import icons
+import { FaUserPlus, FaShoppingCart, FaUserEdit } from "react-icons/fa";
+import api from "@/api";
 
 const Home = () => {
   const userData = JSON.parse(localStorage.getItem("userData"));
-  const numberOfUsers = 1234;
+  const [numberOfUsers, setNumberOfUsers] = useState(0);
+
+  useEffect(() => {
+    const fetchTotalUsers = async () => {
+      try {
+        const response = await api.get("/user/total-users/");
+        if (response.data.status === "success") {
+          setNumberOfUsers(response.data.data.total_users);
+          console.log("Total users:", response.data.data.total_users);
+        } else {
+          console.error("Failed to fetch total users:", response.data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching total users:", error);
+      }
+    };
+
+    fetchTotalUsers();
+  }, [userData]);
 
   return (
     <div className="p-4 bg-gray-100 min-h-screen">
@@ -26,17 +46,17 @@ const Home = () => {
           />
           <InfoCard
             title="Revenue"
-            value="$12,345"
+            value={12345}
             description="Total revenue this month"
           />
           <InfoCard
             title="New Signups"
-            value="123"
+            value={2154}
             description="New users signed up this week"
           />
           <InfoCard
             title="New Signups"
-            value="123"
+            value={3255}
             description="New users signed up this week"
           />
         </div>
