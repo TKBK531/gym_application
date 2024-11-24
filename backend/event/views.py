@@ -230,8 +230,8 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from django.http import JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
-from .models import SportEvent, MusicalShowEvent, OtherFunctionEvent
-from .serializers import SportEventSerializer, MusicalShowEventSerializer, OtherFunctionEventSerializer
+from .models import Event, SportEvent, MusicalShowEvent, OtherFunctionEvent
+from .serializers import EventSerializer, SportEventSerializer, MusicalShowEventSerializer, OtherFunctionEventSerializer
 
 # Helper function for consistent JSON responses
 def create_json_response(message, data=None, status_code=status.HTTP_200_OK):
@@ -242,6 +242,8 @@ def create_json_response(message, data=None, status_code=status.HTTP_200_OK):
     }, status=status_code)
 
 class AddEventView(generics.CreateAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
     def post(self, request, *args, **kwargs):
         event_type = request.data.get('event_type')
         if not event_type:

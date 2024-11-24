@@ -20,8 +20,14 @@
 #         fields = ['id', 'category', 'name', 'description', 'date']
 
 # serializers.py
+from asyncio import Event
 from rest_framework import serializers
 from .models import SportEvent, MusicalShowEvent, OtherFunctionEvent
+
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = '__all__'
 
 class SportEventSerializer(serializers.ModelSerializer):
     class Meta:

@@ -55,7 +55,7 @@ urlpatterns = [
     path('sport/add/', views.AddSportEventView.as_view(), name='add_sport_event'),
     path('musical_show/add/', views.AddMusicalShowEventView.as_view(), name='add_musical_show_event'),
     path('other_function/add/', views.AddOtherFunctionEventView.as_view(), name='add_other_function_event'),
-
+    path('add-event/', views.AddEventView.as_view(), name='add-event'),
     # List and detail views
     path('<str:event_type>/', views.EventListView.as_view(), name='event_list'),
     path('<str:event_type>/<int:pk>/', views.EventDetailView.as_view(), name='event_detail'),
