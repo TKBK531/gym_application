@@ -103,3 +103,10 @@ class OtherFunctionEventSerializer(serializers.ModelSerializer):
             event=event, **validated_data
         )
         return other_function_event
+
+
+class CombinedEventSerializer(serializers.Serializer):
+    event = EventSerializer()
+    sport_event = SportEventSerializer(many=True, read_only=True)
+    musical_show_event = MusicalShowEventSerializer(many=True, read_only=True)
+    other_function_event = OtherFunctionEventSerializer(many=True, read_only=True)

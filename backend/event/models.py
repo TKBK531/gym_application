@@ -43,7 +43,7 @@ class MusicalShowEvent(models.Model):
     )
 
     def __str__(self):
-        return f"{self.event.name} - {self.genre}"
+        return f"{self.event.name}"
 
 
 class OtherFunctionEvent(models.Model):
@@ -52,4 +52,4 @@ class OtherFunctionEvent(models.Model):
     )
 
     def __str__(self):
-        return f"{self.event.name} - {self.function_type}"
+        return f"{self.event.name}"

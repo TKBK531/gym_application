@@ -802,7 +802,7 @@ class AddTeamMemberView(generics.CreateAPIView):
                     "message": "You are not authorized to perform this action",
                 },
                 status=403,
-            )       
+            )
 
 
 # Remove Team members
