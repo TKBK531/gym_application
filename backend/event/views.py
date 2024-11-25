@@ -3,7 +3,9 @@ from django.http import JsonResponse
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
+
+from userProfile.utils import is_admin_user, is_staff_user
 
 from .models import Event, SportEvent, MusicalShowEvent, OtherFunctionEvent
 from .serializers import (
@@ -104,3 +106,89 @@ class ListAllEventsView(generics.ListAPIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
+
+class ListSportEventsView(generics.ListAPIView):
+    queryset = SportEvent.objects.all()
+    serializer_class = SportEventSerializer
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            sport_events = SportEvent.objects.all()
+            data = SportEventSerializer(sport_events, many=True).data
+            return JsonResponse(
+                {"status": "success", "data": data},
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
+            return JsonResponse(
+                {"status": "error", "message": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+
+class ListMusicalShowEventsView(generics.ListAPIView):
+    queryset = MusicalShowEvent.objects.all()
+    serializer_class = MusicalShowEventSerializer
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            musical_show_events = MusicalShowEvent.objects.all()
+            data = MusicalShowEventSerializer(musical_show_events, many=True).data
+            return JsonResponse(
+                {"status": "success", "data": data},
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
+            return JsonResponse(
+                {"status": "error", "message": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+
+class ListOtherFunctionEventsView(generics.ListAPIView):
+    queryset = OtherFunctionEvent.objects.all()
+    serializer_class = OtherFunctionEventSerializer
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            other_function_events = OtherFunctionEvent.objects.all()
+            data = OtherFunctionEventSerializer(other_function_events, many=True).data
+            return JsonResponse(
+                {"status": "success", "data": data},
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
+            return JsonResponse(
+                {"status": "error", "message": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+
+class DeleteEventView(generics.DestroyAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, *args, **kwargs):
+        try:
+            user_id = request.user.id
+            if not (is_admin_user(user_id) or is_staff_user(user_id)):
+                return JsonResponse(
+                    {"status": "error", "message": "Permission denied"},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
+
+            event = self.get_object()
+            event.delete()
+            return JsonResponse(
+                {"status": "success", "message": "Event deleted successfully"},
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
+            return JsonResponse(
+                {"status": "error", "message": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
