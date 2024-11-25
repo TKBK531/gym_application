@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
@@ -29,5 +30,33 @@ class CreateEventView(generics.GenericAPIView):
 
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            return_resp = {
+                "status": "success",
+                "message": f"{event_type} event created successfully",
+                "data": serializer.data,
+            }
+
+            return JsonResponse(
+                return_resp,
+                status=status.HTTP_201_CREATED,
+            )
+
+        return_resp = {
+            "status": "fail",
+            "message": f"Failed to create {event_type} event",
+            "data": serializer.errors,
+        }
+
+        return Response(
+            return_resp,
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+
+class ListAllEventsView(generics.ListAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)

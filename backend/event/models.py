@@ -34,7 +34,7 @@ class SportEvent(models.Model):
     sport = models.ForeignKey(Sport, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.event.name} - {self.sport_type}"
+        return f"{self.event.name} - {self.sport.label}"
 
 
 class MusicalShowEvent(models.Model):
