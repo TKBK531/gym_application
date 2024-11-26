@@ -68,9 +68,8 @@ const Items = () => {
       {/* Rest of your component */}
       <div className="flex mb-4 ">
         <button
-          className={`px-4 py-2 ${
-            activeTab === "Indoor" ? "bg-yellow-500 hover:bg-yellow-600 text-white rounded text-white" : "bg-gray-200"
-          }`}
+          className={`px-4 py-2 ${activeTab === "Indoor" ? "bg-yellow-500 hover:bg-yellow-600 text-white rounded text-white" : "bg-gray-200"
+            }`}
           onClick={() => handleTabChange("Indoor")}
         >
           Indoor & Outdoor
