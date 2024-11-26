@@ -6,6 +6,7 @@ from .views import (
     ListMusicalShowEventsView,
     ListOtherFunctionEventsView,
     DeleteEventView,
+    UpdateEventView,
 )
 
 urlpatterns = [
@@ -23,4 +24,5 @@ urlpatterns = [
         name="list-other-function-events",
     ),
     path("delete-event/<int:pk>/", DeleteEventView.as_view(), name="delete-event"),
+    path("update-event/<int:pk>/", UpdateEventView.as_view(), name="update-event"),
 ]

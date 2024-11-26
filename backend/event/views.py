@@ -192,3 +192,44 @@ class DeleteEventView(generics.DestroyAPIView):
                 {"status": "error", "message": str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+
+
+class UpdateEventView(generics.UpdateAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, *args, **kwargs):
+        try:
+            user_id = request.user.id
+            if not (is_admin_user(user_id) or is_staff_user(user_id)):
+                return JsonResponse(
+                    {"status": "error", "message": "Permission denied"},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
+
+            event = self.get_object()
+            serializer = self.get_serializer(event, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(
+                    {
+                        "status": "success",
+                        "message": "Event updated successfully",
+                        "data": serializer.data,
+                    },
+                    status=status.HTTP_200_OK,
+                )
+            return JsonResponse(
+                {
+                    "status": "fail",
+                    "message": "Failed to update event",
+                    "data": serializer.errors,
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except Exception as e:
+            return JsonResponse(
+                {"status": "error", "message": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
