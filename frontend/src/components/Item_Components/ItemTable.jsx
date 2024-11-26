@@ -56,24 +56,24 @@ const ItemTable = ({
   }
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto">
       <table className="min-w-full bg-white shadow-md rounded-lg">
         <thead>
           <tr>
-            <th className="py-2 px-4 border-b text-left">Item</th>
-            <th className="py-2 px-4 border-b text-left">Sport</th>
-            <th className="py-2 px-4 border-b text-left">Count</th>
+            <th className="py-2 px-4 border-b text-center">Item</th>
+            <th className="py-2 px-4 border-b text-center">Sport</th>
+            <th className="py-2 px-4 border-b text-center">Count</th>
           </tr>
         </thead>
         <tbody>
           {filteredItems.map((item, index) => (
             <tr key={index} className="border-b hover:bg-gray-100">
               <td className="py-2 px-4">{item.item_id}</td>
-              <td className="py-2 px-4">{item.sport}</td>
-              <td className="py-2 px-4">
+              <td className="py-2 px-4 text-center">{item.sport}</td>
+              <td className="py-2 px-4 ">
                 {/* Display + and - icons for staff members only in the Count column */}
                 {isStaff ? (
-                  <div className="flex items-center space-x-4">
+                  <div className="flex items-center justify-center space-x-4">
                     {" "}
                     {/* Added wider space between buttons */}
                     <button className="text-red-500">
