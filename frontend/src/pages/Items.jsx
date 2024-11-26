@@ -1,7 +1,8 @@
 import { useState } from "react";
 import ItemTable from "../components/Item_Components/ItemTable";
-import ItemImage from "../assets/itemPage/Item1.jpg";
 import api from "../api";
+import Slider from "@/components/Item_Components/slider";
+
 const Items = () => {
   const [activeTab, setActiveTab] = useState("Indoor");
   const [searchQuery, setSearchQuery] = useState(""); // Handle search input
@@ -30,7 +31,6 @@ const Items = () => {
   const handleSortCountChange = (e) => setSortCount(e.target.value); // Set 'asc' or 'desc'
 
   const handleAddItemClick = () => setShowModal(true); // Show the modal when 'Add Item' is clicked
-
   const handleCloseModal = () => setShowModal(false); // Close modal handler
 
   const handleFormChange = (e) => {
@@ -42,9 +42,7 @@ const Items = () => {
     e.preventDefault();
     console.log("New item details:", newItem);
     const response = await api.post("/items/add/");
-
     console.log(response);
-
     setShowModal(false);
   };
 
@@ -54,18 +52,20 @@ const Items = () => {
         <h1 className="text-lg sm:text-xl md:text-xl lg:text-xl">
           Hello, {userData.user.first_name} {userData.user.last_name}👋{" "}
         </h1>
-        <div className="relative">
-          <img
-            src={ItemImage}
-            alt="Equipment Banner"
-            className="w-full h-64 object-cover rounded-lg"
-          />
-          <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center rounded-lg">
-            <h1 className="text-white text-3xl font-bold">Equipment</h1>
+
+        {/* Image Slider */}
+        <div id="default-carousel" className="relative w-full" data-carousel="slide">
+          <div className="relative h-56 overflow-hidden rounded-lg md:h-96">
+            {/* Item 1 */}
+            <div>
+              <h1 className="text-center text-2xl font-bold mb-4"></h1>
+              <Slider />
+            </div>
           </div>
         </div>
       </div>
 
+      {/* Rest of your component */}
       <div className="flex mb-4">
         <button
           className={`px-4 py-2 ${
@@ -87,19 +87,16 @@ const Items = () => {
 
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center space-x-4">
-          {" "}
-          {/* Flex container for inline elements */}
           <input
             type="text"
             className="border p-2 rounded max-w-xs"
             placeholder="Search"
-            value={searchQuery} // Controlled component for search query
+            value={searchQuery}
             onChange={handleSearchChange}
           />
-          {/* Add Item Button */}
           <button
             className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
-            onClick={handleAddItemClick} // Show modal on click
+            onClick={handleAddItemClick}
           >
             Add Item
           </button>
@@ -116,7 +113,7 @@ const Items = () => {
           </button>
           <select
             className="ml-2 border p-2 rounded"
-            value={sortCount} // Controlled component for sorting count
+            value={sortCount}
             onChange={handleSortCountChange}
           >
             <option value="asc">Count Ascending</option>
@@ -125,14 +122,12 @@ const Items = () => {
         </div>
       </div>
 
-      {/* Pass search and sort states as props */}
       <ItemTable
         searchQuery={searchQuery}
         sortSport={sortSport}
         sortCount={sortCount}
       />
 
-      {/* Modal for adding a new item */}
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-50">
           <div className="bg-white p-6 rounded shadow-md w-96">
@@ -187,7 +182,7 @@ const Items = () => {
                 <button
                   type="button"
                   className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                  onClick={handleCloseModal} // Close the modal on click
+                  onClick={handleCloseModal}
                 >
                   Cancel
                 </button>
