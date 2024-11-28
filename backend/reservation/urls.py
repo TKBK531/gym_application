@@ -1,43 +1,40 @@
 from django.urls import path
-from .views import (
-    CourtViewSet,
-    CourtRateView,
-    CreateReservationView,
-    GetAllReservationsView,
-    UpdateReservationView,
-    DeleteReservationView,
-)
+from .views import (AllFacilitiesView, AddFacilityView, DeleteFacilityView, 
+                    AllCourtsView, AddCourtView, DeleteCourtView)
+
 
 urlpatterns = [
-    path("courts/", CourtViewSet.as_view({"get": "list"}), name="courts"),
     path(
-        "court-rate/",
-        CourtRateView.as_view({"post": "create"}),
-        name="court-rate",
+        "requestAllFacilities/",
+        AllFacilitiesView.as_view(),
+        name="all-facilities",
     ),
     path(
-        "court-rate/<int:pk>/",
-        CourtRateView.as_view({"put": "update", "delete": "destroy"}),
-        name="court-rate-update-delete",
+        "addFacility/",
+        AddFacilityView.as_view(),
+        name="new_facility"
     ),
     path(
-        "add-reservation/",
-        CreateReservationView.as_view(),
-        name="create-reservation",
+        "deleteFacility/",
+        DeleteFacilityView.as_view(),
+        name="delete_facility"
+    ),
+
+    path(
+        "requestAllCourts/",
+        AllCourtsView.as_view(),
+        name="all-courts",
     ),
     path(
-        "get-all-reservations/",
-        GetAllReservationsView.as_view(),
-        name="get-all-reservations",
+        "addCourt/",
+        AddCourtView.as_view(),
+        name="new_court"
     ),
     path(
-        "<int:pk>/update/",
-        UpdateReservationView.as_view(),
-        name="update-reservation",
+        "deleteCourt/",
+        DeleteCourtView.as_view(),
+        name="delete_court"
     ),
-    path(
-        "<int:pk>/delete/",
-        DeleteReservationView.as_view(),
-        name="delete-reservation",
-    ),
+
+
 ]
