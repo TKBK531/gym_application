@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import (AllFacilitiesView, AddFacilityView, DeleteFacilityView, 
-                    AllCourtsView, AddCourtView, DeleteCourtView)
+                    AllCourtsView, AddCourtView, DeleteCourtView,
+                    AllCourtRatesView, AddCourtRateView, DeleteCourtRateView)
 
 
 urlpatterns = [
@@ -34,6 +35,22 @@ urlpatterns = [
         "deleteCourt/",
         DeleteCourtView.as_view(),
         name="delete_court"
+    ),
+
+        path(
+        "requestAllCourtRates/",
+        AllCourtRatesView.as_view(),
+        name="all-court-rates",
+    ),
+    path(
+        "addCourtRate/",
+        AddCourtRateView.as_view(),
+        name="new_court_rate",
+    ),
+    path(
+        "deleteCourtRate/",
+        DeleteCourtRateView.as_view(),
+        name="delete_court_rate",
     ),
 
 
