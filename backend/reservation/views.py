@@ -1,240 +1,192 @@
-from django.shortcuts import render
-from rest_framework import viewsets, status
-from rest_framework.exceptions import ValidationError
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from django.http import JsonResponse
-from rest_framework import views, generics, status
-
-from .models import Court, CourtRate, Reservation
-from userProfile.models import UserProfile
-from .serializers import CourtSerializer, CourtRateSerializer, ReservationSerializer
+from rest_framework.views import APIView
+from .models import Reservation, Facility, Court, ReservationRequest, CourtRate
+from .serializers import ReservationSerializer, FacilitySerializer, CourtSerializer, ReservationRequestSerializer, CourtRateSerializer
+from rest_framework.response import Response
+from rest_framework import status
+from datetime import datetime
+from django.db import transaction
 
 
-# Create your views here.
-class CourtViewSet(viewsets.ModelViewSet):
-    queryset = Court.objects.all()
-    serializer_class = CourtSerializer
-    permission_classes = [AllowAny]
-
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        serializer = self.get_serializer(queryset, many=True)
-        resp = {
-            "status": "success",
-            "message": "List of courts retrieved successfully",
-            "data": serializer.data,
-        }
-        return JsonResponse(resp, status=200)
-
-
-class CourtRateView(viewsets.ModelViewSet):
-    queryset = CourtRate.objects.all()
-    serializer_class = CourtRateSerializer
-    permission_classes = [IsAuthenticated]
-
-    def create(self, request, *args, **kwargs):
-        try:
-            response = super().create(request, *args, **kwargs)
-            response_data = {
-                "status": "success",
-                "message": "Court rate created successfully",
-                "data": response.data,
-            }
-        except ValidationError as e:
-            error_message = (
-                list(e.detail.values())[0][0] if e.detail else "Validation error"
+#Facility views-------------------------------------------------------------------
+#return all Facilities
+class AllFacilitiesView(APIView):
+    def get(self, request):
+        facilities = Facility.objects.all()
+        serializer = FacilitySerializer(facilities, many=True)
+        return Response(serializer.data)
+    
+#Add Facility
+class AddFacilityView(APIView):
+    def post(self, request):
+        facility_name = request.data.get("facility_name")
+        
+        # Check if a facility with the same name already exists
+        if Facility.objects.filter(facility_name=facility_name).exists():
+            return Response(
+                {"error": f"A facility with the name '{facility_name}' already exists."},
+                status=status.HTTP_400_BAD_REQUEST
             )
-            response_data = {
-                "status": "error",
-                "message": error_message,
-            }
+        
+        serializer = FacilitySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        return JsonResponse(response_data)
-
-    def update(self, request, *args, **kwargs):
-        partial = kwargs.pop("partial", False)
-        instance = self.get_object()
-        data = request.data.copy()
-
-        # Extract the court value from the URL and set it in the data
-        court_id = self.kwargs.get("pk")
-        data["court"] = court_id
-
-        serializer = self.get_serializer(instance, data=data, partial=partial)
-        try:
-            serializer.is_valid(raise_exception=True)
-            self.perform_update(serializer)
-            response_data = {
-                "status": "success",
-                "message": "Court rate updated successfully",
-                "data": serializer.data,
-            }
-            return JsonResponse(response_data, status=status.HTTP_200_OK)
-        except ValidationError as e:
-            error_message = (
-                list(e.detail.values())[0][0] if e.detail else "Validation error"
-            )
-            response_data = {
-                "status": "error",
-                "message": error_message,
-            }
-            return JsonResponse(response_data, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            response_data = {
-                "status": "error",
-                "message": str(e),
-            }
-            return JsonResponse(response_data, status=status.HTTP_400_BAD_REQUEST)
-
-    def destroy(self, request, *args, **kwargs):
-        try:
-            response = super().destroy(request, *args, **kwargs)
-            response_data = {
-                "status": "success",
-                "message": "Court rate deleted successfully",
-            }
-        except Exception as e:
-            response_data = {
-                "status": "error",
-                "message": str(e),
-            }
-
-        return JsonResponse(response_data)
-
-    def partial_update(self, request, *args, **kwargs):
-        try:
-            response = super().partial_update(request, *args, **kwargs)
-            response_data = {
-                "status": "success",
-                "message": "Court rate updated successfully",
-                "data": response.data,
-            }
-        except Exception as e:
-            response_data = {
-                "status": "error",
-                "message": str(e),
-            }
-
-        return JsonResponse(response_data)
-
-
-class CreateReservationView(generics.CreateAPIView):
-    queryset = Reservation.objects.all()
-    serializer_class = ReservationSerializer
-    permission_classes = [IsAuthenticated]
-
-    def create(self, request, *args, **kwargs):
-        user = request.user
-        data = request.data
-        data["user"] = user.id
-        try:
-            serializer = self.get_serializer(data=data)
-            if serializer.is_valid(raise_exception=True):
-                serializer.save()
-                response_data = {
-                    "status": "success",
-                    "message": "Reservation created successfully",
-                    "data": serializer.data,
-                }
-
-        except ValidationError as e:
-            response_data = {
-                "status": "error",
-                "message": e.detail,
-            }
-
-        except Exception as e:
-            response_data = {
-                "status": "error",
-                "message": str(e),
-            }
-
-        return JsonResponse(response_data)
-
-
-class GetAllReservationsView(generics.ListAPIView):
-    queryset = Reservation.objects.all()
-    serializer_class = ReservationSerializer
-    permission_classes = [IsAuthenticated]
-
-
-class UpdateReservationView(generics.UpdateAPIView):
-    queryset = Reservation.objects.all()
-    serializer_class = ReservationSerializer
-    permission_classes = [IsAuthenticated]
-
-    def update(self, request, *args, **kwargs):
-        user = request.user
-        pk = kwargs.get("pk")
-
-        try:
-            reservation = Reservation.objects.get(pk=pk)
-        except Reservation.DoesNotExist:
-            return JsonResponse(
-                {
-                    "status": "error",
-                    "message": "Reservation not found",
-                },
-                status=status.HTTP_404_NOT_FOUND,
+    
+#Delete facility
+class DeleteFacilityView(APIView):
+    def delete(self, request):
+        facility_name = request.data.get("facility_name")
+        
+        # Check if facility_name is provided
+        if not facility_name:
+            return Response(
+                {"error": "Facility name is required."},
+                status=status.HTTP_400_BAD_REQUEST
             )
 
-        serializer = self.get_serializer(reservation, data=request.data, partial=True)
-
         try:
-            serializer.is_valid(raise_exception=True)
-            self.perform_update(serializer)
-        except Exception as e:
-            return JsonResponse(
-                {
-                    "status": "error",
-                    "message": str(e),
-                },
+            facility = Facility.objects.get(facility_name__iexact=facility_name)
+
+            # Check if any courts reference this facility
+            if Court.objects.filter(facility=facility).exists():
+                return Response(
+                    {
+                        "error": "Cannot delete facility",
+                        "details": f"Facility '{facility_name}' is referenced by one or more courts."
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # Delete the facility if no references are found
+            facility.delete()
+            return Response(
+                {"message": f"Facility '{facility_name}' has been deleted successfully."},
+                status=status.HTTP_200_OK
+            )
+
+        except Facility.DoesNotExist:
+            return Response(
+                {"error": f"Facility '{facility_name}' does not exist."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+
+
+#Court Views------------------------------------------------------------------------------
+#return all courts
+class AllCourtsView(APIView):
+    def get(self, request):
+        courts = Court.objects.all()
+        serializer = CourtSerializer(courts, many=True)
+        return Response(serializer.data)
+
+
+class AddCourtView(APIView):
+    def post(self, request):
+        court_name = request.data.get("court_name")
+        facility_name = request.data.get("facility_name")
+        
+        # Validate inputs
+        if not court_name or not facility_name:
+            return Response(
+                {"error": "Both court_name and facility_name are required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            facility = Facility.objects.get(facility_name__iexact=facility_name)
+            
+            if Court.objects.filter(court_name__iexact=court_name, facility=facility).exists():
+                return Response(
+                    {
+                        "error": "Cannot add court",
+                        "details": f"A court with the name '{court_name}' already exists in the facility '{facility_name}'."
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # Add the facility to the data to pass to the serializer
+            request.data['facility'] = facility.facility_id 
+
+            # Create the court instance manually with the facility reference
+            serializer = CourtSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()  # Facility is already added to the data
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        except Facility.DoesNotExist:
+            return Response(
+                {"error": f"Facility '{facility_name}' does not exist."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+#delete Court
+class DeleteCourtView(APIView):
+    def delete(self, request):
+        court_name = request.data.get("court_name")
+        facility_name = request.data.get("facility_name")
+
+        if not court_name or not facility_name:
+            return Response(
+                {"error": "Both court_name and facility_name are required."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        return JsonResponse(
-            {
-                "status": "success",
-                "message": "Reservation updated successfully",
-                "data": serializer.data,
-            },
-        )
-
-
-class DeleteReservationView(generics.DestroyAPIView):
-    queryset = Reservation.objects.all()
-    serializer_class = ReservationSerializer
-    permission_classes = [IsAuthenticated]
-
-    def destroy(self, request, *args, **kwargs):
-        user = request.user
-        pk = kwargs.get("pk")
-
         try:
-            reservation = Reservation.objects.get(pk=pk)
-        except Reservation.DoesNotExist:
-            return JsonResponse(
-                {
-                    "status": "error",
-                    "message": "Reservation not found",
-                },
+            facility = Facility.objects.get(facility_name__iexact=facility_name)
+            court = Court.objects.get(court_name__iexact=court_name, facility=facility)
+
+            # Check if there are any future reservation requests referencing this court
+            if ReservationRequest.objects.filter(court=court, date__gte=datetime.now()).exists():
+                return Response(
+                    {"error": "Cannot delete court",
+                     "details": f"Court '{court_name}' in facility '{facility_name}' is referenced by future reservation requests."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            # Check if there are any future reservations referencing this court
+            if Reservation.objects.filter(court=court, date__gte=datetime.now()).exists():
+                return Response(
+                    {"error": "Cannot delete court",
+                     "details": f"Court '{court_name}' in facility '{facility_name}' is referenced by future reservations."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            # Begin a transaction to ensure all deletions happen atomically
+            with transaction.atomic():
+                # Delete the court rates associated with this court
+                court_rates = CourtRate.objects.filter(court=court)
+                court_rates.delete()
+
+                # Delete the court itself
+                court.delete()
+
+            return Response(
+                {"message": f"Court '{court_name}' in facility '{facility_name}' has been deleted successfully."},
+                status=status.HTTP_200_OK,
+            )
+
+        except Facility.DoesNotExist:
+            return Response(
+                {"error": f"Facility '{facility_name}' not found."},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        if reservation.user == user:
-            reservation.delete()
-        else:
-            return JsonResponse(
-                {
-                    "status": "error",
-                    "message": "You are not authorized to delete this reservation",
-                },
-                status=status.HTTP_403_FORBIDDEN,
+        except Court.DoesNotExist:
+            return Response(
+                {"error": f"Court '{court_name}' in facility '{facility_name}' not found."},
+                status=status.HTTP_404_NOT_FOUND,
             )
 
-        return JsonResponse(
-            {
-                "status": "success",
-                "message": "Reservation deleted successfully",
-            },
-        )
+        except Exception as e:
+            return Response(
+                {"error": "An unexpected error occurred", "details": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+
