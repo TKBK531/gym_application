@@ -1,60 +1,71 @@
 from rest_framework import serializers
-from .models import Court, CourtRate, Reservation, Payment
+from .models import Court, Facility, ReservationRequest, Reservation, Payment, CourtRate
+from django.contrib.auth.models import User
+
+class FacilitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Facility
+        fields = ['facility_id', 'facility_name', 'status']
 
 
 class CourtSerializer(serializers.ModelSerializer):
+    facility = serializers.PrimaryKeyRelatedField(queryset=Facility.objects.all())
+
     class Meta:
         model = Court
-        fields = ["id", "label"]
+        fields = ['court_id', 'court_name', 'num_of_courts', 'max_players', 'facility', 'status']
 
 
 class CourtRateSerializer(serializers.ModelSerializer):
+    Court = CourtSerializer()
+
     class Meta:
         model = CourtRate
-        fields = ["id", "court", "hourley_rate", "daily_rate"]
+        fields=["court_rate_id", "court", "activity", "duration", 
+                "is_competitive","is_foreign", "is_school", 
+                "is_gov", "rate"]
+    
 
-    def validate_court(self, value):
-        courtHasRate = CourtRate.objects.filter(court=value).exists()
-        if courtHasRate:
-            raise serializers.ValidationError("Court rate already exists")
-        return value
+class ReservationRequestSerializer(serializers.ModelSerializer):
+    court = serializers.PrimaryKeyRelatedField(queryset=Court.objects.all())
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+
+    class Meta:
+        model = ReservationRequest
+        fields = [
+            'res_req_id', 'date', 'email', 'start_time', 'end_time', 
+            'court', 'num_of_courts', 'activity', 'user', 'requirement', 'is_school',
+            'is_gov', 'is_foreign','is_competitive', 'org_name','is_pdn',
+            'num_of_participants', 'admin_staff_id', 'status', 
+            'is_payment_needed' ,'amount', 'applied_at'
+        ]
 
 
 class ReservationSerializer(serializers.ModelSerializer):
+    court = serializers.PrimaryKeyRelatedField(queryset=Court.objects.all())
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
 
     class Meta:
         model = Reservation
         fields = [
-            "id",
-            "user",
-            "court",
-            "start_time",
-            "end_time",
-            "date",
-            "team_name",
-            "requirement",
-            "is_competitive",
-            "number_of_players",
-            "is_paid",
-            "is_canceled",
-            "is_finished",
-            "created_at",
-            "updated_at",
+            'reservation_id', 'res_req', 'date', 'email', 'start_time', 'end_time', 
+            'court', 'num_of_courts', 'activity', 'user', 'requirement', 'is_school',
+            'is_gov', 'is_foreign','is_competitive', 'org_name','is_pdn', 
+            'num_of_participants', 'is_payment_needed', 'amount', 'status', 
+            'created_at', 'updated_at'
         ]
 
 
+
 class PaymentSerializer(serializers.ModelSerializer):
-    reservation = ReservationSerializer()
+    reservation = serializers.PrimaryKeyRelatedField(queryset=Reservation.objects.all())
 
     class Meta:
         model = Payment
         fields = [
-            "id",
-            "reservation",
-            "amount",
-            "payment_date",
-            "payment_method",
-            "payment_status",
-            "created_at",
-            "updated_at",
+            'payment_id', 'reservation', 'amount', 'payment_date', 
+            'payment_method', 'status', 'proof_of_payment', 
+            'created_at', 'updated_at'
         ]
+
+

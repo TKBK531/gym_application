@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator
+from django.core.exceptions import ValidationError
 
 class Facility(models.Model):
     facility_id = models.AutoField(primary_key=True)
@@ -10,12 +12,13 @@ class Facility(models.Model):
         return self.facility_name
 
 class Court(models.Model):
-
     court_id = models.AutoField(primary_key=True)
     court_name = models.CharField(max_length=255)  # E.g., Netball Court
     num_of_courts= models.PositiveIntegerField(default=1)
     max_players=models.PositiveIntegerField(null=True)
     facility = models.ForeignKey('Facility', on_delete=models.CASCADE)
+    status = models.CharField(max_length=10, default='open')
+
 
     def __str__(self):
         return f"{self.court_name} ({self.facility.facility_name})"
@@ -25,7 +28,7 @@ class CourtRate(models.Model):
     # Activity options specific to the court
     ACTIVITY_CHOICES = [
         ("none", "None"),
-        ("meeting", "Meeting"),
+        ("meting", "Meting"),
         ("turf", "Turf"),
         ("match", "Match"),
         ("tournament", "Tournament"),
@@ -38,6 +41,7 @@ class CourtRate(models.Model):
         ("university_team_practices", "University Team Practices"),
         ("competition", "Competition"),
         ("other", "Other"),
+        ("any","Any"),
     ]
     DURATION_CHOICES = [
         ("per full day", "Per Full Day"),
@@ -105,7 +109,7 @@ class ReservationRequest(models.Model):
                 end_time=self.end_time,
                 court=self.court,
                 num_of_courts=self.num_of_courts,
-                activity=self.activty,
+                activity=self.activity,
                 res_req=self,
                 user=self.user,
                 requirement=self.requirement,
