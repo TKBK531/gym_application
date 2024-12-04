@@ -1,7 +1,9 @@
 from django.urls import path
 from .views import (AllFacilitiesView, AddFacilityView, DeleteFacilityView, 
                     AllCourtsView, AddCourtView, DeleteCourtView,
-                    AllCourtRatesView, AddCourtRateView, DeleteCourtRateView)
+                    AllCourtRatesView, AddCourtRateView, DeleteCourtRateView,
+                    AllReservationRequestsView,AddReservationRequestView, ApproveReservationRequestView, 
+                    CancelReservationRequestView, UpdateReservationRequestView, RejectReservationRequestView)
 
 
 urlpatterns = [
@@ -51,6 +53,34 @@ urlpatterns = [
         "deleteCourtRate/",
         DeleteCourtRateView.as_view(),
         name="delete_court_rate",
+    ),
+
+    path(
+        "requestAllReservationRequests/",
+        AllReservationRequestsView.as_view(),
+        name="all-reservation-requests",
+    ),
+    path(
+        "addReservationRequest/",
+        AddReservationRequestView.as_view(),
+        name="new_reservation_request"    
+    ),
+    path(
+        'approveReservationRequest/<int:reservation_request_id>/', 
+        ApproveReservationRequestView.as_view(), 
+        name='approve_reservation_request'
+    ),
+    path('cancelReservationRequest/<int:reservation_request_id>/', 
+        CancelReservationRequestView.as_view(), 
+        name='cancel_reservation_request'
+    ),
+    path('updateReservationRequest/<int:reservation_request_id>/', 
+        UpdateReservationRequestView.as_view(), 
+        name='update_reservation_request'
+    ),
+    path('rejectReservationRequest/<int:reservation_request_id>/', 
+        RejectReservationRequestView.as_view(), 
+        name='reject_reservation_request'
     ),
 
 

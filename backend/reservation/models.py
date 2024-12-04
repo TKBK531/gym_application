@@ -1,7 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.core.validators import MinValueValidator
-from django.core.exceptions import ValidationError
 
 class Facility(models.Model):
     facility_id = models.AutoField(primary_key=True)
@@ -13,7 +11,7 @@ class Facility(models.Model):
 
 class Court(models.Model):
     court_id = models.AutoField(primary_key=True)
-    court_name = models.CharField(max_length=255)  # E.g., Netball Court
+    court_name = models.CharField(max_length=255)
     num_of_courts= models.PositiveIntegerField(default=1)
     max_players=models.PositiveIntegerField(null=True)
     facility = models.ForeignKey('Facility', on_delete=models.CASCADE)
@@ -25,7 +23,6 @@ class Court(models.Model):
     
 
 class CourtRate(models.Model):
-    # Activity options specific to the court
     ACTIVITY_CHOICES = [
         ("none", "None"),
         ("meting", "Meting"),
@@ -53,17 +50,16 @@ class CourtRate(models.Model):
     court = models.ForeignKey(Court, on_delete=models.CASCADE)
     activity = models.CharField(max_length=255, choices=ACTIVITY_CHOICES,default="none")
     duration = models.CharField(max_length=255, choices=DURATION_CHOICES,default="per hour")
-    is_competitive = models.BooleanField(default=False)  # True if the event is competitive
-    is_foreign = models.BooleanField(default=False)  # True if it is reserved by foreigner
-    is_school = models.BooleanField(default=False)  # True if by a school
-    is_gov = models.BooleanField(default=False)  # True if by a gov org
+    is_competitive = models.BooleanField(default=False)
+    is_foreign = models.BooleanField(default=False) 
+    is_school = models.BooleanField(default=False)
+    is_gov = models.BooleanField(default=False)
     rate = models.FloatField()
 
     def __str__(self):
         return f"{self.court.court_name} ({self.rate})"
     
     
-
 class ReservationRequest(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pending'),
@@ -71,82 +67,60 @@ class ReservationRequest(models.Model):
         ('rejected', 'Rejected'),
         ('cancelled', 'Cancelled')
     ]
+    RATE_TYPE_CHOICES = [
+        ('hourly_rate', 'Hourly Rate'),
+        ('day_rate', 'Day Rate')
+    ]
 
     res_req_id  = models.AutoField(primary_key=True)
-    date = models.DateField()
     email = models.EmailField(max_length=255)
-    start_time = models.TimeField()
-    end_time = models.TimeField()
-
     court = models.ForeignKey(Court, on_delete=models.CASCADE)
     num_of_courts=models.PositiveIntegerField(default=1, null=True)
     activity = models.CharField(max_length=255, default="none")
+    rate_type = models.CharField(max_length=20, choices=RATE_TYPE_CHOICES, default='hourly')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    requirement = models.TextField()  # Stores additional information about the requirement
-    is_school = models.BooleanField(default=False)  # True if reserved for a school
-    is_gov = models.BooleanField(default=False)  # True if reserved for a gov org
-    is_foreign = models.BooleanField(default=False)  # True if it is reserved by foreigner
-    is_competitive = models.BooleanField(default=False)  # True if the event is competitive
-    org_name = models.CharField(max_length=255)  # Team or Organization name
+    requirement = models.TextField()  
+    is_school = models.BooleanField(default=False)  
+    is_gov = models.BooleanField(default=False)  
+    is_foreign = models.BooleanField(default=False)  
+    is_competitive = models.BooleanField(default=False)  
+    org_name = models.CharField(max_length=255)  
     is_pdn = models.BooleanField(default=False)
-    num_of_participants = models.PositiveIntegerField()  # Number of participants
+    num_of_participants = models.PositiveIntegerField()  
     admin_staff_id=models.CharField(max_length=255, null=True) #the admin staff who approved the request
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
     is_payment_needed = models.BooleanField(default=True)  # True if payment is required for the reservation
     amount = models.FloatField()
-    applied_at = models.DateTimeField(auto_now_add=True)  # Auto-set when the record is created
-
-    def approve(self):
-        # Create a Reservation when approved
-        if self.status != 'approved':
-            self.status = 'approved'
-            self.save()
-            Reservation.objects.create(
-                date=self.date,
-                email=self.email,
-                start_time=self.start_time,
-                end_time=self.end_time,
-                court=self.court,
-                num_of_courts=self.num_of_courts,
-                activity=self.activity,
-                res_req=self,
-                user=self.user,
-                requirement=self.requirement,
-                is_school=self.is_school,
-                is_gov=self.is_gov,
-                is_foreign= self.is_foreign,
-                is_competitive=self.is_competitive,
-                org_name=self.org_name,
-                is_pdn=self.is_pdn,
-                num_of_participants=self.num_of_participants,
-                amount=self.amount,
-            )
+    applied_at = models.DateTimeField(auto_now_add=True)  
 
     def __str__(self):
         return f"{self.user.first_name} -on {self.date}  {self.start_time} to {self.end_time}"
 
+
 class Reservation(models.Model):
     STATUS_CHOICES = [
         ('approved', 'Approved'),
-        ('confirmed', 'Confirmed'), #if payment is confirmed for outsiders/ defaut for pdn undergrads
+        ('confirmed', 'Confirmed'), #if payment is confirmed for outsiders/ default for pdn undergrads
         ('cancelled', 'Cancelled'),
         ('rejected', 'Rejected')
     ]
+
+    RATE_TYPE_CHOICES = [
+        ('hourly_rate', 'Hourly Rate'),
+        ('day_rate', 'Day Rate')
+    ]
     reservation_id = models.AutoField(primary_key=True)
     res_req = models.OneToOneField(ReservationRequest, on_delete=models.SET_NULL, related_name='reservation', null=True)
-    date = models.DateField()
     email = models.EmailField(max_length=255)
-    start_time = models.TimeField()
-    end_time = models.TimeField()
     court = models.ForeignKey(Court, on_delete=models.CASCADE)
     num_of_courts=models.PositiveIntegerField()
     activity = models.CharField(max_length=255, default="none")
+    rate_type = models.CharField(max_length=20, choices=RATE_TYPE_CHOICES, default='hourly')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     requirement = models.TextField()
-    is_school = models.BooleanField(default=False)  # True if reserved for a school
-    is_gov = models.BooleanField(default=False)  # True if reserved for a gov org
-    is_foreign = models.BooleanField(default=False)  # True if it is reserved by foreigner
+    is_school = models.BooleanField(default=False) 
+    is_gov = models.BooleanField(default=False)  
+    is_foreign = models.BooleanField(default=False)  
     is_competitive = models.BooleanField(default=False) 
     org_name = models.CharField(max_length=255)
     is_pdn = models.BooleanField(default=False)
@@ -154,11 +128,23 @@ class Reservation(models.Model):
     is_payment_needed = models.BooleanField(default=True)  # True if payment is required for the reservation
     amount = models.FloatField()
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='approved')
-    created_at = models.DateTimeField(auto_now_add=True)  # Auto-set when the record is created
-    updated_at = models.DateTimeField(auto_now=True)  # Auto-set when the record is updated
+    created_at = models.DateTimeField(auto_now_add=True)  
+    updated_at = models.DateTimeField(auto_now=True)  
 
     def __str__(self):
         return f"{self.user.first_name} -on {self.date} from {self.start_time} to {self.end_time} at {self.court.court_name}"
+
+
+class ReservationDate(models.Model):
+    reservation_request = models.ForeignKey(ReservationRequest, on_delete=models.CASCADE, related_name='dates')
+    reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE, related_name='reservation_dates', null=True)
+    date = models.DateField()
+    start_time = models.TimeField(null=True, blank=True)
+    end_time = models.TimeField(null=True, blank=True)
+    duration_type = models.CharField(max_length=10, choices=[('full_day', 'Full Day'), ('half_day', 'Half Day')], null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.date} ({self.start_time} to {self.end_time})"
 
 
 class Payment(models.Model):

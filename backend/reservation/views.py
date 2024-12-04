@@ -1,10 +1,13 @@
 from rest_framework.views import APIView
-from .models import Reservation, Facility, Court, ReservationRequest, CourtRate
-from .serializers import ReservationSerializer, FacilitySerializer, CourtSerializer, ReservationRequestSerializer, CourtRateSerializer
+from .models import Reservation, Facility, Court, ReservationRequest, CourtRate,ReservationDate
+from .serializers import FacilitySerializer, CourtSerializer, CourtRateSerializer, ReservationRequestSerializer, ReservationDateSerializer, ReservationSerializer
 from rest_framework.response import Response
 from rest_framework import status
-from datetime import datetime
+from datetime import datetime,timedelta
 from django.db import transaction
+from django.utils.dateparse import parse_date
+from django.shortcuts import get_object_or_404
+
 
 
 #Facility views-------------------------------------------------------------------
@@ -234,7 +237,6 @@ class AllCourtRatesView(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
-
 #Add court Rate
 class AddCourtRateView(APIView):
     def post(self, request):
@@ -380,4 +382,318 @@ class DeleteCourtRateView(APIView):
                 {"error": "An unexpected error occurred", "details": str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+
+
+#Reservation Request Views--------------------------------------------------------------------------------------------------------------------------------------------------
+#return all reservation requests
+class AllReservationRequestsView(APIView):
+    def get(self, request):
+        reservation_requests = ReservationRequest.objects.all()
+        serializer = ReservationRequestSerializer(reservation_requests, many=True)
+        return Response(serializer.data)
+
+#Add reservationRequest
+class AddReservationRequestView(APIView):
+    def post(self, request):
+        data = request.data
+
+        # Extract relevant data from the request
+        facility_name = data.get('facility_name')
+        court_name = data.get('court_name')
+        court = get_object_or_404(Court, facility__facility_name=facility_name, court_name=court_name)
+
+        # Filter the relevant data for ReservationRequest
+        reservation_data = {
+            'email': data.get('email'),
+            'court': court.court_id,  # Use the matched court's ID
+            'activity': data.get('activity'),
+            'rate_type': data.get('rate_type'),
+            'num_of_courts': data.get('num_of_courts', 1),
+            'user': request.user.id,
+            'requirement': data.get('requirement'),
+            'is_school': data.get('is_school', False),
+            'is_gov': data.get('is_gov', False),
+            'is_foreign': data.get('is_foreign', False),
+            'is_competitive': data.get('is_competitive', False),
+            'org_name': data.get('org_name'),
+            'is_pdn': data.get('is_pdn', False),
+            'num_of_participants': data.get('num_of_participants'),
+            'status': 'pending',
+            'amount': 0  # Initial amount set to 0
+        }
+
+        # Initialize amount and flag to check if court rates are found
+        amount = 0
+        all_court_rates_found = True
+        reservation_request = None
+
+        # Initialize date validation
+        dates = data.get("dates", [])
+        current_date = datetime.now().date()
+        temp_date = current_date
+        days_ahead = 0
+
+        # Ensure the reservation is at least 7 working days ahead
+        while days_ahead < 7:
+            temp_date += timedelta(days=1)
+            if temp_date.weekday() < 5:  # Only consider weekdays (Mon-Fri)
+                days_ahead += 1
+
+        # Validate if all dates are at least 7 weekdays ahead and available
+        for date_entry in dates:
+            reservation_date = parse_date(date_entry.get('date'))
+            if reservation_date < temp_date:
+                return Response(
+                    {'error': f'Reservation date {reservation_date} must be at least 7 working days ahead.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            start_time = date_entry.get('start_time')
+            end_time = date_entry.get('end_time')
+            duration_type = date_entry.get('duration_type')
+
+            # Check if the court is available for the requested dates and times
+            court_availability = ReservationDate.objects.filter(
+                reservation_request__court=court, date=reservation_date,
+                start_time__lt=end_time, end_time__gt=start_time
+            )
+            if court_availability.exists():
+                return Response(
+                    {'error': f'The court is already booked for {reservation_date} from {start_time} to {end_time}.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # Handle hourly rate reservations
+            if reservation_data['rate_type'] == 'hourly_rate':
+                if not start_time or not end_time:
+                    return Response(
+                        {'error': 'Start time and end time are required for hourly rate.'},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+
+                start = datetime.strptime(start_time, "%H:%M:%S")
+                end = datetime.strptime(end_time, "%H:%M:%S")
+                duration_hours = (end - start).seconds / 3600
+
+                # Retrieve CourtRate for hourly rate
+                court_rate = CourtRate.objects.filter(
+                    court=court,
+                    activity=reservation_data['activity'],
+                    duration="per hour",
+                    is_school=reservation_data['is_school'],
+                    is_gov=reservation_data['is_gov'],
+                    is_foreign=reservation_data['is_foreign'],
+                    is_competitive=reservation_data['is_competitive']
+                ).first()
+
+                if court_rate:
+                    amount += duration_hours * court_rate.rate * reservation_data['num_of_courts']
+                else:
+                    all_court_rates_found = False
+                    break  # No need to check further if any CourtRate is missing
+
+            # Handle day rate reservations
+            elif reservation_data['rate_type'] == 'day_rate':
+                if not duration_type:
+                    return Response(
+                        {'error': 'Duration type is required for day rate.'},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+
+                # Retrieve CourtRate for day rate
+                duration_label = "per full day" if duration_type == 'full_day' else "per half day"
+                court_rate = CourtRate.objects.filter(
+                    court=court,
+                    activity=reservation_data['activity'],
+                    duration=duration_label,
+                    is_school=reservation_data['is_school'],
+                    is_gov=reservation_data['is_gov'],
+                    is_foreign=reservation_data['is_foreign'],
+                    is_competitive=reservation_data['is_competitive']
+                ).first()
+
+                if court_rate:
+                    amount += court_rate.rate * reservation_data['num_of_courts']
+                else:
+                    all_court_rates_found = False
+                    break  # No need to check further if any CourtRate is missing
+
+        # If no matching CourtRate was found for any of the dates, don't save the reservation
+        if not all_court_rates_found:
+            return Response(
+                {'error': 'No matching CourtRate found for one or more of the provided dates.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # If all validations pass, create the ReservationRequest
+        reservation_request = ReservationRequestSerializer(data=reservation_data)
+
+        # Check if the serializer is valid
+        if reservation_request.is_valid():
+            reservation_request = reservation_request.save()
+        else:
+            return Response(
+                {'error': 'Reservation request data is invalid.', 'details': reservation_request.errors},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Create ReservationDates after the ReservationRequest is saved
+        for date_entry in dates:
+            reservation_date = parse_date(date_entry.get('date'))
+            start_time = date_entry.get('start_time')
+            end_time = date_entry.get('end_time')
+            duration_type = date_entry.get('duration_type')
+
+            # Handle hourly rate reservations
+            if reservation_data['rate_type'] == 'hourly_rate':
+                ReservationDate.objects.create(
+                    reservation_request=reservation_request,
+                    date=reservation_date,
+                    start_time=start_time,
+                    end_time=end_time,
+                    duration_type=None
+                )
+
+            # Handle day rate reservations
+            elif reservation_data['rate_type'] == 'day_rate':
+                ReservationDate.objects.create(
+                    reservation_request=reservation_request,
+                    date=reservation_date,
+                    duration_type=duration_type
+                )
+
+        # Update and save the total amount for the ReservationRequest
+        reservation_request.amount = amount
+        reservation_request.save()
+
+        return Response({'message': 'Reservation request created successfully.', 'amount': amount}, status=status.HTTP_201_CREATED)
+
+#Approve reservation Request and create reservation
+class ApproveReservationRequestView(APIView):
+    # permission_classes = [IsAdminUser]  # Ensure that only admins can approve the reservation request
+
+    def post(self, request, reservation_request_id):
+        reservation_request = get_object_or_404(ReservationRequest, res_req_id=reservation_request_id)
+
+        if reservation_request.status in ['approved', 'confirmed']:
+            return Response(
+                {'error': 'This ReservationRequest has already been approved or confirmed.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Update ReservationRequest status to 'approved'
+        reservation_request.status = 'approved'
+        
+        # Create a new Reservation 
+        reservation_status = 'confirmed' if reservation_request.is_pdn else 'approved'
+
+        reservation = Reservation.objects.create(
+            res_req=reservation_request,  
+            email=reservation_request.email,
+            court=reservation_request.court,
+            num_of_courts=reservation_request.num_of_courts,
+            activity=reservation_request.activity,
+            rate_type=reservation_request.rate_type,
+            user=reservation_request.user,
+            requirement=reservation_request.requirement,
+            is_school=reservation_request.is_school,
+            is_gov=reservation_request.is_gov,
+            is_foreign=reservation_request.is_foreign,
+            is_competitive=reservation_request.is_competitive,
+            org_name=reservation_request.org_name,
+            is_pdn=reservation_request.is_pdn,
+            num_of_participants=reservation_request.num_of_participants,
+            amount=reservation_request.amount,
+            status=reservation_status,
+        )
+
+        # update the ReservationDate records associated with this ReservationRequest
+        reservation_dates = ReservationDate.objects.filter(reservation_request=reservation_request)
+
+        for reservation_date in reservation_dates:
+            reservation_date.reservation = reservation
+            reservation_date.save()
+
+        reservation_request.save()
+
+        return Response(
+            {'message': f'ReservationRequest approved and Reservation created with status {reservation_status}.'},
+            status=status.HTTP_200_OK
+        )
+
+#Cancel reservation Request
+class CancelReservationRequestView(APIView):
+    def post(self, request, reservation_request_id):
+        reservation_request = get_object_or_404(ReservationRequest, res_req_id=reservation_request_id)
+
+        if reservation_request.status == 'cancelled':
+            return Response(
+                {'error': 'This ReservationRequest is already canceled.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Update the ReservationRequest status to 'cancelled'
+        reservation_request.status = 'cancelled'
+        
+        # Optionally, update the status of the related Reservation to 'cancelled' (if applicable)
+        if reservation_request.reservation:  # Check if there is a linked Reservation
+            reservation = reservation_request.reservation
+            reservation.status = 'cancelled'
+            reservation.save()
+
+        # Save the updated ReservationRequest
+        reservation_request.save()
+
+        return Response(
+            {'message': 'ReservationRequest has been canceled successfully.'},
+            status=status.HTTP_200_OK
+        )
+
+#update reservation request(only with admin preveleges)(current version doesnt change amount)
+class UpdateReservationRequestView(APIView):
+    def put(self, request, reservation_request_id):
+        reservation_request = get_object_or_404(ReservationRequest, res_req_id=reservation_request_id)
+
+        serializer = ReservationRequestSerializer(reservation_request, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            # Compare previous and new data to identify changes
+            updated_data = {}
+            for field, value in serializer.validated_data.items():
+                old_value = getattr(reservation_request, field)
+                if old_value != value:
+                    updated_data[field] = {'old_value': old_value, 'new_value': value}
+            
+            # Save the updated ReservationRequest
+            serializer.save()
+
+            return Response(
+                {
+                    'message': 'ReservationRequest updated successfully.',
+                    'updated_fields': updated_data
+                },
+                status=status.HTTP_200_OK
+            )
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#reject reservation request(only with admin preveleges)
+class RejectReservationRequestView(APIView):
+    def post(self, request, reservation_request_id):
+        reservation_request = get_object_or_404(ReservationRequest, res_req_id=reservation_request_id)
+        
+        if reservation_request.status == 'rejected':
+            return Response(
+                {'error': 'This ReservationRequest is already rejected.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Update the status to 'rejected'
+        reservation_request.status = 'rejected'
+        reservation_request.save()
+
+        return Response(
+            {'message': 'ReservationRequest has been rejected successfully.'},
+            status=status.HTTP_200_OK
+        )
 

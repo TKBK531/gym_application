@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Court, Facility, ReservationRequest, Reservation, Payment, CourtRate
+from .models import Court, Facility, ReservationRequest, Reservation, Payment, CourtRate, ReservationDate
 from django.contrib.auth.models import User
 
 class FacilitySerializer(serializers.ModelSerializer):
@@ -17,7 +17,7 @@ class CourtSerializer(serializers.ModelSerializer):
 
 
 class CourtRateSerializer(serializers.ModelSerializer):
-    Court = CourtSerializer()
+    court = CourtSerializer()
 
     class Meta:
         model = CourtRate
@@ -33,7 +33,7 @@ class ReservationRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReservationRequest
         fields = [
-            'res_req_id', 'date', 'email', 'start_time', 'end_time', 
+            'res_req_id',  'email', 'rate_type',
             'court', 'num_of_courts', 'activity', 'user', 'requirement', 'is_school',
             'is_gov', 'is_foreign','is_competitive', 'org_name','is_pdn',
             'num_of_participants', 'admin_staff_id', 'status', 
@@ -48,13 +48,24 @@ class ReservationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reservation
         fields = [
-            'reservation_id', 'res_req', 'date', 'email', 'start_time', 'end_time', 
+            'reservation_id', 'res_req', 'email', 'rate_type',
             'court', 'num_of_courts', 'activity', 'user', 'requirement', 'is_school',
             'is_gov', 'is_foreign','is_competitive', 'org_name','is_pdn', 
             'num_of_participants', 'is_payment_needed', 'amount', 'status', 
             'created_at', 'updated_at'
         ]
 
+
+class ReservationDateSerializer(serializers.ModelSerializer):
+    reservation_request = serializers.PrimaryKeyRelatedField(queryset=ReservationRequest.objects.all())
+    reservation = serializers.PrimaryKeyRelatedField(queryset=Reservation.objects.all(), required=False, allow_null=True)
+
+    class Meta:
+        model = ReservationDate
+        fields = [
+            'id', 'reservation_request', 'reservation', 'date', 'start_time', 
+            'end_time', 'duration_type'
+        ]
 
 
 class PaymentSerializer(serializers.ModelSerializer):
