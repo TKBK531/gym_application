@@ -33,17 +33,16 @@
 
 
 # models.py
-# from django.db import models
-
-# class Equipment(models.Model):
-#     item = models.CharField(max_length=100)
-#     sport = models.IntegerField()
-#     count = models.IntegerField(default=0)
-
-#     def __str__(self):
-#         return self.item
-
 from django.db import models
+
+class Equipment(models.Model):
+    item = models.CharField(max_length=100)
+    sport = models.IntegerField()
+    count = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.item
+
 
 class ItemType(models.Model):
     name = models.CharField(max_length=100)
