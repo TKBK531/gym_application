@@ -13,6 +13,8 @@ const Table = ({ userRole, selectedCategory }) => {
     status: 'On going',
     category: selectedCategory,
   });
+  const [events, setEvents] = useState([]);
+  const [eventToDelete, setEventToDelete] = useState(null); // State to track the event to be deleted
 
   const userData = JSON.parse(localStorage.getItem("userData"));
   const user_type = userData.profile.user_type;
@@ -25,13 +27,38 @@ const Table = ({ userRole, selectedCategory }) => {
     'Table Tennis (Men)', 'Tennis (Men)', 'Volleyball (Women)', 'Volleyball (Men)', 'Weight Lifting', 'Wrestling'
   ];
 
-  const [events, setEvents] = useState([
-    { sport: 'Cricket', place: 'Cricket Ground', time: '10:00 AM', date: '13/05/2022', status: 'On going', category: 'Sports' },
-    { sport: 'Chess (Women)', place: 'Gym', time: '10:00 AM', date: '13/05/2022', status: 'Cancel', category: 'Sports' },
-    { sport: 'Concert', place: 'Main Auditorium', time: '7:00 PM', date: '15/06/2022', status: 'On going', category: 'Musical Shows' },
-    { sport: 'Drama Night', place: 'Theater', time: '8:00 PM', date: '20/06/2022', status: 'Up coming', category: 'Other Functions' },
-    { sport: 'Football', place: 'Stadium', time: '5:00 PM', date: '22/05/2022', status: 'On going', category: 'Sports' },
-  ]);
+  useEffect(() => {
+    fetchEvents();
+  }, [selectedCategory]);
+
+  const fetchEvents = async () => {
+    let endpoint = '';
+    switch (selectedCategory) {
+      case 'Sports':
+        endpoint = '/event/list-sport-events/';
+        break;
+      case 'Musical Shows':
+        endpoint = '/event/list-musical-show-events/';
+        break;
+      case 'Other Functions':
+        endpoint = '/event/list-other-function-events/';
+        break;
+      default:
+        endpoint = '/event/list-events/';
+        break;
+    }
+
+    try {
+      const response = await api.get(endpoint);
+      if (response.data.status === 'success') {
+        const sortedEvents = response.data.data.sort((a, b) => new Date(a.event.date) - new Date(b.event.date));
+        setEvents(sortedEvents);
+      }
+      console.log('Events:', response.data.data);
+    } catch (error) {
+      console.error('Error fetching events:', error.message);
+    }
+  };
 
   const handleModalToggle = () => {
     setIsModalOpen(!isModalOpen);
@@ -56,14 +83,28 @@ const Table = ({ userRole, selectedCategory }) => {
     });
   };
 
-  // Filter events based on selected category and search term
+  const handleDeleteClick = (event) => {
+    setEventToDelete(event);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      const response = await api.delete(`/event/delete-event/${eventToDelete.event.id}/`);
+      if (response.data.status === 'success') {
+        fetchEvents(); // Reload the table data
+        setEventToDelete(null);
+      }
+    } catch (error) {
+      console.error('Error deleting event:', error.message);
+    }
+  };
+
+  // Filter events based on search term
   const filteredEvents = events.filter(
     item =>
-      item.category === selectedCategory && (
-        item.place.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.time.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.status.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+      item.event.place.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.event.time.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.event.status.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Determine the label for the "Sport" column based on the selectedCategory
@@ -128,6 +169,19 @@ const Table = ({ userRole, selectedCategory }) => {
     }
   };
 
+  const getRowClass = (eventType) => {
+    switch (eventType) {
+      case 'sport':
+        return 'bg-blue-100';
+      case 'musical_show':
+        return 'bg-green-100';
+      case 'other_function':
+        return 'bg-yellow-100';
+      default:
+        return '';
+    }
+  };
+
   return (
     <div className="p-5">
       {(userRole === 'staff' || userRole === 'admin') && (
@@ -149,7 +203,7 @@ const Table = ({ userRole, selectedCategory }) => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        {user_type === "staff" && (
+        {user_type === "staff" || user_type === "admin" && (
           <button
             className="ml-4 bg-yellow-300 text-black py-3 px-4 rounded text-sm hover:bg-yellow-500 w-1/4"
             onClick={handleModalToggle}
@@ -168,25 +222,25 @@ const Table = ({ userRole, selectedCategory }) => {
               <th className="border-b-2 p-4 text-left bg-gray-100">Time</th>
               <th className="border-b-2 p-4 text-left bg-gray-100">Date</th>
               <th className="border-b-2 p-4 text-left bg-gray-100">Status</th>
-              {user_type === "staff" && (
+              {user_type === "staff" || user_type === "admin" && (
                 <th className="border-b-2 p-4 text-left bg-gray-100">Action</th>
               )}
             </tr>
           </thead>
           <tbody>
             {filteredEvents.map((item, index) => (
-              <tr key={index} className="hover:bg-gray-50">
-                <td className="border-b p-4">{item.sport}</td>
-                <td className="border-b p-4">{item.place}</td>
-                <td className="border-b p-4">{item.time}</td>
-                <td className="border-b p-4">{item.date}</td>
-                <td className={`border-b p-4 ${item.status === 'On going' ? 'text-green-500' : item.status === 'Up coming' ? 'text-orange-500' : 'text-red-500'}`}>
-                  {item.status}
+              <tr key={index} className={`hover:bg-gray-50 ${getRowClass(item.event.event_type)}`}>
+                <td className="border-b p-4">{item.event.name}</td>
+                <td className="border-b p-4">{item.event.place}</td>
+                <td className="border-b p-4">{item.event.time}</td>
+                <td className="border-b p-4">{item.event.date}</td>
+                <td className={`border-b p-4 ${item.event.status === 'On going' ? 'text-green-500' : item.event.status === 'Up coming' ? 'text-orange-500' : 'text-red-500'}`}>
+                  {item.event.status}
                 </td>
-                {user_type === "staff" && (
+                {user_type === "staff" || user_type === "admin" && (
                   <td className="border-b p-4">
                     <button className="mr-3">✏️</button>
-                    <button className=" ">🗑️</button>
+                    <button className="delete-btn" onClick={() => handleDeleteClick(item)}>🗑️</button>
                   </td>
                 )}
               </tr>
@@ -266,6 +320,19 @@ const Table = ({ userRole, selectedCategory }) => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {eventToDelete && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-5 rounded shadow-lg">
+            <h2 className="text-lg font-semibold mb-4">Confirm Deletion</h2>
+            <p>Are you sure you want to delete the event "{eventToDelete.event.name}"?</p>
+            <div className="mt-4 flex justify-end">
+              <button className="bg-gray-300 text-black py-2 px-4 rounded mr-2" onClick={() => setEventToDelete(null)}>Cancel</button>
+              <button className="bg-red-500 text-white py-2 px-4 rounded" onClick={confirmDelete}>Confirm</button>
+            </div>
           </div>
         </div>
       )}
