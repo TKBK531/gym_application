@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import api from '../api';
 
 const Table = ({ userRole, selectedCategory }) => {
   const [searchTerm, setSearchTerm] = useState('');
