@@ -86,7 +86,7 @@ from django.contrib.auth.models import User
 
 
 class Members(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)  # Enforces one member per user
     age = models.IntegerField()
     household = models.CharField(max_length=100)
     membership = models.CharField(max_length=50)

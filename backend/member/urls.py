@@ -3,7 +3,7 @@ from .views import (
     CreateMemberView,
     CreatePostgraduateMemberView,
     CreateAcademicStaffMemberView,
-    CreateOutsidersMemberView,
+    CreateOutsiderMemberView,
     CreateFamilyView,
     CreateFamilyMemberView,
 )
@@ -14,5 +14,5 @@ urlpatterns = [
     path("academic-staff-members/create/", CreateAcademicStaffMemberView.as_view(), name="create-academic-staff-member"),
     path("families/create/", CreateFamilyView.as_view(), name="create-family"),
     path("family-members/create/", CreateFamilyMemberView.as_view(), name="create-family-member"),
-    path("outsiders-members/create/", CreateOutsidersMemberView.as_view(), name="create-outsiders-member"), 
+    path("outsiders-members/create/", CreateOutsiderMemberView.as_view(), name="create-outsiders-member"), 
 ]
