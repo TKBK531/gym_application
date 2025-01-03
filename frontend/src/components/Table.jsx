@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import api from '../api';
 
 const Table = ({ userRole, selectedCategory }) => {
@@ -15,20 +16,16 @@ const Table = ({ userRole, selectedCategory }) => {
   });
   const [events, setEvents] = useState([]);
   const [eventToDelete, setEventToDelete] = useState(null); // State to track the event to be deleted
+  const [sportsList, setSportsList] = useState([]); // State to store the sports list
 
   const userData = JSON.parse(localStorage.getItem("userData"));
   const user_type = userData.profile.user_type;
 
-  const sportsList = [
-    'Badminton (Women)', 'Badminton (Men)', 'Basketball (Women)', 'Basketball (Men)', 'Carrom', 'Chess (Women)',
-    'Chess (Men)', 'Cricket', 'Elle (Women)', 'Elle (Men)', 'Football', 'Hockey (Women)', 'Karate (Women)',
-    'Karate (Men)', 'Kick Boxing', 'Netball', 'Power Lifting', 'Road Race', 'Rugby Football', 'Taekwondo (Women)',
-    'Taekwondo (Men)', 'Track & Field (Men & Women)', 'Track & Field (Men)', 'Swimming (Men)', 'Table Tennis (Women)',
-    'Table Tennis (Men)', 'Tennis (Men)', 'Volleyball (Women)', 'Volleyball (Men)', 'Weight Lifting', 'Wrestling'
-  ];
+  const placesList = ['Gymnasium', 'Ground', 'Pool'];
 
   useEffect(() => {
     fetchEvents();
+    fetchSports();
   }, [selectedCategory]);
 
   const fetchEvents = async () => {
@@ -60,6 +57,18 @@ const Table = ({ userRole, selectedCategory }) => {
     }
   };
 
+  const fetchSports = async () => {
+    try {
+      const response = await api.get('/sport/all-sports/');
+      if (response.data.status === 'success') {
+        setSportsList(response.data.data);
+      }
+      console.log('Sports:', response.data.data);
+    } catch (error) {
+      console.error('Error fetching sports:', error.message);
+    }
+  };
+
   const handleModalToggle = () => {
     setIsModalOpen(!isModalOpen);
   };
@@ -69,18 +78,47 @@ const Table = ({ userRole, selectedCategory }) => {
     setNewEvent({ ...newEvent, [name]: value });
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    setEvents([...events, newEvent]);
-    setIsModalOpen(false);
-    setNewEvent({
-      sport: '',
-      place: '',
-      time: '',
-      date: '',
-      status: '',
-      category: selectedCategory,
-    });
+
+    let requestBody = {
+      event_type: selectedCategory.toLowerCase().replace(' ', '_'),
+      event: {
+        event: {
+          name: newEvent.sport,
+          place: newEvent.place,
+          time: newEvent.time,
+          date: newEvent.date,
+          status: newEvent.status.toLowerCase().replace(' ', '_')
+        }
+      }
+    };
+
+    if (selectedCategory === 'Sports') {
+      const selectedSport = sportsList.find(sport => sport.label === newEvent.sport);
+      requestBody.event.sport = selectedSport ? selectedSport.id : null;
+    }
+
+    // Print the form values in JSON format
+    console.log(JSON.stringify(requestBody, null, 2));
+
+    try {
+      const response = await api.post('/event/create-event/', requestBody);
+      if (response.data.status === 'success') {
+        fetchEvents(); // Reload the table data
+        setIsModalOpen(false);
+        setNewEvent({
+          sport: '',
+          place: '',
+          time: '',
+          date: '',
+          status: 'On going',
+          category: selectedCategory,
+        });
+      }
+    } catch (error) {
+      console.error('Error creating event:', error.message);
+    }
   };
 
   const handleDeleteClick = (event) => {
@@ -147,8 +185,8 @@ const Table = ({ userRole, selectedCategory }) => {
         >
           <option value="">Select a Sport</option>
           {sportsList.map((sport, index) => (
-            <option key={index} value={sport}>
-              {sport}
+            <option key={index} value={sport.label}>
+              {sport.label}
             </option>
           ))}
         </select>
@@ -222,7 +260,7 @@ const Table = ({ userRole, selectedCategory }) => {
               <th className="border-b-2 p-4 text-left bg-gray-100">Time</th>
               <th className="border-b-2 p-4 text-left bg-gray-100">Date</th>
               <th className="border-b-2 p-4 text-left bg-gray-100">Status</th>
-              {user_type === "staff" || user_type === "admin" && (
+              {user_type === "staff" && (
                 <th className="border-b-2 p-4 text-left bg-gray-100">Action</th>
               )}
             </tr>
@@ -237,7 +275,7 @@ const Table = ({ userRole, selectedCategory }) => {
                 <td className={`border-b p-4 ${item.event.status === 'On going' ? 'text-green-500' : item.event.status === 'Up coming' ? 'text-orange-500' : 'text-red-500'}`}>
                   {item.event.status}
                 </td>
-                {user_type === "staff" || user_type === "admin" && (
+                {user_type === "staff" && (
                   <td className="border-b p-4">
                     <button className="mr-3">✏️</button>
                     <button className="delete-btn" onClick={() => handleDeleteClick(item)}>🗑️</button>
@@ -260,19 +298,25 @@ const Table = ({ userRole, selectedCategory }) => {
               </div>
               <div className="mb-4">
                 <label className="block text-gray-700">Place:</label>
-                <input
-                  type="text"
+                <select
                   name="place"
                   value={newEvent.place}
                   onChange={handleChange}
                   className="w-full p-2 border border-gray-300 rounded"
                   required
-                />
+                >
+                  <option value="">Select a Place</option>
+                  {placesList.map((place, index) => (
+                    <option key={index} value={place.toLowerCase()}>
+                      {place}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="mb-4">
                 <label className="block text-gray-700">Time:</label>
                 <input
-                  type="text"
+                  type="time"
                   name="time"
                   value={newEvent.time}
                   onChange={handleChange}
@@ -338,6 +382,11 @@ const Table = ({ userRole, selectedCategory }) => {
       )}
     </div>
   );
+};
+
+Table.propTypes = {
+  userRole: PropTypes.string.isRequired,
+  selectedCategory: PropTypes.string.isRequired,
 };
 
 export default Table;
