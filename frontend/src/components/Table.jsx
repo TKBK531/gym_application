@@ -89,7 +89,7 @@ const Table = ({ userRole, selectedCategory }) => {
           place: newEvent.place,
           time: newEvent.time,
           date: newEvent.date,
-          status: newEvent.status.toLowerCase().replace(' ', '_')
+          status: newEvent.status.toLowerCase().replace(' ', '')
         }
       }
     };
@@ -343,9 +343,10 @@ const Table = ({ userRole, selectedCategory }) => {
                   onChange={handleChange}
                   className="w-full p-2 border border-gray-300 rounded"
                 >
-                  <option value="On going">On going</option>
-                  <option value="Up coming">Up coming</option>
-                  <option value="Cancel">Cancel</option>
+                  <option value="ongoing">On going</option>
+                  <option value="upcoming">Up coming</option>
+                  <option value="postponed">Postponed</option>
+                  <option value="scheduled">Scheduled</option>
                 </select>
               </div>
               <div className="flex justify-end">

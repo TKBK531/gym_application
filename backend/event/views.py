@@ -23,11 +23,11 @@ class CreateEventView(generics.GenericAPIView):
         event_type = request.data.get("event_type")
         event_data = request.data.get("event")
 
-        if event_type == "sport":
+        if event_type == "sports":
             serializer = SportEventSerializer(data=event_data)
-        elif event_type == "musical_show":
+        elif event_type == "musical_shows":
             serializer = MusicalShowEventSerializer(data=event_data)
-        elif event_type == "other_function":
+        elif event_type == "other_functions":
             serializer = OtherFunctionEventSerializer(data=event_data)
         else:
             return Response(
