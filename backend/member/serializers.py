@@ -137,6 +137,8 @@
 
 
 from rest_framework import serializers
+
+from userProfile.models import UserProfile
 from .models import (
     Members, 
     PostgraduateMember, 
@@ -172,23 +174,44 @@ class PostgraduateMemberSerializer(serializers.ModelSerializer):
     #     postgraduate_member = PostgraduateMember.objects.create(members=member, **validated_data)
     #     return postgraduate_member
 
+        # def create(self, validated_data):
+        #     members_data = validated_data.pop('members')
+
+        #     # Ensure the Members instance exists or create it
+        #     user = self.context['request'].user
+        #     member, created = Members.objects.get_or_create(
+        #         user=user,
+        #         defaults={
+        #             'age': members_data.get('age'),
+        #             'household': members_data.get('household'),
+        #             'membership': members_data.get('membership'),
+        #             'residence': members_data.get('residence'),
+        #             'price': members_data.get('price'),
+        #         }
+        #     )
+
+        #     # Create the PostgraduateMember object
+        #     postgraduate_member = PostgraduateMember.objects.create(members=member, **validated_data)
+        #     return postgraduate_member
+        
         def create(self, validated_data):
             members_data = validated_data.pop('members')
-
-            # Ensure the Members instance exists or create it
             user = self.context['request'].user
-            member, created = Members.objects.get_or_create(
+
+            # Fetch user profile details
+            user_profile = UserProfile.objects.get(user=user)
+            member, created = Members.objects.get(
                 user=user,
                 defaults={
-                    'age': members_data.get('age'),
-                    'household': members_data.get('household'),
-                    'membership': members_data.get('membership'),
-                    'residence': members_data.get('residence'),
-                    'price': members_data.get('price'),
+                    'age': user_profile.date_of_birth,
+                    'household': members_data.get('household', ''),
+                    'membership': members_data.get('membership', ''),
+                    'residence': user_profile.address,
+                    'price': members_data.get('price', 0),
                 }
             )
 
-            # Create the PostgraduateMember object
+            # Create PostgraduateMember
             postgraduate_member = PostgraduateMember.objects.create(members=member, **validated_data)
             return postgraduate_member
 

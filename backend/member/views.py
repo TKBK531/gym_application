@@ -7,6 +7,8 @@ from django.http import HttpResponse
 from rest_framework import generics, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.http import JsonResponse
+
+from userProfile.models import UserProfile
 from .models import Members, PostgraduateMember, AcademicStaffMember, OutsidersMember, Family, FamilyMembers
 from .serializers import (
     MembersSerializer,
@@ -18,81 +20,159 @@ from .serializers import (
 )
 
 
+# # -------------CreateMemberView-------------
+# class CreateMemberView(generics.CreateAPIView):
+#     queryset = Members.objects.all()
+#     serializer_class = MembersSerializer
+#     permission_classes = [AllowAny]
+
+#     def create(self, request, *args, **kwargs):
+#         data = request.data.copy()
+#         user = request.user
+
+#         # Ensure the user is authenticated
+#         if user.is_anonymous:
+#             return JsonResponse(
+#                 {"status": "error", "message": "Authentication required"},
+#                 status=status.HTTP_401_UNAUTHORIZED,
+#             )
+
+#         # Add the logged-in user to the data
+#         data["user"] = user.id
+
+#         serializer = self.get_serializer(data=data)
+#         serializer.is_valid(raise_exception=True)
+#         member = serializer.save()
+
+#         return_resp = {
+#             "status": "success",
+#             "message": "Member Info Added Successfully",
+#             "data": serializer.data,
+#         }
+
+#         return JsonResponse(return_resp, status=status.HTTP_200_OK) 
+
 # -------------CreateMemberView-------------
 class CreateMemberView(generics.CreateAPIView):
     queryset = Members.objects.all()
     serializer_class = MembersSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-        data = request.data.copy()
         user = request.user
 
-        # Ensure the user is authenticated
-        if user.is_anonymous:
-            return JsonResponse(
-                {"status": "error", "message": "Authentication required"},
-                status=status.HTTP_401_UNAUTHORIZED,
-            )
-
-        # Add the logged-in user to the data
-        data["user"] = user.id
+        # Fetch user profile details
+        user_profile = UserProfile.objects.get(user=user)
+        data = {
+            'user': user.id,
+            'age': user_profile.date_of_birth,
+            'household': request.data.get('household', ''),
+            'membership': request.data.get('membership', ''),
+            'residence': user_profile.address,
+            'price': request.data.get('price', 0),
+        }
 
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         member = serializer.save()
 
-        return_resp = {
+        return JsonResponse({
             "status": "success",
             "message": "Member Info Added Successfully",
             "data": serializer.data,
-        }
+        }, status=status.HTTP_201_CREATED)
 
-        return JsonResponse(return_resp, status=status.HTTP_200_OK)
 
+# # -------------CreatePostgraduateMemberView-------------
+# class CreatePostgraduateMemberView(generics.CreateAPIView):
+#     queryset = PostgraduateMember.objects.all()
+#     serializer_class = PostgraduateMemberSerializer
+#     permission_classes = [AllowAny]
+
+#     def create(self, request, *args, **kwargs):
+#         data = request.data.copy()
+#         user = request.user
+
+#         if user.is_anonymous:
+#             return JsonResponse(
+#                 {"status": "error", "message": "Authentication required"},
+#                 status=status.HTTP_401_UNAUTHORIZED,
+#             )
+        
+#         # Ensure the Members instance exists
+#         members_data = data.pop('members')
+#         member, created = Members.objects.get(
+#             user=user,
+#             defaults={
+#                 'age': members_data.get('age'),
+#                 'household': members_data.get('household'),
+#                 'membership': members_data.get('membership'),
+#                 'residence': members_data.get('residence'),
+#                 'price': members_data.get('price'),
+#             }
+#         )
+
+#         data["members"]["user"] = user.id  # Add the logged-in user ID to nested data
+
+#         serializer = self.get_serializer(data=data)
+#         serializer.is_valid(raise_exception=True)
+#         postgraduate_member = serializer.save()
+
+#         return_resp = {
+#             "status": "success",
+#             "message": "Postgraduate Member Info Added Successfully",
+#             "data": serializer.data,
+#         }
+
+#         return JsonResponse(return_resp, status=status.HTTP_200_OK)
 
 # -------------CreatePostgraduateMemberView-------------
 class CreatePostgraduateMemberView(generics.CreateAPIView):
     queryset = PostgraduateMember.objects.all()
     serializer_class = PostgraduateMemberSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-        data = request.data.copy()
         user = request.user
 
-        if user.is_anonymous:
+        # Ensure the user has a profile
+        try:
+            user_profile = UserProfile.objects.get(user=user)
+        except UserProfile.DoesNotExist:
             return JsonResponse(
-                {"status": "error", "message": "Authentication required"},
-                status=status.HTTP_401_UNAUTHORIZED,
+                {"status": "error", "message": "User profile not found."},
+                status=status.HTTP_400_BAD_REQUEST,
             )
-        
-        # Ensure the Members instance exists
-        members_data = data.pop('members')
-        member, created = Members.objects.get(
-            user=user,
-            defaults={
-                'age': members_data.get('age'),
-                'household': members_data.get('household'),
-                'membership': members_data.get('membership'),
-                'residence': members_data.get('residence'),
-                'price': members_data.get('price'),
-            }
-        )
 
-        data["members"]["user"] = user.id  # Add the logged-in user ID to nested data
+        # Fetch user profile details
+        user_profile = UserProfile.objects.get(user=user)
+        members_data = {
+            'user': user.id,
+            'age': user_profile.date_of_birth,
+            'household': request.data.get('household', ''),
+            'membership': request.data.get('membership', ''),
+            'residence': user_profile.address,
+            'price': request.data.get('price', 0),
+        }
 
-        serializer = self.get_serializer(data=data)
+        member, created = Members.objects.get_or_create(user=user, defaults=members_data)
+
+        # Prepare data for PostgraduateMember
+        postgraduate_data = {
+            'members': member.id,
+            'pg_name': request.data.get('pg_name', ''),
+            'stu_reg_no': request.data.get('stu_reg_no', ''),
+        }
+
+        serializer = self.get_serializer(data=postgraduate_data)
         serializer.is_valid(raise_exception=True)
         postgraduate_member = serializer.save()
 
-        return_resp = {
+        return JsonResponse({
             "status": "success",
             "message": "Postgraduate Member Info Added Successfully",
             "data": serializer.data,
-        }
-
-        return JsonResponse(return_resp, status=status.HTTP_200_OK)
+        }, status=status.HTTP_201_CREATED)
 
 
 # -------------CreateAcademicStaffMemberView-------------
