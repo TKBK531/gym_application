@@ -1,5 +1,5 @@
 from rest_framework.views import APIView
-from .models import Reservation, Facility, Court, ReservationRequest, CourtRate,ReservationDate
+from .models import Reservation, Facility, Court, ReservationRequest, CourtRate,ReservationDate, ReservationParticipant
 from .serializers import FacilitySerializer, CourtSerializer, CourtRateSerializer, ReservationRequestSerializer, ReservationDateSerializer, ReservationSerializer
 from rest_framework.response import Response
 from rest_framework import status
@@ -7,10 +7,13 @@ from datetime import datetime,timedelta
 from django.db import transaction
 from django.utils.dateparse import parse_date
 from django.shortcuts import get_object_or_404
+from rest_framework.generics import ListAPIView,CreateAPIView
+from django.utils import timezone
+import logging
 
 
 
-#Facility views-------------------------------------------------------------------
+#Facility views-------------------------------------------------------------------------------------------------------------------------------------------------
 #return all Facilities
 class AllFacilitiesView(APIView):
     def get(self, request):
@@ -36,8 +39,7 @@ class AddFacilityView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    
+  
 #Delete facility
 class DeleteFacilityView(APIView):
     def delete(self, request):
@@ -76,9 +78,7 @@ class DeleteFacilityView(APIView):
                 status=status.HTTP_404_NOT_FOUND
             )
 
-
-
-#Court Views------------------------------------------------------------------------------
+#Court Views-----------------------------------------------------------------------------------------------------------------------------------------------------
 #return all courts
 class AllCourtsView(APIView):
     def get(self, request):
@@ -192,9 +192,10 @@ class DeleteCourtView(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
-       
-#Court Rate Views--------------------------------------------------------------------------------------------------------- 
-#return all court Rates or filter by the court 
+
+
+#Court Rate Views--------------------------------------------------------------------------------------------------------------------------------------------------
+#return all court Rates
 class AllCourtRatesView(APIView):
     def get(self, request):
         court_name = request.query_params.get("court_name")
@@ -384,6 +385,7 @@ class DeleteCourtRateView(APIView):
             )
 
 
+
 #Reservation Request Views--------------------------------------------------------------------------------------------------------------------------------------------------
 #return all reservation requests
 class AllReservationRequestsView(APIView):
@@ -400,7 +402,7 @@ class AddReservationRequestView(APIView):
         # Extract relevant data from the request
         facility_name = data.get('facility_name')
         court_name = data.get('court_name')
-        court = get_object_or_404(Court, facility__facility_name=facility_name, court_name=court_name)
+        court = get_object_or_404(Court, facility__facility_name__iexact=facility_name, court_name__iexact=court_name)
 
         # Filter the relevant data for ReservationRequest
         reservation_data = {
@@ -425,51 +427,18 @@ class AddReservationRequestView(APIView):
         # Initialize amount and flag to check if court rates are found
         amount = 0
         all_court_rates_found = True
-        reservation_request = None
 
-        # Initialize date validation
+
+        # Validate rate type and calculate the amount
         dates = data.get("dates", [])
-        current_date = datetime.now().date()
-        temp_date = current_date
-        days_ahead = 0
-
-        # Ensure the reservation is at least 7 working days ahead
-        while days_ahead < 7:
-            temp_date += timedelta(days=1)
-            if temp_date.weekday() < 5:  # Only consider weekdays (Mon-Fri)
-                days_ahead += 1
-
-        # Validate if all dates are at least 7 weekdays ahead and available
+        rate_type = reservation_data['rate_type']
         for date_entry in dates:
             reservation_date = parse_date(date_entry.get('date'))
-            if reservation_date < temp_date:
-                return Response(
-                    {'error': f'Reservation date {reservation_date} must be at least 7 working days ahead.'},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
 
-            start_time = date_entry.get('start_time')
-            end_time = date_entry.get('end_time')
-            duration_type = date_entry.get('duration_type')
-
-            # Check if the court is available for the requested dates and times
-            court_availability = ReservationDate.objects.filter(
-                reservation_request__court=court, date=reservation_date,
-                start_time__lt=end_time, end_time__gt=start_time
-            )
-            if court_availability.exists():
-                return Response(
-                    {'error': f'The court is already booked for {reservation_date} from {start_time} to {end_time}.'},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
-            # Handle hourly rate reservations
-            if reservation_data['rate_type'] == 'hourly_rate':
-                if not start_time or not end_time:
-                    return Response(
-                        {'error': 'Start time and end time are required for hourly rate.'},
-                        status=status.HTTP_400_BAD_REQUEST
-                    )
+            #hourly
+            if rate_type == 'hourly_rate':
+                start_time = date_entry.get('start_time')
+                end_time = date_entry.get('end_time')
 
                 start = datetime.strptime(start_time, "%H:%M:%S")
                 end = datetime.strptime(end_time, "%H:%M:%S")
@@ -490,17 +459,12 @@ class AddReservationRequestView(APIView):
                     amount += duration_hours * court_rate.rate * reservation_data['num_of_courts']
                 else:
                     all_court_rates_found = False
-                    break  # No need to check further if any CourtRate is missing
+                    break
 
-            # Handle day rate reservations
-            elif reservation_data['rate_type'] == 'day_rate':
-                if not duration_type:
-                    return Response(
-                        {'error': 'Duration type is required for day rate.'},
-                        status=status.HTTP_400_BAD_REQUEST
-                    )
+            #day rate        
+            elif rate_type == 'day_rate':
+                duration_type = date_entry.get('duration_type')
 
-                # Retrieve CourtRate for day rate
                 duration_label = "per full day" if duration_type == 'full_day' else "per half day"
                 court_rate = CourtRate.objects.filter(
                     court=court,
@@ -516,7 +480,7 @@ class AddReservationRequestView(APIView):
                     amount += court_rate.rate * reservation_data['num_of_courts']
                 else:
                     all_court_rates_found = False
-                    break  # No need to check further if any CourtRate is missing
+                    break
 
         # If no matching CourtRate was found for any of the dates, don't save the reservation
         if not all_court_rates_found:
@@ -525,10 +489,8 @@ class AddReservationRequestView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # If all validations pass, create the ReservationRequest
+        # Create the ReservationRequest
         reservation_request = ReservationRequestSerializer(data=reservation_data)
-
-        # Check if the serializer is valid
         if reservation_request.is_valid():
             reservation_request = reservation_request.save()
         else:
@@ -537,30 +499,24 @@ class AddReservationRequestView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Create ReservationDates after the ReservationRequest is saved
+        # Create ReservationDates
         for date_entry in dates:
-            reservation_date = parse_date(date_entry.get('date'))
-            start_time = date_entry.get('start_time')
-            end_time = date_entry.get('end_time')
-            duration_type = date_entry.get('duration_type')
+            ReservationDate.objects.create(
+                reservation_request=reservation_request,
+                date=parse_date(date_entry.get('date')),
+                start_time=date_entry.get('start_time') if rate_type == 'hourly_rate' else None,
+                end_time=date_entry.get('end_time') if rate_type == 'hourly_rate' else None,
+                duration_type=date_entry.get('duration_type') if rate_type == 'day_rate' else None
+            )
 
-            # Handle hourly rate reservations
-            if reservation_data['rate_type'] == 'hourly_rate':
-                ReservationDate.objects.create(
-                    reservation_request=reservation_request,
-                    date=reservation_date,
-                    start_time=start_time,
-                    end_time=end_time,
-                    duration_type=None
-                )
-
-            # Handle day rate reservations
-            elif reservation_data['rate_type'] == 'day_rate':
-                ReservationDate.objects.create(
-                    reservation_request=reservation_request,
-                    date=reservation_date,
-                    duration_type=duration_type
-                )
+        # Create ReservationParticipants
+        participants = data.get("participants", [])
+        for participant in participants:
+            ReservationParticipant.objects.create(
+                reservation_request=reservation_request,
+                name=participant.get('name'),
+                nic=participant.get('nic')
+            )
 
         # Update and save the total amount for the ReservationRequest
         reservation_request.amount = amount
@@ -568,7 +524,7 @@ class AddReservationRequestView(APIView):
 
         return Response({'message': 'Reservation request created successfully.', 'amount': amount}, status=status.HTTP_201_CREATED)
 
-#Approve reservation Request and create reservation
+#Approve reservation Request and crerate reservation
 class ApproveReservationRequestView(APIView):
     # permission_classes = [IsAdminUser]  # Ensure that only admins can approve the reservation request
 
@@ -609,10 +565,14 @@ class ApproveReservationRequestView(APIView):
 
         # update the ReservationDate records associated with this ReservationRequest
         reservation_dates = ReservationDate.objects.filter(reservation_request=reservation_request)
-
         for reservation_date in reservation_dates:
             reservation_date.reservation = reservation
             reservation_date.save()
+
+        reservation_participants = ReservationParticipant.objects.filter(reservation_request=reservation_request)
+        for participant in reservation_participants:
+            participant.reservation = reservation
+            participant.save()            
 
         reservation_request.save()
 
@@ -628,7 +588,7 @@ class CancelReservationRequestView(APIView):
 
         if reservation_request.status == 'cancelled':
             return Response(
-                {'error': 'This ReservationRequest is already canceled.'},
+                {'error': 'This ReservationRequest is already cancelled.'},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -645,7 +605,7 @@ class CancelReservationRequestView(APIView):
         reservation_request.save()
 
         return Response(
-            {'message': 'ReservationRequest has been canceled successfully.'},
+            {'message': 'ReservationRequest has been cancelled successfully.'},
             status=status.HTTP_200_OK
         )
 
@@ -696,4 +656,190 @@ class RejectReservationRequestView(APIView):
             {'message': 'ReservationRequest has been rejected successfully.'},
             status=status.HTTP_200_OK
         )
+
+
+#Reservation views----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#return all reservations
+class AllReservationsView(ListAPIView):
+    queryset = Reservation.objects.all()
+    serializer_class = ReservationSerializer
+
+#Confirm reservation
+class ConfirmReservationView(APIView):
+    def post(self, request, reservation_id):
+        reservation = get_object_or_404(Reservation, reservation_id=reservation_id)
+
+        #if already confirmed
+        if reservation.status == 'confirmed':
+            return Response(
+                {'message': 'This reservation is already confirmed.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Check if the payment is confirmed
+        # if not reservation.payment_confirmed:
+        #     return Response(
+        #         {'message': 'Payment has not been confirmed for this reservation.'},
+        #         status=status.HTTP_400_BAD_REQUEST
+        #     )
+
+        reservation.status = 'confirmed'
+        reservation.save()
+        return Response(
+            {'message': 'Reservation confirmed successfully.'},
+            status=status.HTTP_200_OK
+        )
+
+#cancel Reservation
+class CancelReservationView(APIView):
+    def post(self, request, reservation_id):
+        reservation = get_object_or_404(Reservation, reservation_id=reservation_id)
+
+        reservation_dates = reservation.reservation_dates.all()
+
+        # Check if all reservation dates are eligible for cancellation (at least 4 days before the date)
+        current_time = timezone.now()
+        cancelation_deadline = timedelta(days=4)
+
+        for reservation_date in reservation_dates:
+            if reservation_date.date - current_time.date() < cancelation_deadline:
+                return Response(
+                    {'message': f"Reservation cannot be cancelled for {reservation_date.date} as the cancelation period has passed."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+        #notify about the no-refund policy for confirmed reservations
+        if reservation.status == 'confirmed':
+            reservation.status = 'cancelled'
+            reservation.save()
+            return Response(
+                {
+                    'message': 'Reservation has been successfully cancelled, but no refund will be provided for this confirmed reservation.'
+                },
+                status=status.HTTP_200_OK
+            )
+
+        # For other statuses(pending, approved)
+        reservation.status = 'cancelled'
+        reservation.save()
+
+        return Response(
+            {'message': 'Reservation has been successfully cancelled.'},
+            status=status.HTTP_200_OK
+        )
+
+#Return Reservations by Date
+logger = logging.getLogger(__name__)
+class AllReservationDatesView(APIView):
+    def get(self, request, date):
+        logger.info("Received request for AllReservationDatesView")
+        logger.info(f"Path parameter 'date': {date}")
+
+        try:
+            # Parse the date
+            parsed_date = parse_date(date)
+            if not parsed_date:
+                logger.error(f"Invalid date format received: {date}")
+                raise ValueError("Invalid date format. Use YYYY-MM-DD.")
+
+            logger.info(f"Parsed date: {parsed_date}")
+
+            # Query ReservationDate for the provided date
+            logger.info("Querying ReservationDate for the given date")
+            reservation_dates = ReservationDate.objects.filter(date=parsed_date).select_related('reservation')
+
+            logger.info(f"Number of ReservationDate objects found: {reservation_dates.count()}")
+
+            if not reservation_dates.exists():
+                logger.info("No reservation dates found.")
+                return Response([], status=status.HTTP_200_OK)
+
+            # Prepare response data
+            logger.info("Preparing response data")
+            response_data = [
+                {
+                    "reservation_date_id": rd.id,
+                    "date": rd.date,
+                    "start_time": rd.start_time,
+                    "end_time": rd.end_time,
+                    "duration_type": rd.duration_type,
+                    "reservation": {
+                        "facility" : rd.reservation.court.facility.facility_name if rd.reservation else None,
+                        "court" : rd.reservation.court.court_name if rd.reservation else None,
+                        "org_name": rd.reservation.org_name if rd.reservation else None,
+                        "status": rd.reservation.status if rd.reservation else None,
+                    },
+                }
+                for rd in reservation_dates
+            ]
+
+            logger.info(f"Response data prepared: {response_data}")
+
+            return Response(response_data, status=status.HTTP_200_OK)
+
+        except ValueError as e:
+            logger.error(f"ValueError: {e}")
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            logger.error(f"Unexpected error occurred: {e}")
+            return Response({"error": "Internal server error."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# Return ReservationsDates By Court
+class ReservationDatesByCourtView(APIView):
+
+
+    def get(self, request, facility, court, start_date, end_date, *args, **kwargs):
+        try:
+            # Parse the start and end dates
+            start_date = parse_date(start_date)
+            end_date = parse_date(end_date)
+
+            if not start_date or not end_date:
+                raise ValueError("Invalid date format. Use 'start_date' and 'end_date' in YYYY-MM-DD format.")
+
+            if start_date > end_date:
+                raise ValueError("'start_date' cannot be after 'end_date'.")
+
+            # Filter ReservationDates by court, facility, and date range
+            reservation_dates = ReservationDate.objects.filter(
+                reservation__court__court_name__iexact=court,
+                reservation__court__facility__facility_name__iexact=facility,
+                date__range=(start_date, end_date)
+            )
+
+            if not reservation_dates.exists():
+                return Response([])
+
+            # Serialize the filtered ReservationDates
+            response_data = []
+            for reservation_date in reservation_dates:
+                reservation = reservation_date.reservation
+                response_data.append({
+                    "reservation_date_id": reservation_date.id,
+                    "date": reservation_date.date,
+                    "start_time": reservation_date.start_time,
+                    "end_time": reservation_date.end_time,
+                    "duration_type": reservation_date.duration_type,
+                    "reservation": {
+                        "org_name": reservation.org_name if reservation else None,
+                        "status": reservation.status if reservation else None,
+                    },
+                })
+
+            return Response(response_data, status=status.HTTP_200_OK)
+
+        except ValueError as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        except Exception as e:
+            return Response(
+                {"error": f"An unexpected error occurred: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
 

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Court, Facility, ReservationRequest, Reservation, Payment, CourtRate, ReservationDate
+from .models import Court, Facility, ReservationRequest, Reservation, Payment, CourtRate, ReservationDate, ReservationParticipant
 from django.contrib.auth.models import User
 
 class FacilitySerializer(serializers.ModelSerializer):
@@ -66,6 +66,16 @@ class ReservationDateSerializer(serializers.ModelSerializer):
             'id', 'reservation_request', 'reservation', 'date', 'start_time', 
             'end_time', 'duration_type'
         ]
+
+class ReservationParticipantSerializer(serializers.ModelSerializer):
+    reservation_request = serializers.PrimaryKeyRelatedField(queryset=ReservationRequest.objects.all())
+    reservation = serializers.PrimaryKeyRelatedField(queryset=Reservation.objects.all(), required=False, allow_null=True)
+
+    class Meta:
+        model = ReservationParticipant
+        fields = [
+            'id', 'reservation_request', 'reservation', 'name', 'nic'
+        ]        
 
 
 class PaymentSerializer(serializers.ModelSerializer):

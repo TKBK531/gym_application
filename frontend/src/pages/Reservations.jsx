@@ -28,7 +28,7 @@ const Reservations = () => {
   return (
     <div className="p-4">
       <h1 className="text-lg sm:text-xl md:text-xl lg:text-xl">
-        Hello, {userData.user.first_name} {userData.user.last_name}👋{" "}
+        {/* Hello, {userData.user.first_name} {userData.user.last_name}👋{" "} */}
       </h1>
 
       <div className="boxes flex flex-col md:flex-row gap-6 md:gap-32 m-4">

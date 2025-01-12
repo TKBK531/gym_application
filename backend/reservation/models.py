@@ -145,6 +145,15 @@ class ReservationDate(models.Model):
 
     def __str__(self):
         return f"{self.date} ({self.start_time} to {self.end_time})"
+    
+class ReservationParticipant(models.Model):
+    reservation_request = models.ForeignKey(ReservationRequest, on_delete=models.CASCADE, related_name='participants')
+    reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE, related_name='reservation_participants', null=True)
+    name=models.CharField(max_length=255)
+    nic=models.CharField(max_length=12, default="none")
+
+    def __str__(self):
+        return f"({self.name})"    
 
 
 class Payment(models.Model):
@@ -155,7 +164,7 @@ class Payment(models.Model):
     ]
 
     payment_id = models.AutoField(primary_key=True)
-    reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE, related_name="payments")
+    reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE, related_name="payments_reservation")
     amount = models.FloatField()
     payment_date = models.DateTimeField(auto_now_add=True)
     payment_method = models.CharField(max_length=50)
@@ -181,5 +190,3 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"{self.reservation.user.first_name} - {self.reservation.court.court_name} - {self.amount}"
-
-
