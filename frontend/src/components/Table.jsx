@@ -275,7 +275,7 @@ const Table = ({ userRole, selectedCategory }) => {
                 <td className={`border-b p-4 ${item.event.status === 'On going' ? 'text-green-500' : item.event.status === 'Up coming' ? 'text-orange-500' : 'text-red-500'}`}>
                   {item.event.status}
                 </td>
-                {user_type === "staff" && (
+                {user_type === "staff" || user_type === "admin" && (
                   <td className="border-b p-4">
                     <button className="mr-3">✏️</button>
                     <button className="delete-btn" onClick={() => handleDeleteClick(item)}>🗑️</button>
@@ -373,7 +373,7 @@ const Table = ({ userRole, selectedCategory }) => {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-5 rounded shadow-lg">
             <h2 className="text-lg font-semibold mb-4">Confirm Deletion</h2>
-            <p>Are you sure you want to delete the event "{eventToDelete.event.name}"?</p>
+            <p>Are you sure you want to delete the event {eventToDelete.event.name}?</p>
             <div className="mt-4 flex justify-end">
               <button className="bg-gray-300 text-black py-2 px-4 rounded mr-2" onClick={() => setEventToDelete(null)}>Cancel</button>
               <button className="bg-red-500 text-white py-2 px-4 rounded" onClick={confirmDelete}>Confirm</button>
