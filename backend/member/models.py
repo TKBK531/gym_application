@@ -1,10 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
-# from userprofile.models import Profile
+from userProfile.models import UserProfile
 
 
 class Members(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)  # Enforces one member per user
+    userProfile = models.OneToOneField(UserProfile, on_delete=models.CASCADE)
     age = models.IntegerField()
     household = models.CharField(max_length=100)
     membership = models.CharField(max_length=50)
