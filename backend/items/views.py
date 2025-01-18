@@ -70,6 +70,27 @@ class EquipmentListView(generics.ListAPIView):
     serializer_class = EquipmentSerializer
     permission_classes = [AllowAny]
 
+    def list(self, request, *args, **kwargs):
+        # Filter the queryset
+        queryset = self.filter_queryset(self.get_queryset())
+        
+        # Handle pagination
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        
+        # Serialize the data
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(
+            {
+                "status": "success",
+                "message": "All equipment retrieved successfully.",
+                "data": serializer.data,
+            },
+            status=status.HTTP_200_OK,
+        )
+
 class EquipmentCreateView(generics.CreateAPIView):
     queryset = Equipment.objects.all()
     serializer_class = EquipmentSerializer
