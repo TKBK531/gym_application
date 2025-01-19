@@ -66,23 +66,23 @@ const Items = () => {
       </div>
 
       {/* Rest of your component */}
-      <div className="flex mb-4">
+      <div className="flex mb-4 ">
         <button
           className={`px-4 py-2 ${
-            activeTab === "Indoor" ? "bg-yellow-500 text-white" : "bg-gray-200"
+            activeTab === "Indoor" ? "bg-yellow-500 hover:bg-yellow-600 text-white rounded text-white" : "bg-gray-200"
           }`}
           onClick={() => handleTabChange("Indoor")}
         >
-          Indoor
+          Indoor & Outdoor
         </button>
-        <button
+        {/* <button
           className={`px-4 py-2 ml-2 ${
             activeTab === "Outdoor" ? "bg-gray-500 text-white" : "bg-gray-200"
           }`}
           onClick={() => handleTabChange("Outdoor")}
         >
           Outdoor
-        </button>
+        </button> */}
       </div>
 
       <div className="flex justify-between items-center mb-4">
@@ -103,14 +103,14 @@ const Items = () => {
         </div>
         <div className="flex items-center">
           <span className="mr-2">Sort by:</span>
-          <button
+          {/* <button
             className={`px-4 py-2 ${
               sortSport ? "bg-yellow-500 text-white" : "bg-gray-200"
             }`}
             onClick={handleSortSportChange}
           >
             Sport
-          </button>
+          </button> */}
           <select
             className="ml-2 border p-2 rounded"
             value={sortCount}
