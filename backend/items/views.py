@@ -9,7 +9,7 @@ from rest_framework.permissions import AllowAny
 class EquipmentListView(generics.ListAPIView):
     queryset = Equipment.objects.all()
     serializer_class = EquipmentSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [AllowAny] 
 
     def list(self, request, *args, **kwargs):
         # Filter the queryset
