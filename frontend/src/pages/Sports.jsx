@@ -98,16 +98,9 @@ const Sports = () => {
               key={sport.id}
               sport={sport}
               onClick={() => handleSportClick(sport.id)}
-<<<<<<< HEAD
               className={`transition-opacity cursor-pointer duration-500 ${initialFetchComplete.current && !filteredSports.includes(sport)
                 ? "opacity-0"
                 : "opacity-100"
-=======
-              // Conditional style for animation
-              className={`transition-opacity cursor-pointer duration-500 ${initialFetchComplete.current && !filteredSports.includes(sport)
-                ? "opacity-0" // Hide when filtered out
-                : "opacity-100" // Show when not filtered out or data hasn't loaded
->>>>>>> 64c68e5 (FEAT: Added the functionality to sort by alphabatical order)
                 }`}
             />
           ))}

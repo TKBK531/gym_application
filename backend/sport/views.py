@@ -16,9 +16,6 @@ from django.http import JsonResponse
 from rest_framework.exceptions import NotFound
 
 
-# Create your views here.
-
-
 # Get all sports
 class SportListView(generics.ListAPIView):
     queryset = Sport.objects.all()
