@@ -8,6 +8,7 @@ const Table = ({ userRole, selectedCategory }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newEvent, setNewEvent] = useState({
     sport: '',
+    eventName: '',
     place: '',
     time: '',
     date: '',
@@ -22,6 +23,10 @@ const Table = ({ userRole, selectedCategory }) => {
   const user_type = userData.profile.user_type;
 
   const placesList = ['Gymnasium', 'Ground', 'Pool'];
+
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
 
   useEffect(() => {
     fetchEvents();
@@ -85,11 +90,11 @@ const Table = ({ userRole, selectedCategory }) => {
       event_type: selectedCategory.toLowerCase().replace(' ', '_'),
       event: {
         event: {
-          name: newEvent.sport,
+          name: newEvent.eventName,
           place: newEvent.place,
           time: newEvent.time,
           date: newEvent.date,
-          status: newEvent.status.toLowerCase().replace(' ', '')
+          status: newEvent.status.toLowerCase().replace(' ', '_')
         }
       }
     };
@@ -109,6 +114,7 @@ const Table = ({ userRole, selectedCategory }) => {
         setIsModalOpen(false);
         setNewEvent({
           sport: '',
+          eventName: '',
           place: '',
           time: '',
           date: '',
@@ -176,20 +182,36 @@ const Table = ({ userRole, selectedCategory }) => {
   const getEventInput = (category) => {
     if (category === 'Sports') {
       return (
-        <select
-          name="sport"
-          value={newEvent.sport}
-          onChange={handleChange}
-          className="w-full p-2 border border-gray-300 rounded"
-          required
-        >
-          <option value="">Select a Sport</option>
-          {sportsList.map((sport, index) => (
-            <option key={index} value={sport.label}>
-              {sport.label}
-            </option>
-          ))}
-        </select>
+        <>
+          <div className="mb-4">
+            <label className="block text-gray-700">Event Name:</label>
+            <input
+              type="text"
+              name="eventName"
+              value={newEvent.eventName}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700">Sport:</label>
+            <select
+              name="sport"
+              value={newEvent.sport}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded"
+              required
+            >
+              <option value="">Select a Sport</option>
+              {sportsList.map((sport, index) => (
+                <option key={index} value={sport.label}>
+                  {sport.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </>
       );
     } else {
       // Free text input for "Musical Shows" and "Other Functions"
@@ -220,6 +242,11 @@ const Table = ({ userRole, selectedCategory }) => {
     }
   };
 
+  const getSportLabel = (sportId) => {
+    const sport = sportsList.find(sport => sport.id === sportId);
+    return sport ? sport.label : 'Unknown Sport';
+  };
+
   return (
     <div className="p-5">
       {(userRole === 'staff' || userRole === 'admin') && (
@@ -241,7 +268,7 @@ const Table = ({ userRole, selectedCategory }) => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        {user_type === "staff" || user_type === "admin" && (
+        {user_type === "staff" && (
           <button
             className="ml-4 bg-yellow-300 text-black py-3 px-4 rounded text-sm hover:bg-yellow-500 w-1/4"
             onClick={handleModalToggle}
@@ -255,12 +282,20 @@ const Table = ({ userRole, selectedCategory }) => {
         <table className="min-w-full bg-white border border-gray-200">
           <thead>
             <tr>
-              <th className="border-b-2 p-4 text-left bg-gray-100">{getColumnName(selectedCategory)}</th>
+              {selectedCategory === 'Sports' && (
+                <>
+                  <th className="border-b-2 p-4 text-left bg-gray-100">Event Name</th>
+                  <th className="border-b-2 p-4 text-left bg-gray-100">Sport</th>
+                </>
+              )}
+              {selectedCategory !== 'Sports' && (
+                <th className="border-b-2 p-4 text-left bg-gray-100">{getColumnName(selectedCategory)}</th>
+              )}
               <th className="border-b-2 p-4 text-left bg-gray-100">Place</th>
               <th className="border-b-2 p-4 text-left bg-gray-100">Time</th>
               <th className="border-b-2 p-4 text-left bg-gray-100">Date</th>
               <th className="border-b-2 p-4 text-left bg-gray-100">Status</th>
-              {user_type === "staff" && (
+              {(user_type === "staff" || user_type === "admin") && (
                 <th className="border-b-2 p-4 text-left bg-gray-100">Action</th>
               )}
             </tr>
@@ -268,14 +303,23 @@ const Table = ({ userRole, selectedCategory }) => {
           <tbody>
             {filteredEvents.map((item, index) => (
               <tr key={index} className={`hover:bg-gray-50 ${getRowClass(item.event.event_type)}`}>
-                <td className="border-b p-4">{item.event.name}</td>
-                <td className="border-b p-4">{item.event.place}</td>
+                {selectedCategory === 'Sports' && (
+                  <>
+                    <td className="border-b p-4">{item.event.name}</td>
+                    <td className="border-b p-4">{getSportLabel(item.sport)}</td>
+                  </>
+                )}
+
+                {selectedCategory === 'Sports' && (
+                  <td className="border-b p-4">{item.event.name}</td>
+                )}
+                <td className="border-b p-4">{capitalizeFirstLetter(item.event.place)}</td>
                 <td className="border-b p-4">{item.event.time}</td>
                 <td className="border-b p-4">{item.event.date}</td>
                 <td className={`border-b p-4 ${item.event.status === 'On going' ? 'text-green-500' : item.event.status === 'Up coming' ? 'text-orange-500' : 'text-red-500'}`}>
                   {item.event.status}
                 </td>
-                {user_type === "staff" || user_type === "admin" && (
+                {(user_type === "staff" || user_type === "admin") && (
                   <td className="border-b p-4">
                     <button className="mr-3">✏️</button>
                     <button className="delete-btn" onClick={() => handleDeleteClick(item)}>🗑️</button>
