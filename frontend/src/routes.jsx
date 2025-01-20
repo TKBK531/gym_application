@@ -12,6 +12,7 @@ import {
   Profile,
   Login,
   Logout,
+  StudentData,
   PageNotFound,
   MainLandingPage,
   // AllProfiles,
@@ -115,6 +116,20 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <MembersPool />
+          </ProtectedRoute>
+        ),
+      },
+    ],
+  },
+  {
+    path: "/studentData",
+    element: <BaseLayout />,
+    children: [
+      {
+        index: true,
+        element: (
+          <ProtectedRoute>
+            <StudentData />
           </ProtectedRoute>
         ),
       },
