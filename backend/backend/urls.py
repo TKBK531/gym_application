@@ -27,6 +27,7 @@ urlpatterns = [
     path("user/", include("userProfile.urls")),
     path("sport/", include("sport.urls")),
     path("items/", include("items.urls")),
+    path("students/", include("studentData.urls")),
     path("reservation/", include("reservation.urls")),
     path("event/", include("event.urls")),
     path("user/token/", TokenObtainPairView.as_view(), name="get_token"),
