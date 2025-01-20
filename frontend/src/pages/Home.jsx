@@ -7,6 +7,7 @@ import api from "../api";
 const Home = () => {
   const userData = JSON.parse(localStorage.getItem("userData"));
   const [totalUserCount, setTotalUserCount] = useState(0);
+  const [eventCountInUpcommingMonth, setEventCountInUpcommingMonth] = useState(0);
 
   const fetchTotalUserCount = async () => {
     try {
@@ -20,8 +21,21 @@ const Home = () => {
     }
   };
 
+  const fetchEventCountInUpcommingMonth = async () => {
+    try {
+      const response = await api.get("/event/events-in-this-month/");
+      if (response.data.status === "success") {
+        setEventCountInUpcommingMonth(response.data.data);
+        console.log("Upcomming events:", response.data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching upcomming events:", error.message);
+    }
+  };
+
   useEffect(() => {
     fetchTotalUserCount();
+    fetchEventCountInUpcommingMonth();
   }, []);
 
   return (
@@ -43,9 +57,9 @@ const Home = () => {
             description="Number of active users"
           />
           <InfoCard
-            title="Revenue"
-            value="$12,345"
-            description="Total revenue this month"
+            title="Upcomming Events"
+            value={eventCountInUpcommingMonth}
+            description="Upcomming events this month"
           />
           <InfoCard
             title="New Signups"
