@@ -119,6 +119,7 @@ const StudentData = () => {
               <option value="arts">Faculty of Arts</option>
               <option value="dental-sciences">Faculty of Dental Sciences</option>
               <option value="engineering">Faculty of Engineering</option>
+              <option value="management">Faculty of Management</option>
               <option value="medicine">Faculty of Medicine</option>
               <option value="science">Faculty of Science</option>
               <option value="veterinary-medicine">
