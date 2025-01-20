@@ -157,7 +157,10 @@ class GetInChargeSportsView(generics.ListAPIView):
         return Sport.objects.filter(in_charge=in_charge)
 
     def list(self, request, *args, **kwargs):
-        if request.user.groups.filter(name="staff").exists():
+        if (
+            request.user.groups.filter(name="staff").exists()
+            or request.user.groups.filter(name="admin").exists()
+        ):
             in_charge_id = request.user.id
 
             queryset = self.get_queryset(in_charge_id=in_charge_id)
@@ -441,7 +444,10 @@ class DeleteSportPostView(generics.DestroyAPIView):
             )
 
         # Additional check: Is the authenticated user the 'author' of this post?
-        if not request.user.groups.filter(name="staff").exists():
+        if (
+            not request.user.groups.filter(name="staff").exists()
+            or not request.user.groups.filter(name="admin").exists()
+        ):
             return JsonResponse(
                 {
                     "status": "error",
@@ -520,7 +526,10 @@ class CreateTeamView(generics.CreateAPIView):
         serializer.save(sport=sport)
 
     def create(self, request, *args, **kwargs):
-        if request.user.groups.filter(name="staff").exists():
+        if (
+            request.user.groups.filter(name="staff").exists()
+            or request.user.groups.filter(name="admin").exists()
+        ):
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             try:
@@ -577,7 +586,10 @@ class UpdateTeamView(generics.UpdateAPIView):
                 status=404,
             )
 
-        if not request.user.groups.filter(name="staff").exists():
+        if (
+            not request.user.groups.filter(name="staff").exists()
+            or not request.user.groups.filter(name="admin").exists()
+        ):
             return JsonResponse(
                 {
                     "status": "error",
@@ -740,7 +752,10 @@ class AddTeamMemberView(generics.CreateAPIView):
         serializer.save(team=team, user_id=user_id)
 
     def create(self, request, *args, **kwargs):
-        if request.user.groups.filter(name="staff").exists():
+        if (
+            request.user.groups.filter(name="staff").exists()
+            or request.user.groups.filter(name="admin").exists()
+        ):
             team_id = request.data.get("team")
             user_ids = request.data.get("user", [])
 
