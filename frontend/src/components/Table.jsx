@@ -268,7 +268,7 @@ const Table = ({ userRole, selectedCategory }) => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        {user_type === "staff" && (
+        {(user_type === "staff" || user_type === "admin") && (
           <button
             className="ml-4 bg-yellow-300 text-black py-3 px-4 rounded text-sm hover:bg-yellow-500 w-1/4"
             onClick={handleModalToggle}
@@ -310,7 +310,7 @@ const Table = ({ userRole, selectedCategory }) => {
                   </>
                 )}
 
-                {selectedCategory === 'Sports' && (
+                {selectedCategory !== 'Sports' && (
                   <td className="border-b p-4">{item.event.name}</td>
                 )}
                 <td className="border-b p-4">{capitalizeFirstLetter(item.event.place)}</td>
@@ -417,7 +417,7 @@ const Table = ({ userRole, selectedCategory }) => {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-5 rounded shadow-lg">
             <h2 className="text-lg font-semibold mb-4">Confirm Deletion</h2>
-            <p>Are you sure you want to delete the event {eventToDelete.event.name}?</p>
+            <p>Are you sure you want to delete the event <strong>{eventToDelete.event.name}</strong>?</p>
             <div className="mt-4 flex justify-end">
               <button className="bg-gray-300 text-black py-2 px-4 rounded mr-2" onClick={() => setEventToDelete(null)}>Cancel</button>
               <button className="bg-red-500 text-white py-2 px-4 rounded" onClick={confirmDelete}>Confirm</button>
