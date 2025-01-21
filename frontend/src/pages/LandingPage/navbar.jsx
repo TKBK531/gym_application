@@ -29,28 +29,28 @@ const Navbar = () => {
         <nav className="flex items-center justify-between px-6 py-4 bg-white shadow-md">
             {/* Logo Section */}
             <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 flex items-center justify-center bg-blue-500 rounded-full">
+                <div className="w-8 h-8 flex items-center justify-center bg-yellow-500 rounded-full">
                     <span className="text-white font-bold text-lg">🏋️</span>
                 </div>
-                <span className="text-xl font-bold text-gray-800">UniGym</span>
+                <span className="text-xl font-bold text-gray-800">Uni</span>
             </div>
 
             {/* Navigation Links */}
             <div className="hidden md:flex space-x-6">
-                <Link to="/" className="text-gray-600 hover:text-blue-600">
+                <Link to="/" className="text-gray-600 hover:text-primary-red">
                     Home
                 </Link>
-                <Link to="/events" className="text-gray-600 hover:text-blue-600">
+                <Link to="/events" className="text-gray-600 hover:text-primary-red">
                     Events
                 </Link>
-                <Link to="/facilities" className="text-gray-600 hover:text-blue-600">
+                <Link to="/facilities" className="text-gray-600 hover:text-primary-red">
                     Facilities
                 </Link>
-                <Link to="/contact" className="text-gray-600 hover:text-blue-600">
+                <Link to="/contact" className="text-gray-600 hover:text-primary-red">
                     Contact
                 </Link>
                 {isLoggedIn && (
-                    <Link to="/dashboard" className="text-gray-600 hover:text-blue-600">
+                    <Link to="/dashboard" className="text-gray-600 hover:text-primary-red">
                         Dashboard
                     </Link>
                 )}
@@ -61,13 +61,13 @@ const Navbar = () => {
                 {!isLoggedIn ? (
                     <>
                         <button
-                            className="px-4 py-2 text-white bg-blue-600 rounded-full hover:bg-blue-700"
+                            className="px-4 py-2 text-white bg-primary-red - rounded-full hover:bg-primary-shade-2"
                             onClick={handleLogin}
                         >
                             Log In
                         </button>
                         <button
-                            className="px-4 py-2 text-blue-600 border border-blue-600 rounded-full hover:bg-blue-600 hover:text-white"
+                            className="px-4 py-2 text-primary-red border border-primary-red rounded-full hover:bg-primary-shade-2 hover:text-white"
                             onClick={() => navigate("/register")}
                         >
                             Sign Up
@@ -85,9 +85,6 @@ const Navbar = () => {
                         <div id="userMenu" className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden">
                             <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 Profile
-                            </Link>
-                            <Link to="/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                Settings
                             </Link>
                             <button
                                 onClick={handleLogout}
