@@ -3,14 +3,17 @@ import { useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
-const UpcomingEvents = ({ events, isLoading }) => {
+const UpcomingEvents = ({ events, isLoading, onEventClick }) => {
     const [visibleCount, setVisibleCount] = useState(2);
 
-    // Sort events by date
     const sortedEvents = events.sort((a, b) => new Date(a.date) - new Date(b.date));
 
     const handleShowMore = () => {
         setVisibleCount((prevCount) => prevCount + 2);
+    };
+
+    const handleShowLess = () => {
+        setVisibleCount(2);
     };
 
     return (
@@ -31,7 +34,11 @@ const UpcomingEvents = ({ events, isLoading }) => {
                         </li>
                     ))
                     : sortedEvents.slice(0, visibleCount).map((event) => (
-                        <li key={event.id} className="flex justify-between items-center p-4 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
+                        <li
+                            key={event.id}
+                            className="flex justify-between items-center p-4 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 cursor-pointer"
+                            onClick={() => onEventClick(event.category)}
+                        >
                             <div>
                                 <p className="text-lg font-semibold text-gray-800">{event.name}</p>
                                 <p className="text-sm text-gray-500">{event.place}</p>
@@ -43,16 +50,24 @@ const UpcomingEvents = ({ events, isLoading }) => {
                         </li>
                     ))}
             </ul>
-            {visibleCount < sortedEvents.length && !isLoading && (
-                <div className="text-center mt-4">
+            <div className="text-center mt-4">
+                {visibleCount < sortedEvents.length && !isLoading && (
                     <button
                         className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-300"
                         onClick={handleShowMore}
                     >
                         Show More
                     </button>
-                </div>
-            )}
+                )}
+                {visibleCount > 2 && (
+                    <button
+                        className="px-4 py-2 bg-gray-600 text-white rounded-full hover:bg-gray-700 transition-colors duration-300 ml-4"
+                        onClick={handleShowLess}
+                    >
+                        Show Less
+                    </button>
+                )}
+            </div>
         </div>
     );
 };
@@ -66,9 +81,11 @@ UpcomingEvents.propTypes = {
             time: PropTypes.string.isRequired,
             date: PropTypes.string.isRequired,
             status: PropTypes.string.isRequired,
+            category: PropTypes.string.isRequired,
         })
     ).isRequired,
     isLoading: PropTypes.bool.isRequired,
+    onEventClick: PropTypes.func.isRequired,
 };
 
 export default UpcomingEvents;
