@@ -32,7 +32,7 @@ const Navbar = () => {
                 <div className="w-8 h-8 flex items-center justify-center bg-yellow-500 rounded-full">
                     <span className="text-white font-bold text-lg">🏋️</span>
                 </div>
-                <span className="text-xl font-bold text-gray-800">Uni</span>
+                <span className="text-xl font-bold text-gray-800">UniLogo</span>
             </div>
 
             {/* Navigation Links */}
