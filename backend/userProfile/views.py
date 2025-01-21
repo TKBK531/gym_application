@@ -724,3 +724,29 @@ class UserDeleteView(generics.DestroyAPIView):
             },
             status=status.HTTP_200_OK,
         )
+
+
+class TotalUserCountView(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def retrieve(self, request, *args, **kwargs):
+        if (
+            not request.user.groups.filter(name="admin").exists()
+            and not request.user.groups.filter(name="staff").exists()
+        ):
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": "You do not have permission to perform this action.",
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        user_count = User.objects.count()
+        return JsonResponse(
+            {
+                "status": "success",
+                "message": "Total user count retrieved successfully.",
+                "data": user_count,
+            },
+            status=status.HTTP_200_OK,
+        )

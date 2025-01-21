@@ -23,6 +23,7 @@ class Post(models.Model):
     description = models.TextField()
     image = models.ImageField(upload_to="images/sport_posts/")
     content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title

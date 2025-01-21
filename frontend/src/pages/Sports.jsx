@@ -14,7 +14,6 @@ const Sports = () => {
     sport.label.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Ref to help track if initial data fetch is complete
   const initialFetchComplete = useRef(false);
 
   useEffect(() => {
@@ -73,16 +72,13 @@ const Sports = () => {
               key={sport.id}
               sport={sport}
               onClick={() => handleSportClick(sport.id)}
-              // Conditional style for animation
-              className={`transition-opacity cursor-pointer duration-500 ${
-                initialFetchComplete.current && !filteredSports.includes(sport)
-                  ? "opacity-0" // Hide when filtered out
-                  : "opacity-100" // Show when not filtered out or data hasn't loaded
-              }`}
+              className={`transition-opacity cursor-pointer duration-500 ${initialFetchComplete.current && !filteredSports.includes(sport)
+                ? "opacity-0"
+                : "opacity-100"
+                }`}
             />
           ))}
 
-          {/* Conditionally show "Add Another Sport" card only after initial data fetch */}
           {initialFetchComplete.current && loggedInUserType === "admin" && (
             <div className="flex flex-col w-full max-w-sm rounded-lg overflow-hidden shadow-xl bg-white m-4 transition duration-300 hover:shadow-2xl hover:-translate-y-1 cursor-pointer h-[24rem] text-center justify-center">
               <h3 className="text-xl font-semibold text-gray-700 mb-2 transition duration-300 hover:text-blue-500 text-balance">
@@ -92,12 +88,6 @@ const Sports = () => {
           )}
         </div>
       </section>
-      {/* {selectedSport ? (
-        <SportCardPopup
-          onClose={() => setSelectedSport(null)}
-          sportData={selectedSport}
-        />
-      ) : null} */}
     </>
   );
 };

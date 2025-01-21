@@ -304,7 +304,10 @@ class CreateSportPostView(generics.CreateAPIView):
         serializer.save(sport=sport)
 
     def create(self, request, *args, **kwargs):
-        if request.user.groups.filter(name="staff").exists():
+        if (
+            request.user.groups.filter(name="staff").exists()
+            or request.user.groups.filter(name="admin").exists()
+        ):
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             try:

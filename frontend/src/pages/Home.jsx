@@ -1,9 +1,47 @@
+import { useState, useEffect } from "react";
 import InfoCard from "../components/Dashboard/InfoCard";
 import DonutChart from "../components/Charts/DonutChart";
-import { FaUserPlus, FaShoppingCart, FaUserEdit } from "react-icons/fa"; // Import icons
+import UpcomingEvents from "../components/Dashboard/UpcommingEvents";
+import api from "../api";
 
 const Home = () => {
   const userData = JSON.parse(localStorage.getItem("userData"));
+  const [totalUserCount, setTotalUserCount] = useState(0);
+  const [eventCountInNext30Days, setEventCountInNext30Days] = useState(0);
+  const [eventDetails, setEventDetails] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchTotalUserCount = async () => {
+    try {
+      const response = await api.get("/user/total-users/");
+      if (response.data.status === "success") {
+        setTotalUserCount(response.data.data);
+        console.log("Total users:", response.data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching total users:", error.message);
+    }
+  };
+
+  const fetchEventCountAndDetails = async () => {
+    try {
+      const response = await api.get("/event/events-in-this-month/");
+      if (response.data.status === "success") {
+        setEventCountInNext30Days(response.data.data.event_count);
+        setEventDetails(response.data.data.event_details);
+        console.log("Upcoming events:", response.data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching upcoming events:", error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTotalUserCount();
+    fetchEventCountAndDetails();
+  }, []);
 
   return (
     <div className="p-4 bg-gray-100 min-h-screen">
@@ -20,13 +58,13 @@ const Home = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           <InfoCard
             title="Total Users"
-            value="1,234"
+            value={totalUserCount}
             description="Number of active users"
           />
           <InfoCard
-            title="Revenue"
-            value="$12,345"
-            description="Total revenue this month"
+            title="Upcoming Events"
+            value={eventCountInNext30Days}
+            description="Events in the next 30 days"
           />
           <InfoCard
             title="New Signups"
@@ -51,41 +89,7 @@ const Home = () => {
           </div>
         </div>
         <div className="lg:w-1/2">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-            Recent Activity
-          </h2>
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <ul className="space-y-4">
-              <li className="flex items-center space-x-4">
-                <FaUserPlus className="text-green-500" />
-                <div>
-                  <p className="text-gray-700">User A signed up</p>
-                  <p className="text-gray-500 text-sm">2 hours ago</p>
-                </div>
-              </li>
-              <li className="flex items-center space-x-4">
-                <FaShoppingCart className="text-blue-500" />
-                <div>
-                  <p className="text-gray-700">User B made a purchase</p>
-                  <p className="text-gray-500 text-sm">5 hours ago</p>
-                </div>
-              </li>
-              <li className="flex items-center space-x-4">
-                <FaUserEdit className="text-yellow-500" />
-                <div>
-                  <p className="text-gray-700">User C updated their profile</p>
-                  <p className="text-gray-500 text-sm">1 day ago</p>
-                </div>
-              </li>
-              <li className="flex items-center space-x-4">
-                <FaUserPlus className="text-green-500" />
-                <div>
-                  <p className="text-gray-700">More activity...</p>
-                  <p className="text-gray-500 text-sm">2 days ago</p>
-                </div>
-              </li>
-            </ul>
-          </div>
+          <UpcomingEvents events={eventDetails} isLoading={isLoading} />
         </div>
       </section>
     </div>

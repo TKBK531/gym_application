@@ -10,6 +10,7 @@ import Logout from "./Logout";
 import Register from "./Register";
 import AllProfiles from "./AllProfiles";
 import PageNotFound from "./PageNotFound";
+import MainLandingPage from "./LandingPage/MainLandingPage";
 
 export {
   Home,
@@ -24,4 +25,5 @@ export {
   Register,
   PageNotFound,
   AllProfiles,
+  MainLandingPage,
 };

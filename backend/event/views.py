@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-
+from django.utils import timezone
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
@@ -227,6 +227,37 @@ class UpdateEventView(generics.UpdateAPIView):
                     "data": serializer.errors,
                 },
                 status=status.HTTP_400_BAD_REQUEST,
+            )
+        except Exception as e:
+            return JsonResponse(
+                {"status": "error", "message": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+
+class EventsInNext30DaysView(generics.RetrieveAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            now = timezone.now().date()
+            end_date = now + timezone.timedelta(days=30)
+            events = Event.objects.filter(date__range=(now, end_date))
+            event_count = events.count()
+            event_details = EventSerializer(events, many=True).data
+
+            return JsonResponse(
+                {
+                    "status": "success",
+                    "message": "Events in the next 30 days",
+                    "data": {
+                        "event_count": event_count,
+                        "event_details": event_details,
+                    },
+                },
+                status=status.HTTP_200_OK,
             )
         except Exception as e:
             return JsonResponse(

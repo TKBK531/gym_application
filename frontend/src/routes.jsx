@@ -13,6 +13,7 @@ import {
   Login,
   Logout,
   PageNotFound,
+  MainLandingPage,
   // AllProfiles,
 } from "./pages";
 import Register from "./pages/Register";
@@ -177,6 +178,7 @@ export const router = createBrowserRouter([
       },
     ],
   },
+  { path: "/", element: <MainLandingPage /> },
   { path: "/loading", element: <GoogleLoginLoading /> },
   { path: "/login", element: <Login /> },
   { path: "/logout", element: <Logout /> },

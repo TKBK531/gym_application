@@ -27,6 +27,7 @@ function GoogleLoginLoading() {
         const userData = response.data.data;
         console.log("User data:", userData);
         localStorage.setItem("userData", JSON.stringify(userData));
+        localStorage.setItem("isLoggedIn", "true");
         navigate("/dashboard");
       })
       .catch((error) => {
