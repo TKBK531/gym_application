@@ -22,9 +22,7 @@ const Navbar = () => {
     };
 
     const handleLogout = () => {
-        setIsLoggedIn(false);
-        localStorage.setItem("isLoggedIn", "false");
-        navigate("/");
+        navigate("/logout");
     };
 
     return (
