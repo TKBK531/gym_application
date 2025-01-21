@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import CardList from "./CardList";
 
 const MainLandingPage = () => {
   const images = [
-    "https://site.pdn.ac.lk/student/sprtpdn/data1/images/dope.jpg",
-    "https://archives1.dailynews.lk/sites/default/files/news/2021/07/25/7.jpg",
+    "https://island.lk/wp-content/uploads/2024/03/gym.jpg",
+    "https://slusa.lk/wp-content/gallery/university-of-peradeniya/pdn6.jpg",
     "https://pbs.twimg.com/media/D-mZayXWkAESK5j.jpg",
   ];
 
@@ -32,18 +33,25 @@ const MainLandingPage = () => {
       <section className="relative bg-blue-100 py-20">
         <div className="absolute inset-0">
           <img
-            src="https://i.pinimg.com/736x/11/a6/ae/11a6aeb5206a09fd2c5ddecdecb19488.jpg" // Replace with your image URL
+            src="https://pbs.twimg.com/media/D-mZayXWkAESK5j.jpg" // Replace with your image URL
             alt="University Gym"
             className="w-full h-full object-cover"
           />
+          <div className="absolute inset-0 bg-black opacity-60"></div>
         </div>
         <div className="relative z-10 container mx-auto px-4 flex flex-col-reverse md:flex-row items-center">
           {/* Left Content */}
           <div className="md:w-1/2 text-center md:text-left">
-            <h1 className="text-4xl font-bold text-blue-900 mb-4">
-              Welcome to Gymnasium
-            </h1>
-            <p className="text-lg text-gray-600 mb-6">University of Peradeniya</p>
+                <h1
+                className="text-4xl font-bold text-white mb-4"
+                style={{
+                    textShadow: "2px 2px 4px black",
+                }}
+                >
+                Welcome to Gymnasium
+                </h1>
+
+            <p className="text-lg text-white mb-6">University of Peradeniya</p>
             <button
               className="bg-primary-red text-white px-3 py-2 rounded-lg hover:bg-red-700"
               onClick={scrollToIntroSection}
@@ -107,6 +115,12 @@ const MainLandingPage = () => {
           </div>
         </div>
       </section>
+      <section className="py-4 justify-center text-center bg-gray-100">
+        <div className="flex justify-center">
+            <h2 className="text-3xl font-bold text-blue-900">Facilities</h2>
+        </div>
+      </section>
+        <CardList />
       <Footer />
     </div>
   );
