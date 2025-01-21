@@ -5,6 +5,7 @@ import {
   ClipboardPen,
   Users2,
   Medal,
+  ListChecks,
 } from "lucide-react";
 
 
@@ -21,8 +22,9 @@ const pageLinks = [
     href: "/reservations",
   },
   { index: 5, icon: Users2, name: "Members", href: "/members" },
-  { index: 6, icon: Medal, name: "Sports", href: "/sports" },
-];
+  { index: 6, icon: ListChecks, name: "Student Details", href: "/studentData" },
+  { index: 7, icon: Medal, name: "Sports", href: "/sports" },
+]; 
 
 export const provinces = [
   {

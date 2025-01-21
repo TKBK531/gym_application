@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { FaPlus, FaMinus } from "react-icons/fa"; // Import FontAwesome icons
 import api from "../../api"; // Assuming you have a properly configured Axios instance here
 
 const ItemTable = ({
   searchQuery = "",
-  sortSport = true,
+  sortSport = 0,
   sortCount = "asc",
   isStaff = true,
 }) => {
@@ -18,81 +18,99 @@ const ItemTable = ({
   }, []);
 
   const fetchAllItems = async () => {
+    setLoading(true); // Reset loading state
+    setError(null); // Clear any previous errors
     try {
-      const response = await api.get("/items/all-items/");
-      if (response.data.status === "success") {
-        setItems(response.data.data);
-        console.log("Successfully fetched all items", items);
+      const response = await api.get("/items/equipment/");
+      if (response.data?.status === "success") {
+        setItems(response.data.data || []); // Set items or fallback to an empty array
+        console.log("Successfully fetched all items", response.data.data);
       } else {
-        throw new Error("Failed to fetch items");
+        throw new Error(response.data?.message || "Failed to fetch items");
       }
     } catch (err) {
-      setError(err);
+      console.error("Error fetching items:", err);
+      setError(err.response?.data?.message || err.message || "An unknown error occurred");
     } finally {
-      setLoading(false); // Ensure that loading is turned off whether request is successful or not
+      setLoading(false); // Ensure loading is turned off
     }
   };
 
   // Filter and sort the items based on search query and sorting conditions
   const filteredItems = items
     .filter((item) =>
-      item.item_id.toLowerCase().includes(searchQuery.toLowerCase())
+      item.item.toLowerCase().includes(searchQuery.toLowerCase()) // Use `item` for search
     )
     .sort((a, b) => {
       if (sortSport) {
-        return a.sport.toString().localeCompare(b.sport.toString()); // Sort alphabetically by sport (assuming sport is an ID here)
+        return a.sport - b.sport; // Sort by `sport` (numerical comparison)
       } else {
         const order = sortCount === "asc" ? 1 : -1; // Ascending or Descending
-        return (a.count - b.count) * order;
+        return (a.count - b.count) * order; // Sort by `count`
       }
     });
 
+  // Handle loading state
   if (loading) {
     return <p>Loading items...</p>;
   }
 
+  // Handle error state
   if (error) {
-    return <p>Error fetching items: {error.message}</p>;
+    return (
+      <div className="text-red-500 text-center">
+        <p>Error fetching items: {error}</p>
+        <button
+          onClick={fetchAllItems}
+          className="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
+        >
+          Retry
+        </button>
+      </div>
+    );
   }
 
+  // Render the table
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto">
       <table className="min-w-full bg-white shadow-md rounded-lg">
         <thead>
           <tr>
-            <th className="py-2 px-4 border-b text-left">Item</th>
-            <th className="py-2 px-4 border-b text-left">Sport</th>
-            <th className="py-2 px-4 border-b text-left">Count</th>
+            <th className="py-2 px-4 border-b text-center">Item</th>
+            <th className="py-2 px-4 border-b text-center">Sport</th>
+            <th className="py-2 px-4 border-b text-center">Count</th>
           </tr>
         </thead>
         <tbody>
-          {filteredItems.map((item, index) => (
-            <tr key={index} className="border-b hover:bg-gray-100">
-              <td className="py-2 px-4">{item.item_id}</td>
-              <td className="py-2 px-4">{item.sport}</td>
-              <td className="py-2 px-4">
-                {/* Display + and - icons for staff members only in the Count column */}
-                {isStaff ? (
-                  <div className="flex items-center space-x-4">
-                    {" "}
-                    {/* Added wider space between buttons */}
-                    <button className="text-red-500">
-                      <FaMinus />
-                    </button>
-                    <span>{item.count}</span>{" "}
-                    {/* Count displayed between the buttons */}
-                    <button className="text-green-500">
-                      <FaPlus />
-                    </button>
-                  </div>
-                ) : (
-                  <span>
-                    {item.count}
-                  </span> /* Just display count for non-staff */
-                )}
+          {filteredItems.length > 0 ? (
+            filteredItems.map((item) => (
+              <tr key={item.id} className="border-b hover:bg-gray-100">
+                <td className="py-2 px-4">{item.item}</td>
+                <td className="py-2 px-4 text-center">{item.sport}</td>
+                <td className="py-2 px-4">
+                  {isStaff ? (
+                    <div className="flex items-center justify-center space-x-4">
+                      <button className="text-red-500">
+                        <FaMinus />
+                      </button>
+                      <span>{item.count}</span>
+                      <button className="text-green-500">
+                        <FaPlus />
+                      </button>
+                    </div>
+                  ) : (
+                    <span>{item.count}</span>
+                  )}
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="3" className="py-4 text-center text-gray-500">
+                No items found.
               </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </div>

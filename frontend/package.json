@@ -29,7 +29,12 @@
     "@radix-ui/react-toast": "^1.2.2",
     "@radix-ui/react-toggle": "^1.1.0",
     "@radix-ui/react-toggle-group": "^1.1.0",
+<<<<<<< HEAD
     "axios": "^1.7.7",
+=======
+    "axios": "^1.6.8",
+    "caniuse-lite": "^1.0.30001612",
+>>>>>>> d521839 (Update the page)
     "chart.js": "^4.4.4",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
@@ -38,6 +43,7 @@
     "flowbite": "^2.4.1",
     "flowbite-react": "^0.10.1",
     "formik": "^2.4.6",
+    "googleapis": "^144.0.0",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.399.0",
     "react": "^18.2.0",
@@ -51,7 +57,8 @@
     "styled-components": "^6.1.8",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
-    "yup": "^1.4.0"
+    "xlsx": "^0.18.5",
+    "yup": "^1.6.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",

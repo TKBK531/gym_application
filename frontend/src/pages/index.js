@@ -11,6 +11,7 @@ import Register from "./Register";
 import AllProfiles from "./AllProfiles";
 import PageNotFound from "./PageNotFound";
 import MainLandingPage from "./LandingPage/MainLandingPage";
+import StudentData from "./StudentData";
 
 export {
   Home,
@@ -26,4 +27,5 @@ export {
   PageNotFound,
   AllProfiles,
   MainLandingPage,
+  StudentData,
 };

@@ -9,7 +9,6 @@ import uniLogo from "../../assets/logo/uni_logo.png";
 export const LeftbarContext = createContext();
 
 const Leftbar = ({ userData, isLeftbarVisible, expanded, setExpanded }) => {
-  // const [expanded, setExpanded] = useState(true); // Always expanded on mobile
   const [activeLink, setActiveLink] = useState("/");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
@@ -110,10 +109,10 @@ const Leftbar = ({ userData, isLeftbarVisible, expanded, setExpanded }) => {
               className="flex w-full items-center cursor-pointer"
             >
               <img
-                src={userData.profile.profile_picture}
+                src={userData?.profile?.profile_picture || "/path/to/default/image.png"}
                 className={`w-8 h-8 rounded-full mr-3 object-cover ${
                   !expanded && "mr-0"
-                }`} // Conditional margin
+                }`}
                 alt="Profile"
               />
 
@@ -132,8 +131,9 @@ const Leftbar = ({ userData, isLeftbarVisible, expanded, setExpanded }) => {
               </div>
             </div>
           </div>
+
           {/* Floating menu */}
-          {isMenuOpen && (
+          {isMenuOpen && userData && (
             <div
               ref={menuRef}
               className={`absolute right-90 top-16 w-max bg-white rounded-md shadow-lg z-10 transition-all duration-300 ease-in-out transform ${
@@ -142,9 +142,12 @@ const Leftbar = ({ userData, isLeftbarVisible, expanded, setExpanded }) => {
             >
               <div className="py-2 px-4">
                 <p className="font-semibold text-sm">
-                  {userData.user.first_name} {userData.user.last_name}
+                  {userData?.user?.first_name || "Guest"}{" "}
+                  {userData?.user?.last_name || ""}
                 </p>
-                <p className="text-xs text-gray-500">{userData.user.email}</p>
+                <p className="text-xs text-gray-500">
+                  {userData?.user?.email || "No Email"}
+                </p>
               </div>
               <hr className="border-t border-gray-200" />
               <button
@@ -170,6 +173,21 @@ const Leftbar = ({ userData, isLeftbarVisible, expanded, setExpanded }) => {
 Leftbar.propTypes = {
   userData: PropTypes.object,
   isLeftbarVisible: PropTypes.bool.isRequired,
+  expanded: PropTypes.bool.isRequired,
+  setExpanded: PropTypes.func.isRequired,
+};
+
+Leftbar.defaultProps = {
+  userData: {
+    profile: {
+      profile_picture: "",
+    },
+    user: {
+      first_name: "Guest",
+      last_name: "",
+      email: "",
+    },
+  },
 };
 
 export default Leftbar;
