@@ -19,6 +19,7 @@ from .views import (
     AddTeamMemberView,
     RemoveTeamMemberView,
     GetTeamMembersView,
+    GetRecentAnnouncementsView,
 )
 
 urlpatterns = [
@@ -65,4 +66,9 @@ urlpatterns = [
         name="get-team-members",
     ),
     path("remove-member/", RemoveTeamMemberView.as_view(), name="remove-member"),
+    path(
+        "recent-announcements/",
+        GetRecentAnnouncementsView.as_view(),
+        name="recent-announcements",
+    ),
 ]

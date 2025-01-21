@@ -30,9 +30,11 @@ function Team({ sportId }) {
   const [captain, setCaptain] = useState(null);
   const [students, setStudents] = useState([]);
   const [showAddTeamMembersDialog, setShowAddTeamMembersDialog] = useState(false);
+  const user_type = JSON.parse(localStorage.getItem("userData")).profile.user_type;
 
   useEffect(() => {
     fetchTeams();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sportId]);
 
   const fetchTeams = async () => {
@@ -152,57 +154,64 @@ function Team({ sportId }) {
         <CreateTeam sportId={sportId} onTeamCreated={handleTeamCreated} />
       </div>
       {selectedTeam && captain && (
-        <div className="captain-info bg-gray-100 p-4 rounded-md shadow-sm">
-          <h3 className="text-xl font-semibold mb-2 text-gray-700">
-            Team Captain
-          </h3>
-          <p className="text-gray-600">{captain.name}</p>
-        </div>
+        <>
+          <div className="captain-info bg-gray-100 p-4 rounded-md shadow-sm">
+            <h3 className="text-xl font-semibold mb-2 text-gray-700">
+              Team Captain
+            </h3>
+            <p className="text-gray-600">{captain.name}</p>
+          </div>
+          {(user_type === "staff" || user_type === "admin") && (
+            <Button onClick={handleAddTeamMembers} className="mt-4">
+              Add Team Members
+            </Button>
+          )}
+        </>
       )}
       {selectedTeam && teamMembers.length > 0 && (
-        <div className="team-members">
-          <h3 className="text-xl font-semibold mb-2 text-gray-700">
-            Team Members
-          </h3>
-          <Table className="min-w-full bg-white border border-gray-200 rounded-md shadow-sm">
-            <TableHeader className="bg-gray-50">
-              <TableRow>
-                <TableHead className="p-2 text-left text-gray-600">
-                  Profile Picture
-                </TableHead>
-                <TableHead className="p-2 text-left text-gray-600">
-                  Name
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {teamMembers.map((member) => (
-                <TableRow key={member.user} className="hover:bg-gray-50">
-                  <TableCell className="p-2">
-                    <Avatar className="w-10 h-10">
-                      <AvatarImage
-                        src={`${import.meta.env.VITE_API_URL}${member.profile_picture
-                          }`}
-                        alt={member.member_name}
-                        className="rounded-full"
-                      />
-                      <AvatarFallback className="bg-gray-200 text-gray-600">
-                        {member.member_name.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
-                  </TableCell>
-                  <TableCell className="p-2 text-gray-700">
-                    {member.member_name}
-                  </TableCell>
+        <>
+          <div className="team-members">
+            <h3 className="text-xl font-semibold mb-2 text-gray-700">
+              Team Members
+            </h3>
+            <Table className="min-w-full bg-white border border-gray-200 rounded-md shadow-sm">
+              <TableHeader className="bg-gray-50">
+                <TableRow>
+                  <TableHead className="p-2 text-left text-gray-600">
+                    Profile Picture
+                  </TableHead>
+                  <TableHead className="p-2 text-left text-gray-600">
+                    Name
+                  </TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+              </TableHeader>
+              <TableBody>
+                {teamMembers.map((member) => (
+                  <TableRow key={member.user} className="hover:bg-gray-50">
+                    <TableCell className="p-2">
+                      <Avatar className="w-10 h-10">
+                        <AvatarImage
+                          src={`${import.meta.env.VITE_API_URL}${member.profile_picture
+                            }`}
+                          alt={member.member_name}
+                          className="rounded-full"
+                        />
+                        <AvatarFallback className="bg-gray-200 text-gray-600">
+                          {member.member_name.charAt(0)}
+                        </AvatarFallback>
+                      </Avatar>
+                    </TableCell>
+                    <TableCell className="p-2 text-gray-700">
+                      {member.member_name}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+
+        </>
       )}
-      <Button onClick={handleAddTeamMembers} className="mt-4">
-        Add Team Members
-      </Button>
       <AddTeamMembersPopup
         isOpen={showAddTeamMembersDialog}
         onClose={() => setShowAddTeamMembersDialog(false)}

@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
 import InfoCard from "../components/Dashboard/InfoCard";
-import DonutChart from "../components/Charts/DonutChart";
 import UpcomingEvents from "../components/Dashboard/UpcommingEvents";
 import api from "../api";
+import { Card, CardContent } from "../components/ui/card";
 
 const Home = () => {
-  const userData = JSON.parse(localStorage.getItem("userData"));
   const [totalUserCount, setTotalUserCount] = useState(0);
   const [eventCountInNext30Days, setEventCountInNext30Days] = useState(0);
   const [eventDetails, setEventDetails] = useState([]);
@@ -44,55 +43,53 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="p-4 bg-gray-100 min-h-screen">
-      <header className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">
-          Welcome, {userData?.user.last_name || "User"}!
-        </h1>
-        <p className="text-gray-600 mt-2">
-          Here&apos;s a summary of your account activity.
-        </p>
-      </header>
+    <div className="min-h-screen bg-gray-100 p-6">
+      <div className="lg:w-full mx-auto flex flex-col lg:flex-row gap-6">
+        {/* Main Content Section */}
+        <div className="flex-1">
+          {/* Header Section */}
+          <Card className="bg-primary-shade-4 text-white mb-6 shadow-md">
+            <CardContent className="pt-16 pb-16 pl-4 pr-4">
+              <h1 className="text-2xl font-bold">Welcome to UniFit!</h1>
+              <p className="text-sm">
+                Stay updated with UniFit events and activities. Make your reservations today!
+              </p>
+            </CardContent>
+          </Card>
 
-      <section className="mb-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          <InfoCard
-            title="Total Users"
-            value={totalUserCount}
-            description="Number of active users"
-          />
-          <InfoCard
-            title="Upcoming Events"
-            value={eventCountInNext30Days}
-            description="Events in the next 30 days"
-          />
-          <InfoCard
-            title="New Signups"
-            value="123"
-            description="New users signed up this week"
-          />
-          <InfoCard
-            title="New Signups"
-            value="123"
-            description="New users signed up this week"
-          />
-        </div>
-      </section>
+          <section className="mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              <InfoCard
+                title="Total Users"
+                value={totalUserCount}
+                description="Number of active users"
+              />
+              <InfoCard
+                title="Upcoming Events"
+                value={eventCountInNext30Days}
+                description="Events in the next 30 days"
+              />
+              <InfoCard
+                title="New Announcements"
+                value="123"
+                description="New users signed up this week"
+              />
+              <InfoCard
+                title="New Reservations"
+                value="123"
+                description="New users signed up this week"
+              />
+            </div>
+          </section>
 
-      <section className="mb-6 flex flex-col lg:flex-row gap-6">
-        <div className="lg:w-1/2">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-            Activity Overview
-          </h2>
-          <div className="bg-white p-6 rounded-lg shadow-lg flex justify-center items-center">
-            <DonutChart />
-          </div>
+
         </div>
-        <div className="lg:w-1/2">
-          <UpcomingEvents events={eventDetails} isLoading={isLoading} />
-        </div>
-      </section>
+      </div>
+      <div className="lg:w-1/2">
+        <UpcomingEvents events={eventDetails} isLoading={isLoading} />
+      </div>
     </div>
+
   );
 };
 

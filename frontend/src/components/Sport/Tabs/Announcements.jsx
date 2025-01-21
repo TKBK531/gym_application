@@ -31,6 +31,8 @@ const Announcements = ({ sportId }) => {
   const [deleteId, setDeleteId] = useState(null);
   const userData = JSON.parse(localStorage.getItem("userData"));
 
+  const user_type = userData.profile.user_type;
+
   useEffect(() => {
     fetchAnnouncements();
   }, [sportId]);
@@ -48,6 +50,9 @@ const Announcements = ({ sportId }) => {
 
   const handleCreate = async () => {
     try {
+      // Print the form data in the console
+      console.log("Form Data:", newAnnouncement);
+
       const response = await api.post(`/sport/create-post/`, newAnnouncement);
       if (response.data.status === "success") {
         setNewAnnouncement({
@@ -88,10 +93,10 @@ const Announcements = ({ sportId }) => {
 
   return (
     <Card className="w-full max-w-4xl mx-auto">
+      {console.log(user_type)}
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="text-2xl font-bold">Announcements</CardTitle>
-        {(userData.profile.user_type === "admin" ||
-          userData.profile.user_type === "staff") && (
+        {(user_type === "admin" || user_type === "staff") && (
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button>

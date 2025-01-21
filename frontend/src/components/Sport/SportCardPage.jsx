@@ -16,7 +16,7 @@ import api from "../../api";
 import LoadingSkeleton from "./LoadingSkeleton";
 import ErrorAlert from "./ErrorAlert";
 import SportTabs from "./SportTabs";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function SportCardPage() {
@@ -285,8 +285,6 @@ export default function SportCardPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      <ToastContainer />
     </Card>
   );
 }

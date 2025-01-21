@@ -16,9 +16,6 @@ from django.http import JsonResponse
 from rest_framework.exceptions import NotFound
 
 
-# Create your views here.
-
-
 # Get all sports
 class SportListView(generics.ListAPIView):
     queryset = Sport.objects.all()
@@ -157,7 +154,10 @@ class GetInChargeSportsView(generics.ListAPIView):
         return Sport.objects.filter(in_charge=in_charge)
 
     def list(self, request, *args, **kwargs):
-        if request.user.groups.filter(name="staff").exists():
+        if (
+            request.user.groups.filter(name="staff").exists()
+            or request.user.groups.filter(name="admin").exists()
+        ):
             in_charge_id = request.user.id
 
             queryset = self.get_queryset(in_charge_id=in_charge_id)
@@ -439,9 +439,11 @@ class DeleteSportPostView(generics.DestroyAPIView):
                 },
                 status=404,
             )
-
         # Additional check: Is the authenticated user the 'author' of this post?
-        if not request.user.groups.filter(name="staff").exists():
+        if (
+            not request.user.groups.filter(name="staff").exists()
+            and not request.user.groups.filter(name="admin").exists()
+        ):
             return JsonResponse(
                 {
                     "status": "error",
@@ -520,7 +522,10 @@ class CreateTeamView(generics.CreateAPIView):
         serializer.save(sport=sport)
 
     def create(self, request, *args, **kwargs):
-        if request.user.groups.filter(name="staff").exists():
+        if (
+            request.user.groups.filter(name="staff").exists()
+            or request.user.groups.filter(name="admin").exists()
+        ):
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             try:
@@ -577,7 +582,10 @@ class UpdateTeamView(generics.UpdateAPIView):
                 status=404,
             )
 
-        if not request.user.groups.filter(name="staff").exists():
+        if (
+            not request.user.groups.filter(name="staff").exists()
+            or not request.user.groups.filter(name="admin").exists()
+        ):
             return JsonResponse(
                 {
                     "status": "error",
@@ -740,7 +748,10 @@ class AddTeamMemberView(generics.CreateAPIView):
         serializer.save(team=team, user_id=user_id)
 
     def create(self, request, *args, **kwargs):
-        if request.user.groups.filter(name="staff").exists():
+        if (
+            request.user.groups.filter(name="staff").exists()
+            or request.user.groups.filter(name="admin").exists()
+        ):
             team_id = request.data.get("team")
             user_ids = request.data.get("user", [])
 
@@ -914,3 +925,34 @@ class GetTeamMembersView(generics.ListAPIView):
                 },
                 status=500,
             )
+
+
+class GetRecentAnnouncementsView(generics.RetrieveAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = [AllowAny]
+
+    def retrieve(self, request, *args, **kwargs):
+        queryset = self.get_queryset().order_by("-created_at")[:5]
+        serializer = self.get_serializer(queryset, many=True)
+        posts_data = serializer.data
+
+        # Add sport name to each post's data
+        for post in posts_data:
+            sport_id = post.get("sport")
+            if sport_id:
+                try:
+                    sport = Sport.objects.get(id=sport_id)
+                    post["sport_name"] = sport.label
+                except Sport.DoesNotExist:
+                    post["sport_name"] = None
+            else:
+                post["sport_name"] = None
+
+        return JsonResponse(
+            {
+                "status": "success",
+                "data": posts_data,
+            },
+            safe=False,
+        )
