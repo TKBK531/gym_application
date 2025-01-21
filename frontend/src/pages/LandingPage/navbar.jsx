@@ -1,8 +1,32 @@
-import { useNavigate } from "react-router-dom";
-
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [profilePicture, setProfilePicture] = useState("");
+    const [loggedInUserName, setLoggedInUserName] = useState("");
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const loggedInStatus = localStorage.getItem("isLoggedIn");
+        const userData = JSON.parse(localStorage.getItem("userData"));
+        if (loggedInStatus === "true" && userData) {
+            setIsLoggedIn(true);
+            setProfilePicture(userData.profile.profile_picture);
+            setLoggedInUserName(userData.user.last_name);
+        }
+    }, []);
+
+    const handleLogin = () => {
+        navigate("/login");
+    };
+
+    const handleLogout = () => {
+        setIsLoggedIn(false);
+        localStorage.setItem("isLoggedIn", "false");
+        navigate("/");
+    };
+
     return (
         <nav className="flex items-center justify-between px-6 py-4 bg-white shadow-md">
             {/* Logo Section */}
@@ -15,39 +39,67 @@ const Navbar = () => {
 
             {/* Navigation Links */}
             <div className="hidden md:flex space-x-6">
-                <a href="#home" className="text-gray-600 hover:text-blue-600">
+                <Link to="/" className="text-gray-600 hover:text-blue-600">
                     Home
-                </a>
-                <a href="#events" className="text-gray-600 hover:text-blue-600">
+                </Link>
+                <Link to="/events" className="text-gray-600 hover:text-blue-600">
                     Events
-                </a>
-                <a href="#facilities" className="text-gray-600 hover:text-blue-600">
+                </Link>
+                <Link to="/facilities" className="text-gray-600 hover:text-blue-600">
                     Facilities
-                </a>
-                <a href="#contact" className="text-gray-600 hover:text-blue-600">
+                </Link>
+                <Link to="/contact" className="text-gray-600 hover:text-blue-600">
                     Contact
-                </a>
+                </Link>
+                {isLoggedIn && (
+                    <Link to="/dashboard" className="text-gray-600 hover:text-blue-600">
+                        Dashboard
+                    </Link>
+                )}
             </div>
 
             {/* Search and Buttons */}
             <div className="flex items-center space-x-4">
-                <input
-                    type="text"
-                    placeholder="Search..."
-                    className="hidden lg:block px-4 py-2 border rounded-full text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <button
-                    className="px-4 py-2 text-white bg-blue-600 rounded-full hover:bg-blue-700"
-                    onClick={() => navigate('/login')}
-                >
-                    Log In
-                </button>
-                <button
-                    className="px-4 py-2 text-blue-600 border border-blue-600 rounded-full hover:bg-blue-600 hover:text-white"
-                    onClick={() => navigate('/register')}
-                >
-                    Sign Up
-                </button>
+                {!isLoggedIn ? (
+                    <>
+                        <button
+                            className="px-4 py-2 text-white bg-blue-600 rounded-full hover:bg-blue-700"
+                            onClick={handleLogin}
+                        >
+                            Log In
+                        </button>
+                        <button
+                            className="px-4 py-2 text-blue-600 border border-blue-600 rounded-full hover:bg-blue-600 hover:text-white"
+                            onClick={() => navigate("/register")}
+                        >
+                            Sign Up
+                        </button>
+                    </>
+                ) : (
+                    <div className="relative">
+                        <button
+                            className="flex items-center space-x-2 text-gray-600 hover:text-blue-600"
+                            onClick={() => document.getElementById("userMenu").classList.toggle("hidden")}
+                        >
+                            <img src={profilePicture} alt="User Avatar" className="w-8 h-8 rounded-full" />
+                            <span>{loggedInUserName}</span>
+                        </button>
+                        <div id="userMenu" className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden">
+                            <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                Profile
+                            </Link>
+                            <Link to="/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                Settings
+                            </Link>
+                            <button
+                                onClick={handleLogout}
+                                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            >
+                                Logout
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
         </nav>
     );

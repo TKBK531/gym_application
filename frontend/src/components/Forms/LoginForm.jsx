@@ -23,17 +23,15 @@ const LoginForm = ({ setErrorMessage, setLoading }) => {
 
     try {
       const res = await api.post(route, values);
-      // console.log(res.data.data);
       localStorage.setItem("userData", JSON.stringify(res.data.data));
       localStorage.setItem(ACCESS_TOKEN, res.data.auth_tokens.access);
       localStorage.setItem(REFRESH_TOKEN, res.data.auth_tokens.refresh);
-      // localStorage.setItem("userType", res.data.data.user_type);
 
-      // setLoggedInUser(res.data.data);
       console.log(
         "Logged in User: ",
         JSON.parse(localStorage.getItem("userData"))
       );
+      localStorage.setItem("isLoggedIn", "true");
       navigate("/dashboard");
     } catch (error) {
       if (error.response) {
