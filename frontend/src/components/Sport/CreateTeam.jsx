@@ -18,6 +18,7 @@ function CreateTeam({ sportId, onTeamCreated }) {
     const [students, setStudents] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const user_type = JSON.parse(localStorage.getItem("userData")).profile.user_type;
 
     useEffect(() => {
         if (isOpen) {
@@ -82,7 +83,9 @@ function CreateTeam({ sportId, onTeamCreated }) {
 
     return (
         <>
-            <Button onClick={() => setIsOpen(true)}>Create Team</Button>
+            {(user_type === "staff" || user_type === "admin") && (
+                <Button onClick={() => setIsOpen(true)}>Create Team</Button>
+            )}
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
