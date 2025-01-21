@@ -285,8 +285,6 @@ export default function SportCardPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      <ToastContainer />
     </Card>
   );
 }

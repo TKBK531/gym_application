@@ -439,11 +439,10 @@ class DeleteSportPostView(generics.DestroyAPIView):
                 },
                 status=404,
             )
-
         # Additional check: Is the authenticated user the 'author' of this post?
         if (
             not request.user.groups.filter(name="staff").exists()
-            or not request.user.groups.filter(name="admin").exists()
+            and not request.user.groups.filter(name="admin").exists()
         ):
             return JsonResponse(
                 {
