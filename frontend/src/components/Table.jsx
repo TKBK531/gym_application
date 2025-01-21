@@ -93,7 +93,7 @@ const Table = ({ userRole, selectedCategory }) => {
       event_type: selectedCategory.toLowerCase().replace(' ', '_'),
       event: {
         event: {
-          name: newEvent.eventName,
+          name: newEvent.eventName, // Ensure event name is always included
           place: newEvent.place,
           time: newEvent.time,
           date: newEvent.date,
@@ -217,12 +217,11 @@ const Table = ({ userRole, selectedCategory }) => {
         </>
       );
     } else {
-      // Free text input for "Musical Shows" and "Other Functions"
       return (
         <input
           type="text"
-          name="sport"
-          value={newEvent.sport}
+          name="eventName"
+          value={newEvent.eventName}
           onChange={handleChange}
           placeholder={`Enter ${getEventLabel(category)}`}
           className="w-full p-2 border border-gray-300 rounded"
@@ -366,7 +365,7 @@ const Table = ({ userRole, selectedCategory }) => {
             <h2 className="text-xl mb-4">Add New {getEventLabel(selectedCategory)}</h2>
             <form onSubmit={handleFormSubmit}>
               <div className="mb-4">
-                <label className="block text-gray-700">{getEventLabel(selectedCategory)}:</label>
+                {/* <label className="block text-gray-700">{getEventLabel(selectedCategory)}:</label> */}
                 {getEventInput(selectedCategory)}
               </div>
               <div className="mb-4">
