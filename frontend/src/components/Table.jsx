@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import api from '../api';
+import { toast } from "react-toastify";
 
 const Table = ({ userRole, selectedCategory }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -18,6 +19,8 @@ const Table = ({ userRole, selectedCategory }) => {
   const [events, setEvents] = useState([]);
   const [eventToDelete, setEventToDelete] = useState(null); // State to track the event to be deleted
   const [sportsList, setSportsList] = useState([]); // State to store the sports list
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [eventToEdit, setEventToEdit] = useState(null);
 
   const userData = JSON.parse(localStorage.getItem("userData"));
   const user_type = userData.profile.user_type;
@@ -104,13 +107,12 @@ const Table = ({ userRole, selectedCategory }) => {
       requestBody.event.sport = selectedSport ? selectedSport.id : null;
     }
 
-    // Print the form values in JSON format
     console.log(JSON.stringify(requestBody, null, 2));
 
     try {
       const response = await api.post('/event/create-event/', requestBody);
       if (response.data.status === 'success') {
-        fetchEvents(); // Reload the table data
+        fetchEvents();
         setIsModalOpen(false);
         setNewEvent({
           sport: '',
@@ -121,9 +123,11 @@ const Table = ({ userRole, selectedCategory }) => {
           status: 'On going',
           category: selectedCategory,
         });
+        toast.success('Event created successfully');
       }
     } catch (error) {
       console.error('Error creating event:', error.message);
+      toast.error('Error creating event');
     }
   };
 
@@ -137,13 +141,14 @@ const Table = ({ userRole, selectedCategory }) => {
       if (response.data.status === 'success') {
         fetchEvents(); // Reload the table data
         setEventToDelete(null);
+        toast.success('Event deleted successfully');
       }
     } catch (error) {
       console.error('Error deleting event:', error.message);
+      toast.error('Error deleting event');
     }
   };
 
-  // Filter events based on search term
   const filteredEvents = events.filter(
     item =>
       item.event.place.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -151,7 +156,6 @@ const Table = ({ userRole, selectedCategory }) => {
       item.event.status.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Determine the label for the "Sport" column based on the selectedCategory
   const getColumnName = (category) => {
     switch (category) {
       case 'Sports':
@@ -165,7 +169,6 @@ const Table = ({ userRole, selectedCategory }) => {
     }
   };
 
-  // Determine the input type and label for the "Sport" field in the Add Event modal
   const getEventLabel = (category) => {
     switch (category) {
       case 'Sports':
@@ -247,6 +250,32 @@ const Table = ({ userRole, selectedCategory }) => {
     return sport ? sport.label : 'Unknown Sport';
   };
 
+  const handleEditEvent = (event) => {
+    setEventToEdit(event);
+    setIsEditModalOpen(true);
+  };
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEventToEdit({ ...eventToEdit, event: { ...eventToEdit.event, [name]: value } });
+  };
+
+  const handleEditFormSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await api.put(`/event/update-event/${eventToEdit.event.id}/`, eventToEdit);
+      if (response.data.status === 'success') {
+        fetchEvents(); // Reload the table data
+        setIsEditModalOpen(false);
+        setEventToEdit(null);
+        toast.success('Event updated successfully');
+      }
+    } catch (error) {
+      console.error('Error updating event:', error.message);
+      toast.error('Error updating event');
+    }
+  };
+
   return (
     <div className="p-5">
       {(userRole === 'staff' || userRole === 'admin') && (
@@ -321,7 +350,7 @@ const Table = ({ userRole, selectedCategory }) => {
                 </td>
                 {(user_type === "staff" || user_type === "admin") && (
                   <td className="border-b p-4">
-                    <button className="mr-3">✏️</button>
+                    <button className="mr-3" onClick={() => handleEditEvent(item)}>✏️</button>
                     <button className="delete-btn" onClick={() => handleDeleteClick(item)}>🗑️</button>
                   </td>
                 )}
@@ -406,6 +435,95 @@ const Table = ({ userRole, selectedCategory }) => {
                   className="bg-yellow-500 text-black py-2 px-4 rounded"
                 >
                   Save {getEventLabel(selectedCategory)}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {isEditModalOpen && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-8 rounded-lg w-1/2">
+            <h2 className="text-xl mb-4">Edit Event</h2>
+            <form onSubmit={handleEditFormSubmit}>
+              <div className="mb-4">
+                <label className="block text-gray-700">Event Name:</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={eventToEdit.event.name}
+                  onChange={handleEditChange}
+                  className="w-full p-2 border border-gray-300 rounded"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700">Place:</label>
+                <select
+                  name="place"
+                  value={eventToEdit.event.place}
+                  onChange={handleEditChange}
+                  className="w-full p-2 border border-gray-300 rounded"
+                  required
+                >
+                  <option value="">Select a Place</option>
+                  {placesList.map((place, index) => (
+                    <option key={index} value={place.toLowerCase()}>
+                      {place}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700">Time:</label>
+                <input
+                  type="time"
+                  name="time"
+                  value={eventToEdit.event.time}
+                  onChange={handleEditChange}
+                  className="w-full p-2 border border-gray-300 rounded"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700">Date:</label>
+                <input
+                  type="date"
+                  name="date"
+                  value={eventToEdit.event.date}
+                  onChange={handleEditChange}
+                  className="w-full p-2 border border-gray-300 rounded"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700">Status:</label>
+                <select
+                  name="status"
+                  value={eventToEdit.event.status}
+                  onChange={handleEditChange}
+                  className="w-full p-2 border border-gray-300 rounded"
+                >
+                  <option value="ongoing">On going</option>
+                  <option value="upcoming">Up coming</option>
+                  <option value="postponed">Postponed</option>
+                  <option value="scheduled">Scheduled</option>
+                </select>
+              </div>
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  className="bg-gray-500 text-white py-2 px-4 rounded mr-4"
+                  onClick={() => setIsEditModalOpen(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-yellow-500 text-black py-2 px-4 rounded"
+                >
+                  Save Changes
                 </button>
               </div>
             </form>
