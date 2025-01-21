@@ -7,7 +7,8 @@ import api from "../api";
 const Home = () => {
   const userData = JSON.parse(localStorage.getItem("userData"));
   const [totalUserCount, setTotalUserCount] = useState(0);
-  const [eventCountInUpcommingMonth, setEventCountInUpcommingMonth] = useState(0);
+  const [eventCountInNext30Days, setEventCountInNext30Days] = useState(0);
+  const [eventDetails, setEventDetails] = useState([]);
 
   const fetchTotalUserCount = async () => {
     try {
@@ -21,21 +22,22 @@ const Home = () => {
     }
   };
 
-  const fetchEventCountInUpcommingMonth = async () => {
+  const fetchEventCountAndDetails = async () => {
     try {
       const response = await api.get("/event/events-in-this-month/");
       if (response.data.status === "success") {
-        setEventCountInUpcommingMonth(response.data.data);
-        console.log("Upcomming events:", response.data.data);
+        setEventCountInNext30Days(response.data.data.event_count);
+        setEventDetails(response.data.data.event_details);
+        console.log("Upcoming events:", response.data.data);
       }
     } catch (error) {
-      console.error("Error fetching upcomming events:", error.message);
+      console.error("Error fetching upcoming events:", error.message);
     }
   };
 
   useEffect(() => {
     fetchTotalUserCount();
-    fetchEventCountInUpcommingMonth();
+    fetchEventCountAndDetails();
   }, []);
 
   return (
@@ -58,7 +60,7 @@ const Home = () => {
           />
           <InfoCard
             title="Upcomming Events"
-            value={eventCountInUpcommingMonth}
+            value={eventCountInNext30Days}
             description="Upcomming events this month"
           />
           <InfoCard

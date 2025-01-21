@@ -7,6 +7,7 @@ from .views import (
     ListOtherFunctionEventsView,
     DeleteEventView,
     UpdateEventView,
+    EventsInNext30DaysView,
 )
 
 urlpatterns = [
@@ -25,4 +26,9 @@ urlpatterns = [
     ),
     path("delete-event/<int:pk>/", DeleteEventView.as_view(), name="delete-event"),
     path("update-event/<int:pk>/", UpdateEventView.as_view(), name="update-event"),
+    path(
+        "events-in-this-month/",
+        EventsInNext30DaysView.as_view(),
+        name="events-in-this-month",
+    ),
 ]
