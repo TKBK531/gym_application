@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import InfoCard from "../components/Dashboard/InfoCard";
 import DonutChart from "../components/Charts/DonutChart";
-import { FaUserPlus, FaShoppingCart, FaUserEdit } from "react-icons/fa"; // Import icons
+import UpcomingEvents from "../components/Dashboard/UpcommingEvents";
 import api from "../api";
 
 const Home = () => {
@@ -9,6 +9,7 @@ const Home = () => {
   const [totalUserCount, setTotalUserCount] = useState(0);
   const [eventCountInNext30Days, setEventCountInNext30Days] = useState(0);
   const [eventDetails, setEventDetails] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchTotalUserCount = async () => {
     try {
@@ -32,6 +33,8 @@ const Home = () => {
       }
     } catch (error) {
       console.error("Error fetching upcoming events:", error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -59,9 +62,9 @@ const Home = () => {
             description="Number of active users"
           />
           <InfoCard
-            title="Upcomming Events"
+            title="Upcoming Events"
             value={eventCountInNext30Days}
-            description="Upcomming events this month"
+            description="Events in the next 30 days"
           />
           <InfoCard
             title="New Signups"
@@ -86,41 +89,7 @@ const Home = () => {
           </div>
         </div>
         <div className="lg:w-1/2">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-            Recent Activity
-          </h2>
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <ul className="space-y-4">
-              <li className="flex items-center space-x-4">
-                <FaUserPlus className="text-green-500" />
-                <div>
-                  <p className="text-gray-700">User A signed up</p>
-                  <p className="text-gray-500 text-sm">2 hours ago</p>
-                </div>
-              </li>
-              <li className="flex items-center space-x-4">
-                <FaShoppingCart className="text-blue-500" />
-                <div>
-                  <p className="text-gray-700">User B made a purchase</p>
-                  <p className="text-gray-500 text-sm">5 hours ago</p>
-                </div>
-              </li>
-              <li className="flex items-center space-x-4">
-                <FaUserEdit className="text-yellow-500" />
-                <div>
-                  <p className="text-gray-700">User C updated their profile</p>
-                  <p className="text-gray-500 text-sm">1 day ago</p>
-                </div>
-              </li>
-              <li className="flex items-center space-x-4">
-                <FaUserPlus className="text-green-500" />
-                <div>
-                  <p className="text-gray-700">More activity...</p>
-                  <p className="text-gray-500 text-sm">2 days ago</p>
-                </div>
-              </li>
-            </ul>
-          </div>
+          <UpcomingEvents events={eventDetails} isLoading={isLoading} />
         </div>
       </section>
     </div>
