@@ -30,7 +30,7 @@ const StudentData = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
+      <div className="bg-white shadow-lg rounded-lg p-8 w-3/4">
         <h1 className="text-2xl text-center font-semibold mb-6">Student Details</h1>
         <form onSubmit={formik.handleSubmit}>
           {/* Name Field */}
@@ -40,11 +40,10 @@ const StudentData = () => {
               type="text"
               name="name"
               placeholder="Enter your full name"
-              className={`w-full border rounded-lg p-2 focus:ring-2 ${
-                formik.touched.name && formik.errors.name
-                  ? "border-red-500 ring-red-500"
-                  : "border-gray-300 focus:ring-yellow-500"
-              }`}
+              className={`w-full border rounded-lg p-2 focus:ring-2 ${formik.touched.name && formik.errors.name
+                ? "border-red-500 ring-red-500"
+                : "border-gray-300 focus:ring-yellow-500"
+                }`}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.name}
@@ -63,11 +62,10 @@ const StudentData = () => {
               type="text"
               name="registrationNumber"
               placeholder="Enter your registration number"
-              className={`w-full border rounded-lg p-2 focus:ring-2 ${
-                formik.touched.registrationNumber && formik.errors.registrationNumber
-                  ? "border-red-500 ring-red-500"
-                  : "border-gray-300 focus:ring-yellow-500"
-              }`}
+              className={`w-full border rounded-lg p-2 focus:ring-2 ${formik.touched.registrationNumber && formik.errors.registrationNumber
+                ? "border-red-500 ring-red-500"
+                : "border-gray-300 focus:ring-yellow-500"
+                }`}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.registrationNumber}
@@ -84,11 +82,10 @@ const StudentData = () => {
               type="text"
               name="phoneNumber"
               placeholder="Enter your phone number"
-              className={`w-full border rounded-lg p-2 focus:ring-2 ${
-                formik.touched.phoneNumber && formik.errors.phoneNumber
-                  ? "border-red-500 ring-red-500"
-                  : "border-gray-300 focus:ring-yellow-500"
-              }`}
+              className={`w-full border rounded-lg p-2 focus:ring-2 ${formik.touched.phoneNumber && formik.errors.phoneNumber
+                ? "border-red-500 ring-red-500"
+                : "border-gray-300 focus:ring-yellow-500"
+                }`}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.phoneNumber}
@@ -103,11 +100,10 @@ const StudentData = () => {
             <label className="block text-sm font-medium text-gray-700 mb-1">Faculty</label>
             <select
               name="faculty"
-              className={`w-full border rounded-lg p-2 focus:ring-2 ${
-                formik.touched.faculty && formik.errors.faculty
-                  ? "border-red-500 ring-red-500"
-                  : "border-gray-300 focus:ring-yellow-500"
-              }`}
+              className={`w-full border rounded-lg p-2 focus:ring-2 ${formik.touched.faculty && formik.errors.faculty
+                ? "border-red-500 ring-red-500"
+                : "border-gray-300 focus:ring-yellow-500"
+                }`}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.faculty}
