@@ -1,13 +1,10 @@
 import { useState, useEffect } from "react";
 import InfoCard from "../components/Dashboard/InfoCard";
-import DonutChart from "../components/Charts/DonutChart";
 import UpcomingEvents from "../components/Dashboard/UpcommingEvents";
 import api from "../api";
-import Rightbar from "./rightbar";
 import { Card, CardContent } from "../components/ui/card";
 
 const Home = () => {
-  const userData = JSON.parse(localStorage.getItem("userData"));
   const [totalUserCount, setTotalUserCount] = useState(0);
   const [eventCountInNext30Days, setEventCountInNext30Days] = useState(0);
   const [eventDetails, setEventDetails] = useState([]);
@@ -47,7 +44,7 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-6">
+      <div className="lg:w-full mx-auto flex flex-col lg:flex-row gap-6">
         {/* Main Content Section */}
         <div className="flex-1">
           {/* Header Section */}

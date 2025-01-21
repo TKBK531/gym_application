@@ -16,8 +16,10 @@ const UpcomingEvents = ({ events, isLoading, onEventClick }) => {
         setVisibleCount(2);
     };
 
+
     return (
         <div className="bg-white p-6 rounded-lg shadow-lg">
+            {console.log("Event", events)}
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">Upcoming Events</h2>
             <ul className="space-y-4">
                 {isLoading
@@ -33,11 +35,13 @@ const UpcomingEvents = ({ events, isLoading, onEventClick }) => {
                             </div>
                         </li>
                     ))
+
                     : sortedEvents.slice(0, visibleCount).map((event) => (
                         <li
                             key={event.id}
-                            className="flex justify-between items-center p-4 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 cursor-pointer"
+                            className={`flex justify-between items-center p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 cursor-pointer`}
                             onClick={() => onEventClick(event.category)}
+
                         >
                             <div>
                                 <p className="text-lg font-semibold text-gray-800">{event.name}</p>
