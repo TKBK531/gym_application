@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
@@ -61,7 +61,7 @@ const Navbar = () => {
                 {!isLoggedIn ? (
                     <>
                         <button
-                            className="px-4 py-2 text-white bg-primary-red - rounded-full hover:bg-primary-shade-2"
+                            className="px-4 py-2 text-white bg-primary-red - rounded-full hover:bg-white hover:text-primary-red border border-primary-red"
                             onClick={handleLogin}
                         >
                             Log In
