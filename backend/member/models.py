@@ -8,6 +8,7 @@ class Members(models.Model):
     userProfile = models.OneToOneField(UserProfile, on_delete=models.CASCADE)
     age = models.IntegerField()
     household = models.CharField(max_length=100)
+    formType = models.CharField(max_length=100)    # <-
     membership = models.CharField(max_length=50)
     residence = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=8, decimal_places=2)
@@ -51,3 +52,4 @@ class FamilyMembers(models.Model):
 
     def __str__(self):
         return f"{self.family.members.user.username} - {self.name}"
+    
