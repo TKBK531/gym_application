@@ -7,11 +7,15 @@ const ItemTable = ({
   searchQuery = "",
   sortSport = 0,
   sortCount = "asc",
-  isStaff = true,
+  isStaffOrAdmin,
 }) => {
   const [items, setItems] = useState([]); // State to store the fetched items
   const [loading, setLoading] = useState(true); // State to handle loading status
   const [error, setError] = useState(null); // State to handle errors
+
+  const userData = JSON.parse(localStorage.getItem("userData")); // Fetch user data from localStorage
+
+  const isUserStaffOrAdmin = isStaffOrAdmin || userData?.profile?.user_type === "admin" || userData?.profile?.user_type === "staff";
 
   // Fetch items from the backend on component mount
   useEffect(() => {
@@ -89,7 +93,7 @@ const ItemTable = ({
                 <td className="py-2 px-4">{item.item}</td>
                 <td className="py-2 px-4 text-center">{item.sport}</td>
                 <td className="py-2 px-4">
-                  {isStaff ? (
+                  {isUserStaffOrAdmin ? (
                     <div className="flex items-center justify-center space-x-4">
                       <button className="text-red-500">
                         <FaMinus />
@@ -117,11 +121,12 @@ const ItemTable = ({
     </div>
   );
 };
+
 ItemTable.propTypes = {
   searchQuery: PropTypes.string,
   sortSport: PropTypes.number,
   sortCount: PropTypes.string,
-  isStaff: PropTypes.bool,
+  isStaffOrAdmin: PropTypes.bool,
 };
 
 export default ItemTable;
