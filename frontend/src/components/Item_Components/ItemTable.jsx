@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { FaPlus, FaMinus } from "react-icons/fa"; // Import FontAwesome icons
 import api from "../../api"; // Assuming you have a properly configured Axios instance here
 
@@ -115,6 +116,12 @@ const ItemTable = ({
       </table>
     </div>
   );
+};
+ItemTable.propTypes = {
+  searchQuery: PropTypes.string,
+  sortSport: PropTypes.number,
+  sortCount: PropTypes.string,
+  isStaff: PropTypes.bool,
 };
 
 export default ItemTable;

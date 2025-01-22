@@ -78,19 +78,8 @@ const Items = () => {
       </div>
 
       <section>
-
         <div className="flex justify-center flex-wrap mb-4">
           <h4 className="text sm:text-xl md:text-xl lg:text-xl font-bold text-center">Indoor & Outdoor Equipment</h4>
-          {/* <button
-          className={`px-4 py-2 ${
-            activeTab === "Indoor"
-              ? "bg-yellow-500 hover:bg-yellow-600 text-white rounded"
-              : "bg-gray-200"
-          }`}
-          onClick={() => handleTabChange("Indoor")}
-        >
-          Indoor & Outdoor
-        </button> */}
         </div>
       </section>
 
@@ -110,17 +99,6 @@ const Items = () => {
             Add Item
           </button>
         </div>
-        {/* <div className="flex items-center">
-          <span className="mr-2 text-sm sm:text-base">Sort by:</span>
-          <select
-            className="border p-2 rounded"
-            value={sortCount}
-            onChange={handleSortCountChange}
-          >
-            <option value="asc">Count Ascending</option>
-            <option value="desc">Count Descending</option>
-          </select>
-        </div> */}
       </div>
 
       <ItemTable searchQuery={searchQuery} sortSport={sortSport} sortCount={sortCount} />
