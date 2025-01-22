@@ -170,11 +170,13 @@ export default function SportCardPage() {
         });
         setShowImageUploadDialog(false);
         setSelectedImage(null);
+        toast.success("Image upload successfully");
       } else {
         console.error("Error updating sport image:", response.data.message);
       }
     } catch (error) {
       console.error("Error updating sport image:", error);
+      toast.error(error);
     }
   };
 
