@@ -6,6 +6,7 @@ from .views import (
     CreateOutsidersMemberView,
     CreateFamilyView,
     CreateFamilyMemberView,
+    MemberListView,
 )
 
 urlpatterns = [
@@ -15,4 +16,5 @@ urlpatterns = [
     path("families/create/", CreateFamilyView.as_view(), name="create-family"),
     path("family-members/create/", CreateFamilyMemberView.as_view(), name="create-family-member"),
     path("outsiders-members/create/", CreateOutsidersMemberView.as_view(), name="create-outsiders-member"), 
+    path("list-members/", MemberListView.as_view(), name="Member List"),
 ]
