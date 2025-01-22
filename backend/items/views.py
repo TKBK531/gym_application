@@ -37,17 +37,26 @@ class EquipmentCreateView(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
+        try:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
 
-        response_data = {
-            "status": "success",
-            "message": "Item added successfully.",
-            "data": serializer.data,
-        }
-        return Response(response_data, status=status.HTTP_201_CREATED, headers=headers)
+            response_data = {
+                "status": "success",
+                "message": "Item added successfully.",
+                "data": serializer.data,
+            }
+            return Response(response_data, status=status.HTTP_201_CREATED, headers=headers)
+
+        except Exception as e:
+            error_data = {
+                "status": "error",
+                "message": "Failed to add item.",
+                "errors": str(e)  # Provide error details here
+            }
+            return Response(error_data, status=status.HTTP_400_BAD_REQUEST)
 
 
 class EquipmentUpdateView(generics.UpdateAPIView):
