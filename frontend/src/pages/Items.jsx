@@ -79,8 +79,8 @@ const Items = () => {
 
       <section>
 
-        <div className="flex justify-center bg-blue-100 flex-wrap mb-4">
-          <h4 className="text-lg sm:text-xl md:text-xl lg:text-xl font-bold text-center">Indoor & Outdoor Equipment</h4>
+        <div className="flex justify-center flex-wrap mb-4">
+          <h4 className="text sm:text-xl md:text-xl lg:text-xl font-bold text-center">Indoor & Outdoor Equipment</h4>
           {/* <button
           className={`px-4 py-2 ${
             activeTab === "Indoor"
@@ -94,23 +94,23 @@ const Items = () => {
         </div>
       </section>
 
-      <div className="flex flex-wrap justify-between items-center mb-4 space-y-2 sm:space-y-0">
+      <div className="mb-4">
         <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4">
           <input
             type="text"
-            className="border p-2 rounded w-full sm:w-auto"
-            placeholder="Search"
+            className="border p-2 rounded w-full sm:w-full"
+            placeholder="Search Items"
             value={searchQuery}
             onChange={handleSearchChange}
           />
           <button
-            className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 w-full sm:w-auto"
+            className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 w-full sm:w-1/4"
             onClick={handleAddItemClick}
           >
             Add Item
           </button>
         </div>
-        <div className="flex items-center">
+        {/* <div className="flex items-center">
           <span className="mr-2 text-sm sm:text-base">Sort by:</span>
           <select
             className="border p-2 rounded"
@@ -120,7 +120,7 @@ const Items = () => {
             <option value="asc">Count Ascending</option>
             <option value="desc">Count Descending</option>
           </select>
-        </div>
+        </div> */}
       </div>
 
       <ItemTable searchQuery={searchQuery} sortSport={sortSport} sortCount={sortCount} />
