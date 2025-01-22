@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { formStyles } from "../../styles";
 import FamilyDetails from "../Table/FamilyDetails";
 import api from "../../api";
+import membershipPrice from "./prices";
 
 const MemberStaff = () => {
   const [formData, setFormData] = useState({
@@ -18,6 +19,7 @@ const MemberStaff = () => {
     residence: "",
     address: "",
     email: "",
+    familyMembers: 0,
     totalPrice: "",
   });
 
@@ -54,12 +56,45 @@ const MemberStaff = () => {
     fetchUser();
   }, []);
 
+
+  const calculateTotalPrice = () => {
+    const { membership, formType, familyMembers } = formData;
+
+    const selectedMembership = membershipPrice.find(
+      (item) =>
+        item.memberType === membership && item.formType === formType
+    );
+
+    if (selectedMembership) {
+      const { membershipPrice, monthlyFee } = selectedMembership;
+      const total = (membershipPrice + monthlyFee) * (1 + parseInt(familyMembers || 0));
+      setFormData((prev) => ({ ...prev, totalPrice: total }));
+    } else {
+      setFormData((prev) => ({ ...prev, totalPrice: "" }));
+    }
+  };
+
+  useEffect(() => {
+    calculateTotalPrice();
+  }, [formData.membership, formData.formType, formData.familyMembers]);
+
+
   const handleHouseholdChange = (event) => {
     const selectedHousehold = event.target.value; // Get selected value for household
     setFormData((prevData) => ({
       ...prevData,
       household: selectedHousehold, // Update only household
+      familyMembers: selectedHousehold === "individual" ? 0 : formData.familyMembers,
     }));
+  };
+
+
+  const handleFamilyCountChange = (count) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      familyMembers: count,
+    }));
+    console.log(formData.familyMembers);
   };
 
   const handleFormTypeChange = (event) => {
@@ -88,7 +123,7 @@ const MemberStaff = () => {
     event.preventDefault(); // Prevent the default form submission behavior
     const jsonData = formData;
 
-    console.log(jsonData);
+    // console.log(jsonData);
     // You can also send jsonData to your server here
   };
 
@@ -303,7 +338,8 @@ const MemberStaff = () => {
             </div>
 
             {/* Family Details */}
-            {formData.household !== "individual" && <FamilyDetails />}
+            {/* {formData.household !== "individual" && <FamilyDetails />} */}
+            {formData.household !== "individual" && <FamilyDetails onFamilyCountChange={handleFamilyCountChange}/>}
 
             {/* Total Price */}
             <div className="py-5 md:flex">

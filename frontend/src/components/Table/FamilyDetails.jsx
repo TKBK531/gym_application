@@ -1,10 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { formStyles } from "../../styles";
 
-const FamilyDetails = () => {
+const FamilyDetails = ({ onFamilyCountChange }) => {
   const [familyDetails, setFamilyDetails] = useState([
     { name: "", age: "", relation: "", nic: "" },
   ]);
+
+  useEffect(() => {
+    // Notify the parent component whenever familyDetails length changes
+    if (onFamilyCountChange) {
+      onFamilyCountChange(familyDetails.length);
+    }
+  }, [familyDetails, onFamilyCountChange]);
 
   const handleInputChange = (index, event) => {
     const values = [...familyDetails];

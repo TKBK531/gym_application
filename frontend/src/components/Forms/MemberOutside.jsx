@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { formStyles } from "../../styles";
 import FamilyDetails from "../Table/FamilyDetails";
 import api from "../../api";
+import Prices from "./prices";
 
 const MemberOutside = () => {
   const [formData, setFormData] = useState({
@@ -16,6 +17,7 @@ const MemberOutside = () => {
     residence: "",
     address: "",
     email: "",
+    familyMembers: 0,
     totalPrice: "",
   });
 
@@ -68,12 +70,53 @@ const MemberOutside = () => {
   }, []);
 
 
+  const calculateTotalPrice = () => {
+    const { membership, formType, familyMembers } = formData;
+    console.log("Membership", membership);
+    console.log("formtype", formType);
+    console.log("familymem", familyMembers);
+    const selectedMembership = Prices.find(
+      (item) =>
+        item.memberType === membership && item.formType === formType
+    );
+    console.log("Selected Membership", selectedMembership);
+    
+    console.log(Prices);
+
+    if (selectedMembership) {
+      const { membershipPrice, monthlyFee } = selectedMembership;
+      const total = (membershipPrice + monthlyFee) * (1 + parseInt(familyMembers || 0));
+      setFormData((prev) => ({ ...prev, totalPrice: total }));
+      console.log("Total", formData.totalPrice);
+      console.log("Count", formData.familyMembers);
+    } else {
+      setFormData((prev) => ({ ...prev, totalPrice: "" }));
+    }
+    
+    console.log("Total Price", formData.totalPrice);
+  };
+
+
+  useEffect(() => {
+    calculateTotalPrice();
+  }, [formData.membership, formData.formType, formData.familyMembers]);
+
+
   const handleHouseholdChange = (event) => {
     const selectedHousehold = event.target.value; // Get selected value for household
     setFormData((prevData) => ({
       ...prevData,
       household: selectedHousehold, // Update only household
+      familyMembers: selectedHousehold === "individual" ? 0 : formData.familyMembers,
     }));
+  };
+
+  const handleFamilyCountChange = (count) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      familyMembers: count,
+    }));
+    // console.log(formData.familyMembers);
   };
 
   const handleFormTypeChange = (event) => {
@@ -98,7 +141,8 @@ const MemberOutside = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault(); // Prevent the default form submission behavior
-    const jsonData = formData;
+
+    console.log("Form Data", formData);
 
     // console.log(jsonData);
     // You can also send jsonData to your server here
@@ -106,6 +150,7 @@ const MemberOutside = () => {
 
   return (
     <div className="bg-cream text-charcoal min-h-screen font-sans leading-normal overflow-x-hidden lg:overflow-auto">
+      {/* {console.log("Prices", Prices)} */}
       <main className="flex-1 p-4 sm:p-6 lg:pt-8 lg:px-8 md:ml-24 flex flex-col">
         <section className="bg-cream-lighter p-4 shadow">
           <div className="flex flex-col md:flex-row">
@@ -279,7 +324,7 @@ const MemberOutside = () => {
               </div>
             </div>
 
-            {formData.household !== "individual" && <FamilyDetails />}
+            {formData.household !== "individual" && <FamilyDetails onFamilyCountChange={handleFamilyCountChange}/>} 
             {/* {category !== "individual" && <FamilyDetails />} */}
 
             <div className="py-5 flex flex-col md:flex-row">
