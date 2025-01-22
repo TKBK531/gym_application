@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
+import logo from "../../assets/logo/uni_logo.png";
 
 const Navbar = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -32,9 +32,9 @@ const Navbar = () => {
             <div className="flex items-center space-x-2">
                 <div>
                     <img
-                        src="frontend\src\assets\logo\uni_logo.png" // Replace with your image URL
+                        src={logo} // Replace with your image URL
                         alt="UniLogo"
-                        className="w-full h-full object-cover"
+                        className="w-44 h-full object-cover"
                     />
                 </div>
                 
