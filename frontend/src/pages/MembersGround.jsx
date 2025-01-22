@@ -38,17 +38,15 @@ const MembersGround = () => {
                 <div className="mb-4 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 p-2 bg-white rounded-lg shadow-md">
                   <button
                     onClick={() => setOpenTab(1)}
-                    className={`w-full md:w-1/4 py-2 px-4 rounded-md focus:outline-none transition-all duration-300 ${
-                      openTab === 1 ? "bg-blue-600 text-white" : ""
-                    }`}
+                    className={`w-full md:w-1/4 py-2 px-4 rounded-md focus:outline-none transition-all duration-300 ${openTab === 1 ? "bg-blue-600 text-white" : ""
+                      }`}
                   >
                     Guidelines
                   </button>
                   <button
                     onClick={() => setOpenTab(2)}
-                    className={`w-full md:w-1/4 py-2 px-4 rounded-md focus:outline-none transition-all duration-300 ${
-                      openTab === 2 ? "bg-blue-600 text-white" : ""
-                    }`}
+                    className={`w-full md:w-1/4 py-2 px-4 rounded-md focus:outline-none transition-all duration-300 ${openTab === 2 ? "bg-blue-600 text-white" : ""
+                      }`}
                   >
                     Forms
                   </button>
@@ -113,17 +111,15 @@ const MembersGround = () => {
                   <div className="mb-4 flex space-x-4 p-2 bg-white rounded-lg shadow-md">
                     <button
                       onClick={() => setOpenTab(1)}
-                      className={`w-1/4 py-2 px-4 rounded-md focus:outline-none focus:shadow-outline-blue transition-all duration-300 ${
-                        openTab === 1 ? "bg-blue-600 text-white" : ""
-                      }`}
+                      className={`w-1/4 py-2 px-4 rounded-md focus:outline-none focus:shadow-outline-blue transition-all duration-300 ${openTab === 1 ? "bg-blue-600 text-white" : ""
+                        }`}
                     >
                       Guidelines
                     </button>
                     <button
                       onClick={() => setOpenTab(2)}
-                      className={`w-1/4 py-2 px-4 rounded-md focus:outline-none focus:shadow-outline-blue transition-all duration-300 ${
-                        openTab === 2 ? "bg-blue-600 text-white" : ""
-                      }`}
+                      className={`w-1/4 py-2 px-4 rounded-md focus:outline-none focus:shadow-outline-blue transition-all duration-300 ${openTab === 2 ? "bg-blue-600 text-white" : ""
+                        }`}
                     >
                       Form
                     </button>
