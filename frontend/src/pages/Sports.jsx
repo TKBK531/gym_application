@@ -12,6 +12,7 @@ import {
   DialogFooter,
 } from "../components/ui/dialog";
 import { ScrollArea } from "../components/ui/scroll-area";
+import { toast } from "react-toastify";
 
 const Sports = () => {
   const [allSports, setAllSports] = useState([]);
@@ -86,8 +87,24 @@ const Sports = () => {
     setShowAddNewSportDialog(true);
   }
 
-  const handleAddNewSport = () => {
+  const handleAddNewSport = async () => {
+    newSport.in_charge = selectedStaffMember.id;
+    console.log(newSport);
 
+    try {
+      const response = await api.post(`/sport/add-sport/`, newSport);
+      if (response.data.status === "success") {
+        setNewSport({
+          label: "",
+          in_charge: "",
+        });
+        setShowAddNewSportDialog(false);
+        toast.success("Sport created successfully");
+      }
+    } catch (error) {
+      console.error("Error creating announcement:", error);
+      toast.error("Error creating announcement", error);
+    }
   }
 
   const handleSportClick = (sportId) => {
