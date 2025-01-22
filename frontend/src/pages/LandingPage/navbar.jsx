@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+
 const Navbar = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [profilePicture, setProfilePicture] = useState("");
@@ -29,10 +30,14 @@ const Navbar = () => {
         <nav className="flex items-center justify-between px-6 py-4 bg-white shadow-md">
             {/* Logo Section */}
             <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 flex items-center justify-center bg-yellow-500 rounded-full">
-                    <span className="text-white font-bold text-lg">🏋️</span>
+                <div>
+                    <img
+                        src="frontend\src\assets\logo\uni_logo.png" // Replace with your image URL
+                        alt="UniLogo"
+                        className="w-full h-full object-cover"
+                    />
                 </div>
-                <span className="text-xl font-bold text-gray-800">UniLogo</span>
+                
             </div>
 
             {/* Navigation Links */}
