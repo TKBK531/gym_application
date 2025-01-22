@@ -80,7 +80,7 @@ const Items = () => {
       <section>
 
         <div className="flex justify-center bg-blue-100 flex-wrap mb-4">
-          <h1 className="text justify-center">Indoor & Outdoor Equipment</h1>
+          <h4 className="text-lg sm:text-xl md:text-xl lg:text-xl font-bold text-center">Indoor & Outdoor Equipment</h4>
           {/* <button
           className={`px-4 py-2 ${
             activeTab === "Indoor"
