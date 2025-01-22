@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo/uni_logo.png";
 
-const Navbar = () => {
+const Navbar = ({ scrollToFacilities }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [profilePicture, setProfilePicture] = useState("");
     const [loggedInUserName, setLoggedInUserName] = useState("");
@@ -32,12 +33,11 @@ const Navbar = () => {
             <div className="flex items-center space-x-2">
                 <div>
                     <img
-                        src={logo} // Replace with your image URL
+                        src={logo} 
                         alt="UniLogo"
                         className="w-44 h-full object-cover"
                     />
                 </div>
-                
             </div>
 
             {/* Navigation Links */}
@@ -45,12 +45,15 @@ const Navbar = () => {
                 <Link to="/" className="text-gray-600 hover:text-primary-red">
                     Home
                 </Link>
-                <Link to="/events" className="text-gray-600 hover:text-primary-red">
-                    Events
-                </Link>
-                <Link to="/facilities" className="text-gray-600 hover:text-primary-red">
+                <button
+                    onClick={(e) => {
+                        e.preventDefault();
+                        scrollToFacilities();
+                    }}
+                    className="text-gray-600 hover:text-primary-red"
+                >
                     Facilities
-                </Link>
+                </button>
                 <Link to="/contact" className="text-gray-600 hover:text-primary-red">
                     Contact
                 </Link>
@@ -66,7 +69,7 @@ const Navbar = () => {
                 {!isLoggedIn ? (
                     <>
                         <button
-                            className="px-4 py-2 text-white bg-primary-red - rounded-full hover:bg-white hover:text-primary-red border border-primary-red"
+                            className="px-4 py-2 text-white bg-primary-red rounded-full hover:bg-white hover:text-primary-red border border-primary-red"
                             onClick={handleLogin}
                         >
                             Log In
@@ -82,13 +85,25 @@ const Navbar = () => {
                     <div className="relative">
                         <button
                             className="flex items-center space-x-2 text-gray-600 hover:text-blue-600"
-                            onClick={() => document.getElementById("userMenu").classList.toggle("hidden")}
+                            onClick={() =>
+                                document.getElementById("userMenu").classList.toggle("hidden")
+                            }
                         >
-                            <img src={profilePicture} alt="User Avatar" className="w-8 h-8 rounded-full" />
+                            <img
+                                src={profilePicture}
+                                alt="User Avatar"
+                                className="w-8 h-8 rounded-full"
+                            />
                             <span>{loggedInUserName}</span>
                         </button>
-                        <div id="userMenu" className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden">
-                            <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        <div
+                            id="userMenu"
+                            className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden"
+                        >
+                            <Link
+                                to="/profile"
+                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            >
                                 Profile
                             </Link>
                             <button
@@ -103,6 +118,10 @@ const Navbar = () => {
             </div>
         </nav>
     );
+};
+
+Navbar.propTypes = {
+    scrollToFacilities: PropTypes.func.isRequired,
 };
 
 export default Navbar;
