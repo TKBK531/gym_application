@@ -5,8 +5,8 @@ import Slider from "@/components/Item_Components/slider";
 
 const Items = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortSport, setSortSport] = useState(true);
-  const [sortCount, setSortCount] = useState("asc");
+  const [sortSport] = useState(true);
+  const [sortCount] = useState("asc");
   const [showModal, setShowModal] = useState(false);
   const [newItem, setNewItem] = useState({
     item: "",
