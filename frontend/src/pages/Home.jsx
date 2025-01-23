@@ -11,6 +11,8 @@ const Home = () => {
   const [eventDetails, setEventDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [latestAnnouncements, setLatestAnnouncements] = useState([]);
+  const user_data = JSON.parse(localStorage.getItem("userData"));
+  const user_type = user_data.profile.user_type;
 
   const fetchTotalUserCount = async () => {
     try {
@@ -74,11 +76,13 @@ const Home = () => {
 
           <section className="mb-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              <InfoCard
-                title="Total Users"
-                value={totalUserCount}
-                description="Number of active users"
-              />
+              {(user_type === 'admin' || user_type === 'staff') && (
+                <InfoCard
+                  title="Total Users"
+                  value={totalUserCount}
+                  description="Number of active users"
+                />
+              )}
               <InfoCard
                 title="Upcoming Events"
                 value={eventCountInNext30Days}
