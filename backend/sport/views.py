@@ -190,7 +190,8 @@ class AddSportView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         in_charge_id = self.request.data.get("in_charge")
-        in_charge_user = User.objects.get(id=in_charge_id)
+        in_charge_user_profile = UserProfile.objects.get(id=in_charge_id)
+        in_charge_user = in_charge_user_profile.user
 
         if in_charge_user.groups.filter(name="staff").exists():
             serializer.save(in_charge=in_charge_user)
