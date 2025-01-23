@@ -3,7 +3,7 @@ import { useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
-const UpcomingEvents = ({ events, isLoading, onEventClick }) => {
+const UpcomingEvents = ({ events, isLoading }) => {
     const [visibleCount, setVisibleCount] = useState(2);
 
     const sortedEvents = events.sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -40,7 +40,7 @@ const UpcomingEvents = ({ events, isLoading, onEventClick }) => {
                         <li
                             key={event.id}
                             className={`flex justify-between items-center p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 cursor-pointer`}
-                            onClick={() => onEventClick(event.category)}
+                        // onClick={() => onEventClick(event.category)}
 
                         >
                             <div>

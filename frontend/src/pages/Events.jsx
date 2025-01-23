@@ -107,7 +107,7 @@ const Events = () => {
         )}
       </div>
 
-      <UpcomingEvents events={eventDetails} isLoading={false} onEventClick={handleEventClick} />
+      <UpcomingEvents events={eventDetails} isLoading={false} />
     </div>
   );
 };
