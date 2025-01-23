@@ -11,7 +11,7 @@ const CardList = () => {
       title: "Pool",
     },
     {
-      imageUrl: "https://site.pdn.ac.lk/student/sprtpdn/img/facimg/athleticfield.jpg",
+      imageUrl: "https://i.pinimg.com/736x/d5/b4/a1/d5b4a16b6f3ee1b84495f14d52134488.jpg",
       title: "Ground",
     },
   ];
