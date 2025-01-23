@@ -80,10 +80,10 @@ const MemberStaff = () => {
 
 
   const handleHouseholdChange = (event) => {
-    const selectedHousehold = event.target.value; // Get selected value for household
+    const selectedHousehold = event.target.value; 
     setFormData((prevData) => ({
       ...prevData,
-      household: selectedHousehold, // Update only household
+      household: selectedHousehold, 
       familyMembers: selectedHousehold === "individual" ? 0 : formData.familyMembers,
     }));
   };
@@ -339,7 +339,7 @@ const MemberStaff = () => {
 
             {/* Family Details */}
             {/* {formData.household !== "individual" && <FamilyDetails />} */}
-            {formData.household !== "individual" && <FamilyDetails onFamilyCountChange={handleFamilyCountChange}/>}
+            {formData.household !== "individual" && <FamilyDetails onFamilyCountChange={handleFamilyCountChange}  setFamilyDetails={setFamilyDetails} familyDetails={familyDetails} />}
 
             {/* Total Price */}
             <div className="py-5 md:flex">
