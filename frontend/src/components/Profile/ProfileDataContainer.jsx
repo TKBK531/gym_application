@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import api from "../../api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCamera } from "@fortawesome/free-solid-svg-icons";
+import { faCamera, faCrown } from "@fortawesome/free-solid-svg-icons";
 import ConfirmationPopup from "../Popups/ConfirmationPopup";
 
 const ProfileDataContainer = ({
@@ -149,7 +149,14 @@ const ProfileDataContainer = ({
               </div>
             )}
           </div>
-          <p className="my-3">{profileData.user_type.toUpperCase()} USER</p>
+          <p className="my-3">
+            {profileData.user_type.toUpperCase()} USER
+            {profileData.is_member && (
+              <span className="ml-2 text-yellow-500">
+                <FontAwesomeIcon icon={faCrown} />
+              </span>
+            )}
+          </p>
         </div>
         {isEditing && (
           <input
