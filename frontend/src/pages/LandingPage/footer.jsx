@@ -1,6 +1,6 @@
 const Footer = () => {
     return (
-        <footer className="bg-gray-800 text-gray-300 py-4">
+        <footer className="bg-primary-red text-gray-300 py-4">
             <div className="max-w-6xl mx-auto text-center">
                 <p className="text-sm">
                     © {new Date().getFullYear()} University of Peradeniya. All rights reserved.

@@ -1,84 +1,143 @@
+import { useState, useEffect, useRef } from "react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import CardList from "./CardList";
 
 const MainLandingPage = () => {
-    return (
-        <div>
-            <Navbar />
-            <div className="main-content p-6 bg-gray-100 min-h-screen">
-                <div className="max-w-7xl mx-auto">
-                    {/* Hero Section */}
-                    <div className="relative h-96 bg-cover bg-center rounded-lg" style={{ backgroundImage: `url('https://site.pdn.ac.lk/student/sprtpdn/img/facimg/gym.jpg')` }}>
-                        <div className="absolute inset-0 bg-black rounded-lg bg-opacity-50 flex flex-col items-center justify-center text-center text-white">
-                            <h1 className="text-4xl md:text-6xl font-bold">Welcome to UniGym</h1>
-                            <p className="text-lg md:text-2xl mt-4">Explore our top-notch facilities</p>
-                        </div>
-                    </div>
+  const images = [
+    "https://island.lk/wp-content/uploads/2024/03/gym.jpg",
+    "https://slusa.lk/wp-content/gallery/university-of-peradeniya/pdn6.jpg",
+    "https://pbs.twimg.com/media/D-mZayXWkAESK5j.jpg",
+  ];
 
-                    {/* Features Section */}
-                    <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-                        <div className="bg-white p-6 rounded-lg shadow-md">
-                            <h2 className="text-xl font-bold mb-2">Track Your Steps</h2>
-                            <p className="text-gray-700">
-                                Keep track of your daily steps and stay motivated to reach your fitness goals.
-                            </p>
-                        </div>
-                        <div className="bg-white p-6 rounded-lg shadow-md">
-                            <h2 className="text-xl font-bold mb-2">Monitor Your Mood</h2>
-                            <p className="text-gray-700">
-                                Log your mood daily and get insights into your mental well-being.
-                            </p>
-                        </div>
-                        <div className="bg-white p-6 rounded-lg shadow-md">
-                            <h2 className="text-xl font-bold mb-2">Calorie Tracking</h2>
-                            <p className="text-gray-700">
-                                Track your calorie intake and ensure you are meeting your dietary goals.
-                            </p>
-                        </div>
-                    </section>
+  const [currentSlide, setCurrentSlide] = useState(0);
 
-                    {/* Events Section */}
-                    <section className="bg-white p-8 rounded-lg shadow-md mb-6">
-                        <h2 className="text-2xl font-bold mb-4">Upcoming Events</h2>
-                        <ul className="space-y-4">
-                            <li className="flex justify-between items-center">
-                                <span>Yoga Class</span>
-                                <span>March 25, 2023</span>
-                            </li>
-                            <li className="flex justify-between items-center">
-                                <span>Marathon</span>
-                                <span>April 10, 2023</span>
-                            </li>
-                            <li className="flex justify-between items-center">
-                                <span>Nutrition Workshop</span>
-                                <span>May 5, 2023</span>
-                            </li>
-                        </ul>
-                    </section>
+  // References for sections
+  const introSectionRef = useRef(null);
+  const facilitiesSectionRef = useRef(null);
 
-                    {/* Testimonials Section */}
-                    <section className="bg-white p-8 rounded-lg shadow-md mb-6">
-                        <h2 className="text-2xl font-bold mb-4">What Our Users Say</h2>
-                        <div className="space-y-4">
-                            <div className="p-4 bg-gray-100 rounded-lg">
-                                <p className="text-gray-700">
-                                    &quot;UniFit has completely transformed my fitness journey. The step tracking feature keeps me motivated every day!&quot;
-                                </p>
-                                <p className="text-right text-gray-500">- John Doe</p>
-                            </div>
-                            <div className="p-4 bg-gray-100 rounded-lg">
-                                <p className="text-gray-700">
-                                    &quot;I love the mood tracker. It helps me stay in tune with my mental health.&quot;
-                                </p>
-                                <p className="text-right text-gray-500">- Jane Smith</p>
-                            </div>
-                        </div>
-                    </section>
-                </div>
-            </div>
-            <Footer />
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prevSlide) => (prevSlide + 1) % images.length);
+    }, 3000); // Change image every 3 seconds
+    return () => clearInterval(interval); // Clean up the interval on component unmount
+  }, [images.length]);
+
+  // Scroll handlers
+  const scrollToIntroSection = () => {
+    introSectionRef.current.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const scrollToFacilitiesSection = () => {
+    facilitiesSectionRef.current.scrollIntoView({ behavior: "smooth" });
+  };
+
+  return (
+    <div>
+      {/* Pass scroll handlers to Navbar */}
+      <Navbar scrollToFacilities={scrollToFacilitiesSection} />
+      {/* Hero Section */}
+      <section className="relative bg-blue-100 py-20">
+        <div className="absolute inset-0">
+          <img
+            src="https://pbs.twimg.com/media/D-mZayXWkAESK5j.jpg"
+            alt="University Gym"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black opacity-60"></div>
         </div>
-    );
+        <div className="relative z-10 container mx-auto px-4 flex flex-col-reverse md:flex-row items-center">
+          <div className="md:w-1/2 text-center md:text-left">
+            <h1
+              className="text-4xl font-bold text-white mb-4"
+              style={{
+                textShadow: "2px 2px 4px black",
+              }}
+            >
+              Welcome to Gymnasium
+            </h1>
+            <p className="text-lg text-white mb-6">University of Peradeniya</p>
+            <button
+              className="bg-primary-red text-white px-3 py-2 rounded-lg hover:bg-red-700"
+              onClick={scrollToIntroSection}
+            >
+              Read More
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Search Bar Section */}
+      <section className="py-8 bg-gray-100">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-center">
+            <input
+              type="text"
+              placeholder="Search for activities, schedules, or information..."
+              className="w-full max-w-md px-4 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button className="bg-primary-red text-white px-6 py-2 rounded-r-lg hover:bg-red-700">
+              Search
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Introduction Section */}
+      <section ref={introSectionRef} className="py-16 bg-white">
+        <div className="container mx-auto px-4 flex flex-col md:flex-row items-center">
+          <div className="md:w-1/2 mb-8 md:mb-0 md:pr-8">
+            <h2 className="text-3xl font-bold text-blue-900 mb-4">
+              About Gymnasium
+            </h2>
+            <p className="text-gray-700 text-lg mb-6">
+              Welcome to the University of Peradeniya Gymnasium, a premier
+              facility dedicated to fostering health, wellness, and fitness
+              among students, staff, and the wider community. Our
+              state-of-the-art infrastructure, cutting-edge equipment, and
+              expertly designed programs are tailored to meet a variety of
+              fitness goals.
+            </p>
+          </div>
+          <div className="md:w-1/2">
+            <div className="relative w-full rounded-3xl h-64 overflow-hidden">
+              <div
+                className="flex transition-transform duration-500 ease-in-out"
+                style={{
+                  transform: `translateX(-${currentSlide * 100}%)`,
+                }}
+              >
+                {images.map((image, index) => (
+                  <div key={index} className="w-full h-full flex-shrink-0">
+                    <img
+                      src={image}
+                      alt={`Slide ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Facilities Section */}
+      <section ref={facilitiesSectionRef} className="py-16 bg-gray-100">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold text-blue-900 mb-4">Facilities</h2>
+          <p className="text-gray-700 text-lg">
+            Discover the exceptional facilities we offer to support your fitness
+            and wellness journey.
+          </p>
+        </div>
+        <CardList />
+      </section>
+
+      {/* Footer */}
+      <Footer />
+    </div>
+  );
 };
 
 export default MainLandingPage;
