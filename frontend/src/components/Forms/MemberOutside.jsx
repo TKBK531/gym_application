@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { formStyles } from "../../styles";
 import FamilyDetails from "../Table/FamilyDetails";
 import api from "../../api";
 import Prices from "./prices";
+import { toast } from "react-toastify";
 
 const MemberOutside = () => {
   const [formData, setFormData] = useState({
@@ -21,20 +22,28 @@ const MemberOutside = () => {
     totalPrice: "",
   });
 
+  const [familyDetails, setFamilyDetails] = useState([
+    { name: "", age: "", relation: "", nic: "" },
+  ]);
+
+  const handleFamilyDetailsChange = (details) => {
+    setFamilyDetails(details);
+  };
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await api.get('/user/profile/');
+        const response = await api.get("/user/profile/");
         const data = response.data;
         console.log(data);
-        const firstName = response.data?.data?.user?.first_name || '';
-        const lastName = response.data?.data?.user?.last_name || '';
+        const firstName = response.data?.data?.user?.first_name || "";
+        const lastName = response.data?.data?.user?.last_name || "";
         const name = `${firstName} ${lastName}`.trim();
-        const nic = response.data?.data?.profile.national_id || '';
-        const dob = response.data?.data?.profile.date_of_birth || '';
-        const mobile = response.data?.data?.profile.contact || '';
-        const address = response.data?.data?.profile.address || '';
-        const email = response.data?.data?.user?.email || '';
+        const nic = response.data?.data?.profile.national_id || "";
+        const dob = response.data?.data?.profile.date_of_birth || "";
+        const mobile = response.data?.data?.profile.contact || "";
+        const address = response.data?.data?.profile.address || "";
+        const email = response.data?.data?.user?.email || "";
 
         // Calculate age from DOB
         const calculateAge = (dateOfBirth) => {
@@ -44,14 +53,17 @@ const MemberOutside = () => {
           const monthDiff = today.getMonth() - birthDate.getMonth();
 
           // Adjust if the birth month hasn't occurred this year
-          if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+          if (
+            monthDiff < 0 ||
+            (monthDiff === 0 && today.getDate() < birthDate.getDate())
+          ) {
             age--;
           }
           return age;
         };
 
-        const age = dob ? calculateAge(dob) : ''; // Calculate age only if DOB exists
-  
+        const age = dob ? calculateAge(dob) : ""; // Calculate age only if DOB exists
+
         setFormData((prevFormData) => ({
           ...prevFormData,
           name: name,
@@ -60,7 +72,7 @@ const MemberOutside = () => {
           age: age, // Include the calculated age
           mobile: mobile,
           address: address,
-          email: email
+          email: email,
         }));
       } catch (error) {
         console.error("Failed to fetch user profile:", error);
@@ -69,45 +81,43 @@ const MemberOutside = () => {
     fetchUser();
   }, []);
 
-
   const calculateTotalPrice = () => {
     const { membership, formType, familyMembers } = formData;
     console.log("Membership", membership);
     console.log("formtype", formType);
     console.log("familymem", familyMembers);
     const selectedMembership = Prices.find(
-      (item) =>
-        item.memberType === membership && item.formType === formType
+      (item) => item.memberType === membership && item.formType === formType
     );
     console.log("Selected Membership", selectedMembership);
-    
+
     console.log(Prices);
 
     if (selectedMembership) {
       const { membershipPrice, monthlyFee } = selectedMembership;
-      const total = (membershipPrice + monthlyFee) * (1 + parseInt(familyMembers || 0));
+      const total =
+        (membershipPrice + monthlyFee) * (1 + parseInt(familyMembers || 0));
       setFormData((prev) => ({ ...prev, totalPrice: total }));
       console.log("Total", formData.totalPrice);
       console.log("Count", formData.familyMembers);
     } else {
       setFormData((prev) => ({ ...prev, totalPrice: "" }));
     }
-    
+
     console.log("Total Price", formData.totalPrice);
   };
-
 
   useEffect(() => {
     calculateTotalPrice();
   }, [formData.membership, formData.formType, formData.familyMembers]);
-
 
   const handleHouseholdChange = (event) => {
     const selectedHousehold = event.target.value; // Get selected value for household
     setFormData((prevData) => ({
       ...prevData,
       household: selectedHousehold, // Update only household
-      familyMembers: selectedHousehold === "individual" ? 0 : formData.familyMembers,
+      familyMembers:
+        selectedHousehold === "individual" ? 0 : formData.familyMembers,
     }));
   };
 
@@ -139,18 +149,55 @@ const MemberOutside = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault(); // Prevent the default form submission behavior
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const req_data = {
+      members: {
+        age: formData.age,
+        household: formData.household,
+        formType: formData.formType,
+        membership: formData.membership,
+        residence: formData.residence,
+        price: formData.totalPrice,
+      },
+      family: {
+        family_members: familyDetails.map((member) => ({
+          name: member.name,
+          nic: member.nic,
+          relationship: member.relation,
+          age: member.age,
+        })),
+      },
+    };
 
-    console.log("Form Data", formData);
+    console.log("Form Data", req_data);
 
-    // console.log(jsonData);
-    // You can also send jsonData to your server here
+    try {
+      const response = await api.post("/member/outsiders-members/create/", req_data);
+      console.log("Response", response.data);
+      toast.success("Member registered successfully");
+
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        household: "",
+        formType: "",
+        membership: "",
+        residence: "",
+        familyMembers: 0,
+        totalPrice: "",
+      }));
+      setFamilyDetails([{ name: "", age: "", relation: "", nic: "" }]);
+
+      window.location.reload();
+
+    } catch (error) {
+      console.error("Error submitting form", error);
+      toast.error("Error creating announcement");
+    }
   };
 
   return (
     <div className="bg-cream text-charcoal min-h-screen font-sans leading-normal overflow-x-hidden lg:overflow-auto">
-      {/* {console.log("Prices", Prices)} */}
       <main className="flex-1 p-4 sm:p-6 lg:pt-8 lg:px-8 md:ml-24 flex flex-col">
         <section className="bg-cream-lighter p-4 shadow">
           <div className="flex flex-col md:flex-row">
@@ -217,7 +264,9 @@ const MemberOutside = () => {
                 </div>
 
                 <div className="mb-4">
-                  <label className={`${formStyles.formLable}`}>Household Type</label>
+                  <label className={`${formStyles.formLable}`}>
+                    Household Type
+                  </label>
                   <select
                     name="household"
                     value={formData.household}
@@ -245,7 +294,9 @@ const MemberOutside = () => {
                       <option value="">Select Form type</option>
                       <option value="outsider">Outsider form</option>
                       <option value="staff">Staff Member form</option>
-                      <option value="postGraduate">Post Graduate Student form</option>
+                      <option value="postGraduate">
+                        Post Graduate Student form
+                      </option>
                     </select>
                   </div>
                   <div className="md:flex-1 md:pl-3">
@@ -324,7 +375,9 @@ const MemberOutside = () => {
               </div>
             </div>
 
-            {formData.household !== "individual" && <FamilyDetails onFamilyCountChange={handleFamilyCountChange}/>} 
+            {formData.household !== "individual" && (
+              <FamilyDetails onFamilyCountChange={handleFamilyCountChange} setFamilyDetails={setFamilyDetails} familyDetails={familyDetails} />
+            )}
             {/* {category !== "individual" && <FamilyDetails />} */}
 
             <div className="py-5 flex flex-col md:flex-row">

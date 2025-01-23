@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import api from "../api";
 import Card from "../components/Members/Card";
 import StatWidge from "../components/Members/StatWidge";
 import {
@@ -10,12 +12,36 @@ import { Link } from "react-router-dom";
 
 const Members = () => {
   const imageUrlPool =
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-l9mhhOz1sK8P9IdEkk7seHj4APH_dRKQlg&s";
+    "https://i.pinimg.com/736x/67/6d/96/676d967055eb128c4393fc3fc9af3317.jpg";
   const imageUrlGround =
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKTlfKV-33el_swtTqaO63TRfmeDEUb55zlA&s";
+    "https://i.pinimg.com/736x/cb/f0/1b/cbf01b3fc9dab213934a5ddce4d25487.jpg";
   const imageUrlGym =
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKDWg1zq64xccwiMYVtHxmAty40QKKBxIahw&s";
+    "https://i.pinimg.com/736x/fc/d4/9d/fcd49d7f861d117271bcd9fb7078fd06.jpg";
   const userData = JSON.parse(localStorage.getItem("userData"));
+
+  const [memCount, setMemCount] = useState();
+  const [staffCount, setStaffCount] = useState();
+  const [pgCount, setPgCount] = useState();
+  const [outsideCount, setOutsideCount] = useState();
+
+  useEffect(() => {
+
+    const memberCount = async() =>{
+      try{
+        const request = await api.get("/member/all-membersCount/");
+        setMemCount(request.data.data.total_members_count);
+        setStaffCount(request.data.data.academic_staff_members_count);
+        setPgCount(request.data.data.postgraduate_members_count);
+        setOutsideCount(request.data.data.outsiders_members_count);
+      }
+      catch(error){
+        console.error("Error saving member count :", error.message);
+      }
+    
+    };
+    memberCount();
+  }, []);
+
 
   return (
     <div className="container mx-auto">
@@ -27,16 +53,16 @@ const Members = () => {
 
       {/* Stat Widgets Section */}
       <div className="flex flex-col md:flex-row gap-6 pb-6">
-        <StatWidge name="Overall membership" count="1250" iconName={faUsers} />
+        <StatWidge name="Overall membership" count={memCount} iconName={faUsers} />
         <StatWidge
-          name="Pool access members"
-          count="450"
+          name="Staff members"
+          count={staffCount}
           iconName={faSwimmer}
         />
-        <StatWidge name="Indoor area access" count="520" iconName={faRunning} />
+        <StatWidge name="PG members" count={pgCount} iconName={faRunning} />
         <StatWidge
-          name="Outdoor area access"
-          count="400"
+          name="Outside members"
+          count={outsideCount}
           iconName={faWalking}
         />
       </div>

@@ -30,6 +30,7 @@ urlpatterns = [
     path("students/", include("studentData.urls")),
     path("reservation/", include("reservation.urls")),
     path("event/", include("event.urls")),
+    path("member/", include("member.urls")),
     path("user/token/", TokenObtainPairView.as_view(), name="get_token"),
     path("user/token/refresh/", TokenRefreshView.as_view(), name="refresh_token"),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),

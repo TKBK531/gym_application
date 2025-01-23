@@ -43,6 +43,9 @@ from .models import (
     City,
     Faculty,
 )
+
+from member.models import Members
+
 from .services import get_user_data
 
 
@@ -295,6 +298,11 @@ class UserLoginView(views.APIView):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             user = serializer.validated_data
+            try:
+                membership = Members.objects.get(user=user)
+                is_member = True
+            except Members.DoesNotExist:
+                is_member = False
             refresh = RefreshToken.for_user(user)
             user_data = {
                 "first_name": user.first_name,
@@ -313,6 +321,7 @@ class UserLoginView(views.APIView):
                     "city": user_profile.city.label,
                     "address": user_profile.address,
                     "date_of_birth": user_profile.date_of_birth,
+                    "is_member": is_member,
                 }
             except UserProfile.DoesNotExist:
                 profile_data = {}
@@ -372,7 +381,13 @@ class UserProfileDetailView(generics.RetrieveAPIView):
         profile_picture_url = get_profile_picture_path(instance)
         user = instance.user
         user_type = instance.user_type
-        print(user_type.name)
+
+        try:
+            membership = Members.objects.get(user=user)
+            is_member = True
+        except Members.DoesNotExist:
+            is_member = False
+
         user_type_data = {}
         if user_type.name == "student":
             student_profile = UniversityStudentUser.objects.get(user=user)
@@ -416,6 +431,7 @@ class UserProfileDetailView(generics.RetrieveAPIView):
                 "province": (
                     instance.city.province.label if instance.city else "Not Provided"
                 ),
+                "is_member": is_member,
             },
             "user_type_data": user_type_data,
         }

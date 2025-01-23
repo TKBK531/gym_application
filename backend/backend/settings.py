@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     "reservation",
     "event",
     "studentData",
+    "member",
 ]
 
 MIDDLEWARE = [
