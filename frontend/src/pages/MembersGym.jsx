@@ -12,7 +12,7 @@ const MembersGym = () => {
         <div className="relative w-full h-72 md:h-96">
           <img
             className="absolute h-full w-full object-cover object-center"
-            src="https://bucket.material-tailwind.com/magic-ai/bbe71871de8b4d6f23bb0f17a6d5aa342f3dea72677ba7238b18defa3741244d.jpg"
+            src="https://i.pinimg.com/736x/2b/3d/ac/2b3dace1d07e7a09ed88ade68afdcc47.jpg"
             alt="nature image"
           />
           <div className="absolute inset-0 h-full w-full bg-black/50"></div>
@@ -21,10 +21,8 @@ const MembersGym = () => {
               Gymnasium Membership
             </h2>
             <p className="block antialiased font-sans text-lg md:text-xl font-normal leading-relaxed text-white mb-6 md:mb-9 opacity-70 px-4 md:px-0">
-              Experience the best in indoor sports and recreation with our
-              Gymnasium Membership. Perfect for athletes and enthusiasts who
-              enjoy playing sports in a controlled environment, our gymnasium
-              offers top-notch facilities for a variety of indoor activities.
+            The university gymnasium offers facilities like a gym, basketball and badminton courts, table tennis, karate, and wrestling areas. Membership provides access to these during designated hours. 
+            Members must follow rules, wear proper attire, and maintain cleanliness. Affordable fees ensure accessibility, but rule violations may result in termination.
             </p>
           </div>
         </div>
@@ -58,14 +56,18 @@ const MembersGym = () => {
                         Guidelines for Gymnasium Membership
                       </h4>
                       <div className="block antialiased font-sans text-base leading-relaxed text-inherit mb-8 font-normal !text-gray-500">
-                        <p>
-                          1. Follow all safety protocols to ensure a safe and
-                          productive workout.
-                        </p>
-                        <p>
-                          2. Make sure to book your slots in advance for a
-                          smooth experience.
-                        </p>
+                        <p>1. Open to staff, students, and approved external individuals with valid ID.</p>
+                        <p>2. Membership is valid for a set period, with non-refundable fees.</p>
+                        <p>3. Members must follow allocated time slots for each facility.</p>
+                        <p>4. Adhere to safety rules and instructions for all activities; avoid dangerous behavior.</p>
+                        <p>5. Appropriate attire and footwear are required for gym, courts, and training areas.</p>
+                        <p>6. Members with injuries or health issues should refrain from using the ground.</p>
+                        <p>7. Keep the ground clean and report any damages.</p>
+                        <p>8. Cards must be carried, non-transferable, and for personal use only.</p>
+                        <p>9. Respect staff and others; misconduct may lead to termination.</p>
+                        <p>10. Facilities may close for maintenance, events, or repairs; prior notice will be given.</p>
+                        <p>11. Members can provide feedback or raise complaints.</p>
+                        <p>12. Violations can result in membership revocation.</p>
                       </div>
                     </div>
                   </div>

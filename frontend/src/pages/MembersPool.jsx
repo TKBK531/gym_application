@@ -13,7 +13,7 @@ const MembersPool = () => {
         <div className="relative w-full h-72 md:h-96">
           <img
             className="absolute h-full w-full object-cover object-center"
-            src="https://bucket.material-tailwind.com/magic-ai/bbe71871de8b4d6f23bb0f17a6d5aa342f3dea72677ba7238b18defa3741244d.jpg"
+            src="https://i.pinimg.com/736x/de/d6/2c/ded62c800d4ffe281647217514b5ebf8.jpg"
             alt="nature image"
           />
           <div className="absolute inset-0 h-full w-full bg-black/50"></div>
@@ -21,11 +21,8 @@ const MembersPool = () => {
             <h2 className="block antialiased tracking-normal font-sans font-semibold leading-[1.3] text-white mb-4 text-2xl md:text-3xl lg:text-4xl">
               Swimming Pool Membership
             </h2>
-            <p className="block antialiased font-sans text-lg md:text-xl font-normal leading-relaxed text-white mb-6 md:mb-9 opacity-70 px-4 md:px-0">
-              Dive into luxury with our Swimming Pool Membership, designed for
-              those who seek the perfect blend of relaxation and fitness. Our
-              state-of-the-art swimming facility offers a pristine and serene
-              environment, ideal for both casual swimmers and serious athletes.
+            <p className="block antialiased font-sans text-lg md:text-l font-normal leading-relaxed text-white mb-6 md:mb-9 opacity-70 px-4 md:px-0">
+            University pool membership provides access to swimming facilities for students, staff, and approved individuals. Members must follow safety rules, wear proper swimwear, and respect facilities. Affordable fees and designated access hours ensure a safe and enjoyable experience for all.
             </p>
           </div>
         </div>
@@ -59,14 +56,18 @@ const MembersPool = () => {
                         Guidelines for Swimming Pool Membership
                       </h4>
                       <div className="block antialiased font-sans text-base leading-relaxed text-inherit mb-8 font-normal !text-gray-500">
-                        <p>
-                          1. All members are required to shower before entering
-                          the pool.
-                        </p>
-                        <p>
-                          2. Please follow the pool’s schedule to avoid
-                          overcrowding and ensure a smooth experience.
-                        </p>
+                        <p>1. Open to staff, students, and approved external individuals with valid ID.</p>
+                        <p>2. Membership is valid for a set period, with non-refundable fees.</p>
+                        <p>3. Members must follow designated time slots.</p>
+                        <p>4. Follow all pool rules, lifeguard instructions, and avoid risky behavior.</p>
+                        <p>5. Proper swimwear and swimming caps are mandatory.</p>
+                        <p>6. Members with health issues or open wounds are restricted.</p>
+                        <p>7. Keep the pool clean; members are responsible for any damages.</p>
+                        <p>8. Cards must be carried, non-transferable, and for personal use only.</p>
+                        <p>9. Respect staff and others; misconduct may lead to termination.</p>
+                        <p>10. Pool may close for maintenance or events; prior notice will be given.</p>
+                        <p>11. Members can provide feedback or raise complaints.</p>
+                        <p>12. Violations can result in membership revocation.</p>
                       </div>
                     </div>
                   </div>
