@@ -56,8 +56,8 @@ class EquipmentCreateView(generics.CreateAPIView):
             "message": "Item added successfully.",
             "data": serializer.data,
         }
-        return Response(response_data, status=status.HTTP_201_CREATED, headers=headers)
-    
+        return Response(response_data, status=status.HTTP_201_CREATED, headers=headers) 
+      
 class EquipmentUpdateView(generics.UpdateAPIView):
     queryset = Equipment.objects.all()
     serializer_class = EquipmentSerializer
@@ -130,7 +130,6 @@ class EquipmentDecreaseCountView(generics.UpdateAPIView):
             },
         }
         return Response(response_data)
-
 
 class EquipmentDeleteView(generics.DestroyAPIView):
     queryset = Equipment.objects.all()

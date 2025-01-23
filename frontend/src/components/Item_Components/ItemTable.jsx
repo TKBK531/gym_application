@@ -24,6 +24,24 @@ const ItemTable = ({
     fetchAllItems();
   }, []);
 
+  const onMinusButtonClick = async(id)=> {
+    const response = await api.patch(`/items/equipment/${id}/decrease/`,);
+    if (response.data?.status === "success") {
+      fetchAllItems();
+    } else {
+      throw new Error(response.data?.message || "Failed to decrease count");
+    }
+  };
+
+  const onPlusButtonClick = async(id)=> {
+    const response = await api.patch(`/items/equipment/${id}/increase/`,);
+    if (response.data?.status === "success") {
+      fetchAllItems();
+    } else {
+      throw new Error(response.data?.message || "Failed to increase count");
+    }
+  };
+
   const fetchAllItems = async () => {
     setLoading(true);
     setError(null);
@@ -115,11 +133,11 @@ const ItemTable = ({
                   <div className="flex items-center justify-center space-x-4">
                     {isUserStaffOrAdmin ? (
                       <>
-                        <button className="text-red-500">
+                        <button className="text-red-500" onClick={() => onMinusButtonClick(item.id)}>
                           <FaMinus />
                         </button>
                         <span>{item.count}</span>
-                        <button className="text-green-500">
+                        <button className="text-green-500" onClick={() => onPlusButtonClick(item.id)}>
                           <FaPlus />
                         </button>
                       </>
