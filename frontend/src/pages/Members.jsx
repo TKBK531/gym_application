@@ -20,6 +20,9 @@ const Members = () => {
   const userData = JSON.parse(localStorage.getItem("userData"));
 
   const [memCount, setMemCount] = useState();
+  const [staffCount, setStaffCount] = useState();
+  const [pgCount, setPgCount] = useState();
+  const [outsideCount, setOutsideCount] = useState();
 
   useEffect(() => {
 
@@ -27,6 +30,9 @@ const Members = () => {
       try{
         const request = await api.get("/member/all-membersCount/");
         setMemCount(request.data.data.total_members_count);
+        setStaffCount(request.data.data.academic_staff_members_count);
+        setPgCount(request.data.data.postgraduate_members_count);
+        setOutsideCount(request.data.data.outsiders_members_count);
       }
       catch(error){
         console.error("Error saving member count :", error.message);
@@ -50,13 +56,13 @@ const Members = () => {
         <StatWidge name="Overall membership" count={memCount} iconName={faUsers} />
         <StatWidge
           name="Staff members"
-          count="450"
+          count={staffCount}
           iconName={faSwimmer}
         />
-        <StatWidge name="PG members" count="520" iconName={faRunning} />
+        <StatWidge name="PG members" count={pgCount} iconName={faRunning} />
         <StatWidge
           name="Outside members"
-          count="400"
+          count={outsideCount}
           iconName={faWalking}
         />
       </div>
