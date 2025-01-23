@@ -4,7 +4,6 @@ const SportCard = ({ sport, onClick, className }) => {
   const defaultImageUrl =
     "http://127.0.0.1:8000/media/images/sport_images/baseball.jpeg";
   const imageUrl = sport.image || defaultImageUrl;
-  console.log("Sport image URL:", imageUrl);
   return (
     <div
       onClick={onClick}

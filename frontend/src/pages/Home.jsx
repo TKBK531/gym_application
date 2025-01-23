@@ -67,9 +67,14 @@ const Home = () => {
           {/* Header Section */}
           <Card className="bg-primary-shade-4 text-white mb-6 shadow-md">
             <CardContent className="pt-16 pb-16 pl-4 pr-4">
-              <h1 className="text-2xl font-bold">Welcome to UniFit!</h1>
+              {(user_type === 'admin' || user_type === 'staff') && (
+                <h1 className="text-2xl font-bold">Welcome to Admin Dashboard!</h1>
+              )}
+              {(user_type !== 'admin' && user_type !== 'staff') && (
+                <h1 className="text-2xl font-bold pb-5">Welcome {user_data.user.first_name} {user_data.user.last_name}!</h1>
+              )}
               <p className="text-sm">
-                Stay updated with UniFit events and activities. Make your reservations today!
+                Stay updated with University sports events and activities!
               </p>
             </CardContent>
           </Card>
@@ -89,13 +94,13 @@ const Home = () => {
                 description="Events in the next 30 days"
               />
               <InfoCard
-                title="New Announcements"
-                value="123"
-                description="New users signed up this week"
+                title="Latest Announcements"
+                value={latestAnnouncements.length}
+                description="Latest announcements in the past week"
               />
               <InfoCard
                 title="New Reservations"
-                value="123"
+                value="25"
                 description="New users signed up this week"
               />
             </div>

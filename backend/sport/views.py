@@ -3,6 +3,8 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import generics
+from datetime import timedelta
+from django.utils import timezone
 
 from userProfile.models import UserProfile
 from .models import Sport, Post, Team, TeamMember
@@ -933,6 +935,15 @@ class GetRecentAnnouncementsView(generics.RetrieveAPIView):
     permission_classes = [AllowAny]
 
     def retrieve(self, request, *args, **kwargs):
+        # Get the current time and the time 7 days ago
+        now = timezone.now()
+        seven_days_ago = now - timedelta(days=7)
+
+        # Filter posts from the last 7 days
+        recent_posts = self.get_queryset().filter(created_at__gte=seven_days_ago)
+        total_recent_posts = recent_posts.count()
+
+        # Get the most recent 5 posts
         queryset = self.get_queryset().order_by("-created_at")[:5]
         serializer = self.get_serializer(queryset, many=True)
         posts_data = serializer.data
@@ -953,6 +964,7 @@ class GetRecentAnnouncementsView(generics.RetrieveAPIView):
             {
                 "status": "success",
                 "data": posts_data,
+                "total_recent_posts": total_recent_posts,
             },
             safe=False,
         )

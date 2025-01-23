@@ -7,7 +7,7 @@ const Sports = () => {
   const [allSports, setAllSports] = useState([]);
   const [loggedInUserType, setLoggedInUserType] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortMethod, setSortMethod] = useState("alphabetical"); // State for sorting method
+  const [sortMethod, setSortMethod] = useState("alphabetical");
 
   const navigate = useNavigate();
 
@@ -44,6 +44,7 @@ const Sports = () => {
         setAllSports(response.data.data);
         initialFetchComplete.current = true;
         getLoggedInUserType();
+        console.log(allSports);
       }
     } catch (error) {
       console.error("Error fetching all profiles:", error.message);
