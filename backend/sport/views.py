@@ -935,20 +935,16 @@ class GetRecentAnnouncementsView(generics.RetrieveAPIView):
     permission_classes = [AllowAny]
 
     def retrieve(self, request, *args, **kwargs):
-        # Get the current time and the time 7 days ago
         now = timezone.now()
         seven_days_ago = now - timedelta(days=7)
 
-        # Filter posts from the last 7 days
         recent_posts = self.get_queryset().filter(created_at__gte=seven_days_ago)
         total_recent_posts = recent_posts.count()
 
-        # Get the most recent 5 posts
         queryset = self.get_queryset().order_by("-created_at")[:5]
         serializer = self.get_serializer(queryset, many=True)
         posts_data = serializer.data
 
-        # Add sport name to each post's data
         for post in posts_data:
             sport_id = post.get("sport")
             if sport_id:
