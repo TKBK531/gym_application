@@ -68,7 +68,7 @@ const MainLandingPage = () => {
       </section>
 
       {/* Search Bar Section */}
-      <section className="py-8 bg-gray-100">
+      {/* <section className="py-8 bg-gray-100">
         <div className="container mx-auto px-4">
           <div className="flex justify-center">
             <input
@@ -81,7 +81,7 @@ const MainLandingPage = () => {
             </button>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Introduction Section */}
       <section ref={introSectionRef} className="py-16 bg-white">
