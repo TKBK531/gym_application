@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { FaTrash } from 'react-icons/fa';
 import PropTypes from 'prop-types';
 import api from '../api';
 import { toast } from "react-toastify";
@@ -17,8 +18,8 @@ const Table = ({ userRole, selectedCategory }) => {
     category: selectedCategory,
   });
   const [events, setEvents] = useState([]);
-  const [eventToDelete, setEventToDelete] = useState(null); // State to track the event to be deleted
-  const [sportsList, setSportsList] = useState([]); // State to store the sports list
+  const [eventToDelete, setEventToDelete] = useState(null); 
+  const [sportsList, setSportsList] = useState([]); 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [eventToEdit, setEventToEdit] = useState(null);
 
@@ -93,7 +94,7 @@ const Table = ({ userRole, selectedCategory }) => {
       event_type: selectedCategory.toLowerCase().replace(' ', '_'),
       event: {
         event: {
-          name: newEvent.eventName, // Ensure event name is always included
+          name: newEvent.eventName, 
           place: newEvent.place,
           time: newEvent.time,
           date: newEvent.date,
@@ -139,7 +140,7 @@ const Table = ({ userRole, selectedCategory }) => {
     try {
       const response = await api.delete(`/event/delete-event/${eventToDelete.event.id}/`);
       if (response.data.status === 'success') {
-        fetchEvents(); // Reload the table data
+        fetchEvents(); 
         setEventToDelete(null);
         toast.success('Event deleted successfully');
       }
@@ -249,11 +250,6 @@ const Table = ({ userRole, selectedCategory }) => {
     return sport ? sport.label : 'Unknown Sport';
   };
 
-  const handleEditEvent = (event) => {
-    setEventToEdit(event);
-    setIsEditModalOpen(true);
-  };
-
   const handleEditChange = (e) => {
     const { name, value } = e.target;
     setEventToEdit({ ...eventToEdit, event: { ...eventToEdit.event, [name]: value } });
@@ -264,7 +260,7 @@ const Table = ({ userRole, selectedCategory }) => {
     try {
       const response = await api.put(`/event/update-event/${eventToEdit.event.id}/`, eventToEdit);
       if (response.data.status === 'success') {
-        fetchEvents(); // Reload the table data
+        fetchEvents(); 
         setIsEditModalOpen(false);
         setEventToEdit(null);
         toast.success('Event updated successfully');
@@ -348,9 +344,8 @@ const Table = ({ userRole, selectedCategory }) => {
                   {item.event.status}
                 </td>
                 {(user_type === "staff" || user_type === "admin") && (
-                  <td className="border-b p-4">
-                    <button className="mr-3" onClick={() => handleEditEvent(item)}>✏️</button>
-                    <button className="delete-btn" onClick={() => handleDeleteClick(item)}>🗑️</button>
+                  <td className="border-b p-4 text-center">
+                    <button className="delete-btn text-red-600 hover:text-red-700" onClick={() => handleDeleteClick(item)}><FaTrash /></button>
                   </td>
                 )}
               </tr>
