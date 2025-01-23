@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { formStyles } from "../../styles";
 import FamilyDetails from "../Table/FamilyDetails";
 import api from "../../api";
@@ -6,8 +6,6 @@ import Prices from "./prices";
 
 const MemberOutside = () => {
   const [formData, setFormData] = useState({
-    name: "",
-    nic: "",
     dob: "",
     age: "",
     household: "",
@@ -16,58 +14,61 @@ const MemberOutside = () => {
     mobile: "",
     residence: "",
     address: "",
-    email: "",
-    familyMembers: 0,
+    familyMembers: [],
     totalPrice: "",
   });
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await api.get('/user/profile/');
-        const data = response.data;
-        console.log(data);
-        const firstName = response.data?.data?.user?.first_name || '';
-        const lastName = response.data?.data?.user?.last_name || '';
-        const name = `${firstName} ${lastName}`.trim();
-        const nic = response.data?.data?.profile.national_id || '';
-        const dob = response.data?.data?.profile.date_of_birth || '';
-        const mobile = response.data?.data?.profile.contact || '';
-        const address = response.data?.data?.profile.address || '';
-        const email = response.data?.data?.user?.email || '';
 
-        // Calculate age from DOB
-        const calculateAge = (dateOfBirth) => {
-          const today = new Date();
-          const birthDate = new Date(dateOfBirth);
-          let age = today.getFullYear() - birthDate.getFullYear();
-          const monthDiff = today.getMonth() - birthDate.getMonth();
 
-          // Adjust if the birth month hasn't occurred this year
-          if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-            age--;
-          }
-          return age;
-        };
+  const userData = localStorage.getItem("userData");
 
-        const age = dob ? calculateAge(dob) : ''; // Calculate age only if DOB exists
-  
-        setFormData((prevFormData) => ({
-          ...prevFormData,
-          name: name,
-          nic: nic,
-          dob: dob,
-          age: age, // Include the calculated age
-          mobile: mobile,
-          address: address,
-          email: email
-        }));
-      } catch (error) {
-        console.error("Failed to fetch user profile:", error);
-      }
-    };
-    fetchUser();
-  }, []);
+  // const fetchUser = async () => {
+  //   try {
+  //     const response = await api.get('/user/profile/');
+  //     const data = response.data;
+  //     console.log(data);
+  //     const firstName = response.data?.data?.user?.first_name || '';
+  //     const lastName = response.data?.data?.user?.last_name || '';
+  //     const name = `${firstName} ${lastName}`.trim();
+  //     const nic = response.data?.data?.profile.national_id || '';
+  //     const dob = response.data?.data?.profile.date_of_birth || '';
+  //     const mobile = response.data?.data?.profile.contact || '';
+  //     const address = response.data?.data?.profile.address || '';
+  //     const email = response.data?.data?.user?.email || '';
+
+  //     // Calculate age from DOB
+  //     const calculateAge = (dateOfBirth) => {
+  //       const today = new Date();
+  //       const birthDate = new Date(dateOfBirth);
+  //       let age = today.getFullYear() - birthDate.getFullYear();
+  //       const monthDiff = today.getMonth() - birthDate.getMonth();
+
+  //       // Adjust if the birth month hasn't occurred this year
+  //       if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+  //         age--;
+  //       }
+  //       return age;
+  //     };
+
+  //     const age = dob ? calculateAge(dob) : ''; // Calculate age only if DOB exists
+
+  //     setFormData((prevFormData) => ({
+  //       ...prevFormData,
+  //       name: name,
+  //       nic: nic,
+  //       dob: dob,
+  //       age: age, // Include the calculated age
+  //       mobile: mobile,
+  //       address: address,
+  //       email: email
+  //     }));
+  //   } catch (error) {
+  //     console.error("Failed to fetch user profile:", error);
+  //   }
+  // };
+  // useEffect(() => {
+  //   fetchUser();
+  // }, []);
 
 
   const calculateTotalPrice = () => {
@@ -80,7 +81,7 @@ const MemberOutside = () => {
         item.memberType === membership && item.formType === formType
     );
     console.log("Selected Membership", selectedMembership);
-    
+
     console.log(Prices);
 
     if (selectedMembership) {
@@ -92,7 +93,7 @@ const MemberOutside = () => {
     } else {
       setFormData((prev) => ({ ...prev, totalPrice: "" }));
     }
-    
+
     console.log("Total Price", formData.totalPrice);
   };
 
@@ -140,17 +141,14 @@ const MemberOutside = () => {
   };
 
   const handleSubmit = (event) => {
-    event.preventDefault(); // Prevent the default form submission behavior
-
+    event.preventDefault();
     console.log("Form Data", formData);
 
-    // console.log(jsonData);
-    // You can also send jsonData to your server here
   };
 
   return (
     <div className="bg-cream text-charcoal min-h-screen font-sans leading-normal overflow-x-hidden lg:overflow-auto">
-      {/* {console.log("Prices", Prices)} */}
+      {/* {console.log("User Data", userData)} */}
       <main className="flex-1 p-4 sm:p-6 lg:pt-8 lg:px-8 md:ml-24 flex flex-col">
         <section className="bg-cream-lighter p-4 shadow">
           <div className="flex flex-col md:flex-row">
@@ -324,7 +322,7 @@ const MemberOutside = () => {
               </div>
             </div>
 
-            {formData.household !== "individual" && <FamilyDetails onFamilyCountChange={handleFamilyCountChange}/>} 
+            {formData.household !== "individual" && <FamilyDetails onFamilyCountChange={handleFamilyCountChange} />}
             {/* {category !== "individual" && <FamilyDetails />} */}
 
             <div className="py-5 flex flex-col md:flex-row">

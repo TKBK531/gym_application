@@ -4,11 +4,13 @@ from userProfile.models import UserProfile
 
 
 class Members(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)  # Enforces one member per user
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE
+    )  # Enforces one member per user
     userProfile = models.OneToOneField(UserProfile, on_delete=models.CASCADE)
     age = models.IntegerField()
     household = models.CharField(max_length=100)
-    formType = models.CharField(max_length=100)    # <-
+    formType = models.CharField(max_length=100)  # <-
     membership = models.CharField(max_length=50)
     residence = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=8, decimal_places=2)
@@ -45,11 +47,10 @@ class Family(models.Model):
 
 class FamilyMembers(models.Model):
     family = models.ForeignKey(Family, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)    
+    name = models.CharField(max_length=100)
     nic = models.CharField(max_length=20)
     relationship = models.CharField(max_length=20)
     age = models.IntegerField()
 
     def __str__(self):
         return f"{self.family.members.user.username} - {self.name}"
-    
