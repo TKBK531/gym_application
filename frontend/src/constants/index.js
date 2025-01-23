@@ -6,25 +6,27 @@ import {
   Users2,
   Medal,
   ListChecks,
+  Home,
 } from "lucide-react";
 
 
 
 
 const pageLinks = [
-  { index: 1, icon: LayoutDashboard, name: "Dashboard", href: "/dashboard" },
-  { index: 2, icon: Calendar, name: "Events", href: "/events" },
-  { index: 3, icon: List, name: "Items", href: "/items" },
+  { index: 1, icon: Home, name: "Home", href: "/" },
+  { index: 2, icon: LayoutDashboard, name: "Dashboard", href: "/dashboard" },
+  { index: 3, icon: Calendar, name: "Events", href: "/events" },
+  { index: 4, icon: List, name: "Items", href: "/items" },
   {
-    index: 4,
+    index: 5,
     icon: ClipboardPen,
     name: "Reservations",
     href: "/reservations",
   },
-  { index: 5, icon: Users2, name: "Members", href: "/members" },
-  { index: 6, icon: ListChecks, name: "Student Details", href: "/studentData" },
-  { index: 7, icon: Medal, name: "Sports", href: "/sports" },
-]; 
+  { index: 6, icon: Users2, name: "Members", href: "/members" },
+  { index: 7, icon: ListChecks, name: "Student Details", href: "/studentData" },
+  { index: 8, icon: Medal, name: "Sports", href: "/sports" },
+];
 
 export const provinces = [
   {
