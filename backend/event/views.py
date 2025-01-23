@@ -246,6 +246,7 @@ class EventsInNext30DaysView(generics.RetrieveAPIView):
             end_date = now + timezone.timedelta(days=30)
             events = Event.objects.filter(date__range=(now, end_date))
             event_count = events.count()
+            events = events[:5]
             event_details = EventSerializer(events, many=True).data
 
             return JsonResponse(
