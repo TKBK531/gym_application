@@ -5,7 +5,7 @@ from .views import (AllFacilitiesView, AddFacilityView, DeleteFacilityView,
                     AllReservationRequestsView,AddReservationRequestView, ApproveReservationRequestView, 
                     CancelReservationRequestView, UpdateReservationRequestView, RejectReservationRequestView,
                     AllReservationsView,ConfirmReservationView, CancelReservationView,
-                    AllReservationDatesView, ReservationDatesByCourtView)
+                    AllReservationDatesView, ReservationDatesByCourtView, ReservationsByCourtView)
 
 
 urlpatterns = [
@@ -115,5 +115,10 @@ urlpatterns = [
         "requestReservationDatesByCourt/<str:facility>/<str:court>/<str:start_date>/<str:end_date>/",
         ReservationDatesByCourtView.as_view(),
         name="reservation-dates-by-courts",    
+    ),
+    path(
+        "requestReservationsByCourt/<str:facility_name>/<str:court_name>/",
+        ReservationsByCourtView.as_view(),
+        name="reservations-by-court",    
     ),
 ]

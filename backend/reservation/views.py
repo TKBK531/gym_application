@@ -25,6 +25,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.generics import ListAPIView, CreateAPIView
 from django.utils import timezone
 import logging
+from django.http import JsonResponse
 
 
 # Facility views-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1024,3 +1025,52 @@ class ReservationDatesByCourtView(APIView):
                 {"error": f"An unexpected error occurred: {str(e)}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+
+
+# ReservationsByCourt
+class ReservationsByCourtView(APIView):
+    def get(self, request, facility_name, court_name, *args, **kwargs):
+        print(" court access  requested ", flush=True)
+        try:
+            facility = get_object_or_404(Facility, facility_name__iexact=facility_name)
+            court = get_object_or_404(
+                Court, facility=facility, court_name__iexact=court_name
+            )
+            print(court, flush=True)
+            # Fetch all reservation dates associated with this court
+            booked_slots = ReservationDate.objects.filter(
+                reservation_request__court=court
+                # reservation__status__in=['approved', 'pending']
+            ).values("date", "start_time", "end_time", "duration_type")
+
+            slots = [
+                {
+                    "date": slot["date"].isoformat(),
+                    "start_time": (
+                        slot["start_time"].strftime("%I:%M %p")
+                        if slot["start_time"]
+                        else (
+                            "08:00 AM"
+                            if slot["duration_type"] == "full_day"
+                            else "12:00 PM"
+                        )
+                    ),
+                    "end_time": (
+                        slot["end_time"].strftime("%I:%M %p")
+                        if slot["end_time"]
+                        else (
+                            "04:00 PM"
+                            if slot["duration_type"] in ["full_day", "half_day"]
+                            else None
+                        )
+                    ),
+                }
+                for slot in booked_slots
+            ]
+
+            return JsonResponse(slots, safe=False)
+
+        except Facility.DoesNotExist:
+            return JsonResponse({"error": "Facility not found"}, status=404)
+        except Court.DoesNotExist:
+            return JsonResponse({"error": "Court not found"}, status=404)

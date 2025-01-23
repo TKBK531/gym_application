@@ -41,6 +41,7 @@ const Form = ({ isOpen, onClose }) => {
   const [filteredActivities, setFilteredActivities] = useState([]);
   const [filteredRateTypes, setFilteredRateTypes] = useState([]);
   const [fetchError, setFetchError] = useState('');
+  const [bookedSlots, setBookedSlots] = useState([]);
 
 
   const navigate = useNavigate();
@@ -159,36 +160,50 @@ const Form = ({ isOpen, onClose }) => {
       }
     }
   };
-  
 
-  const handleCourtChange = (event) => {
+  
+  const handleCourtChange = async (event) => {
     const selectedCourtName = event.target.value;
     setCourt(selectedCourtName);
-  
-    // Find the selected court object
+    console.log("court change being handled")
+ 
     const selectedCourtObject = filteredCourts.find(
       (court) => court.court_name === selectedCourtName
     );
   
     if (selectedCourtObject) {
-      const numCourts = selectedCourtObject.num_of_courts || 1; // Default to 1 if not specified
-      setNumOfCourts(""); // Reset the number of courts input
-      setMaxCourts(numCourts); // Update maxCourts state
+      const facilityId = facilities.find(
+        (facility) => facility.facility_name === selectedFacility
+      )?.facility_id;
   
-      // Filter activities based on the selected court
-      const filteredRates = allCourtRates.filter(
-        (rate) => rate.court.court_id === selectedCourtObject.court_id
-      );
+      if (selectedCourtObject) {
+        const numCourts = selectedCourtObject.num_of_courts || 1; 
+        setNumOfCourts("");
+        setMaxCourts(numCourts); 
+
+        const filteredRates = allCourtRates.filter(
+          (rate) => rate.court.court_id === selectedCourtObject.court_id
+        );
+    
+        const uniqueActivities = [
+          ...new Set(filteredRates.map((rate) => rate.activity)),
+        ];
+    
+        setFilteredActivities(uniqueActivities);
+      } else {
+        console.warn("No matching court found.");
+        setMaxCourts(1); 
+        setFilteredActivities([]); 
+      }
   
-      const uniqueActivities = [
-        ...new Set(filteredRates.map((rate) => rate.activity)),
-      ];
-  
-      setFilteredActivities(uniqueActivities);
-    } else {
-      console.warn("No matching court found.");
-      setMaxCourts(1); // Default to 1 if no court is selected
-      setFilteredActivities([]); // Clear activities if no court is selected
+      // Fetch booked slots from the backend
+      try {
+        const response = await api.get(`/reservation/requestReservationsByCourt/${selectedFacility}/${selectedCourtName}/`);
+        setBookedSlots(response.data);
+        console.log(response)
+      } catch (error) {
+        console.error("Failed to fetch booked slots:", error);
+      }
     }
   };
   
@@ -302,15 +317,70 @@ const Form = ({ isOpen, onClose }) => {
     }
   };
   
-  const calculateAmount = (row, rateType, filteredCourts, court, activity, allCourtRates) => {
-    if (rateType === "hourly_rate" && row.startTime && row.endTime) {
-      const startHour = parseInt(row.startTime.split(":"), 10);
-      const endHour = parseInt(row.endTime.split(":"), 10);
+  // const calculateAmount = (row, rateType, filteredCourts, court, activity, allCourtRates) => {
+  //   if (rateType === "hourly_rate" && row.startTime && row.endTime) {
+  //     const startHour = parseInt(row.startTime.split(":"), 10);
+  //     const endHour = parseInt(row.endTime.split(":"), 10);
   
-      if (endHour > startHour) {
-        const selectedCourtObject = filteredCourts.find(
-          (courtItem) => courtItem.court_name === court
-        );
+  //     if (endHour > startHour) {
+  //       const selectedCourtObject = filteredCourts.find(
+  //         (courtItem) => courtItem.court_name === court
+  //       );
+  
+  //       if (selectedCourtObject) {
+  //         const filteredRates = allCourtRates.filter(
+  //           (rate) =>
+  //             rate.court.court_id === selectedCourtObject.court_id &&
+  //             rate.activity === activity &&
+  //             rate.duration === "per hour"
+  //         );
+  
+  //         if (filteredRates.length > 0) {
+  //           const rate = filteredRates[0].rate;
+  //           const hours = endHour - startHour;
+  //           return (rate * hours).toFixed(2);
+  //         }
+  //       }
+  //     }
+  //     return ""; // Return empty if validation fails
+  //   }
+  
+  //   if (rateType === "day_rate" && row.durationType) {
+  //     const selectedCourtObject = filteredCourts.find(
+  //       (courtItem) => courtItem.court_name === court
+  //     );
+  
+  //     if (selectedCourtObject) {
+  //       const filteredRates = allCourtRates.filter(
+  //         (rate) =>
+  //           rate.court.court_id === selectedCourtObject.court_id &&
+  //           rate.activity === activity &&
+  //           rate.duration ===
+  //             (row.durationType === "full_day" ? "per full day" : "per half day")
+  //       );
+  
+  //       if (filteredRates.length > 0) {
+  //         return filteredRates[0].rate.toFixed(2);
+  //       }
+  //     }
+  //   }
+  
+  //   return ""; // Default empty string if no conditions are met
+  // };
+
+  // Updated handleRowChange method
+
+  const calculateAmount = (row, rateType, filteredCourts, court, activity, allCourtRates) => {
+    console.log("Calculating amount for row:", row); 
+    console.log("Rate Type:", rateType); 
+  
+    if (rateType === "hourly_rate" && row.startTime && row.endTime) {
+      const startMinutes = parseTime(row.startTime).getHours() * 60 + parseTime(row.startTime).getMinutes();
+      const endMinutes = parseTime(row.endTime).getHours() * 60 + parseTime(row.endTime).getMinutes();
+      const durationHours = (endMinutes - startMinutes) / 60;
+  
+      if (durationHours > 0) {
+        const selectedCourtObject = filteredCourts.find((courtItem) => courtItem.court_name === court);
   
         if (selectedCourtObject) {
           const filteredRates = allCourtRates.filter(
@@ -322,39 +392,39 @@ const Form = ({ isOpen, onClose }) => {
   
           if (filteredRates.length > 0) {
             const rate = filteredRates[0].rate;
-            const hours = endHour - startHour;
-            return (rate * hours).toFixed(2);
+            const totalAmount = rate * durationHours;
+            console.log("Calculated Amount (Hourly):", totalAmount); 
+            return totalAmount.toFixed(2);
           }
         }
       }
-      return ""; // Return empty if validation fails
+      return "";
     }
   
     if (rateType === "day_rate" && row.durationType) {
-      const selectedCourtObject = filteredCourts.find(
-        (courtItem) => courtItem.court_name === court
-      );
+      const selectedCourtObject = filteredCourts.find((courtItem) => courtItem.court_name === court);
   
       if (selectedCourtObject) {
         const filteredRates = allCourtRates.filter(
           (rate) =>
             rate.court.court_id === selectedCourtObject.court_id &&
             rate.activity === activity &&
-            rate.duration ===
-              (row.durationType === "full_day" ? "per full day" : "per half day")
+            rate.duration === (row.durationType === "full_day" ? "per full day" : "per half day")
         );
   
         if (filteredRates.length > 0) {
-          return filteredRates[0].rate.toFixed(2);
+          const rate = filteredRates[0].rate;
+          console.log("Calculated Amount (Day Rate):", rate);
+          return rate.toFixed(2);
         }
       }
     }
   
-    return ""; // Default empty string if no conditions are met
+    return ""; 
   };
+  
 
-  // Updated handleRowChange method
-const handleRowChange = (index, key, value) => {
+  const handleRowChange = (index, key, value) => {
   const updatedData = [...tableData];
   updatedData[index][key] = value;
 
@@ -389,6 +459,20 @@ const handleRowChange = (index, key, value) => {
       }
     }
     return eligibleDate;
+  };
+  
+  const parseTime = (timeString) => {
+    const [time, modifier] = timeString.split(" ");
+    let [hours, minutes] = time.split(":").map(Number);
+  
+    if (modifier === "PM" && hours !== 12) {
+      hours += 12;
+    }
+    if (modifier === "AM" && hours === 12) {
+      hours = 0;
+    }
+  
+    return new Date(1970, 0, 1, hours, minutes, 0); // A valid Date object
   };
   
   
@@ -784,7 +868,7 @@ const handleRowChange = (index, key, value) => {
               </div>
 
               {/* Participants Details */}
-              {participantsData.map((participant, index) => (
+              {/* {participantsData.map((participant, index) => (
                 <div key={index} className="participant mb-2">
                   <label className="block font-medium">Participant {index + 1}</label>
                   <div className="flex gap-2">
@@ -806,7 +890,7 @@ const handleRowChange = (index, key, value) => {
                     />
                   </div>
                 </div>
-              ))}
+              ))} */}
 
               {/* ---------date table----------- */}
               <table className="min-w-full divide-y divide-gray-200 border mt-4">
@@ -839,44 +923,74 @@ const handleRowChange = (index, key, value) => {
                       {/* Date Column */}
                       <td className="px-6 py-4 whitespace-nowrap">
                       <DatePicker
-                          selected={row.date} 
-                          onChange={(date) => handleRowChange(index, 'date', date)} 
-                          filterDate={(date) =>
-                            date >= getEligibleDate() && date.getDay() !== 0 && date.getDay() !== 6
-                          }
-                          dateFormat="yyyy-MM-dd" 
-                          className="border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                        />
+                        selected={row.date}
+                        onChange={(date) => {
+                          const normalizedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate()); // Set time to local midnight
+                          handleRowChange(index, 'date', normalizedDate);
+                        }}
+                        filterDate={(date) =>
+                          date >= getEligibleDate() && date.getDay() !== 0 && date.getDay() !== 6
+                        }
+                        dateFormat="yyyy-MM-dd"
+                        className="border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                      />
                       </td>
 
                       {/* Start Time and End Time Columns */}
                       {rateType === 'hourly_rate' && (
                         <>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <select
-                              value={row.startTime}
-                              onChange={(e) => handleRowChange(index, 'startTime', e.target.value)}
-                              className="border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                            >
-                              {validTimes.map((time) => (
-                                <option key={time} value={time}>
+                          <td className="px-6 py-4 whitespace-nowrap">                            
+                          <select
+                            value={row.startTime}
+                            onChange={(e) => handleRowChange(index, "startTime", e.target.value)}
+                            className="border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                          >
+                            {validTimes.map((time) => {
+                              const isDisabled = bookedSlots.some((slot) => {
+                                const isSameDate = slot.date === row.date?.toLocaleDateString("en-CA"); // Outputs the date in "YYYY-MM-DD" format
+
+                                const selectedTime = parseTime(time);
+                                const bookedStartTime = parseTime(slot.start_time);
+                                const bookedEndTime = parseTime(slot.end_time);
+                                // console.log(selectedTime, bookedStartTime, bookedEndTime)
+                                
+                                return isSameDate && selectedTime >= bookedStartTime && selectedTime < bookedEndTime;
+                              });
+
+                              return (
+                                <option key={time} value={time} disabled={isDisabled}>
                                   {time}
                                 </option>
-                              ))}
-                            </select>
+                              );
+                            })}
+                          </select>
+
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <select
-                              value={row.endTime}
-                              onChange={(e) => handleRowChange(index, 'endTime', e.target.value)}
-                              className="border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                            >
-                              {validTimes.map((time) => (
-                                <option key={time} value={time}>
+                          <select
+                            value={row.endTime}
+                            onChange={(e) => handleRowChange(index, 'endTime', e.target.value)}
+                            className="border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                          >
+                            {validTimes.map((time) => {
+                              const isDisabled = bookedSlots.some((slot) => {
+                                const isSameDate = slot.date === row.date?.toLocaleDateString("en-CA"); // Ensure the same date
+                                const selectedTime = parseTime(time);
+                                const bookedStartTime = parseTime(slot.start_time);
+                                const bookedEndTime = parseTime(slot.end_time);
+                              
+                                // Overlapping with booked slots
+                                const overlaps = isSameDate && selectedTime > bookedStartTime && selectedTime <= bookedEndTime;
+                              
+                                return overlaps;
+                              }) || parseTime(time) <= parseTime(row.startTime);
+                              return (
+                                <option key={time} value={time} disabled={isDisabled}>
                                   {time}
                                 </option>
-                              ))}
-                            </select>
+                              );
+                            })}
+                          </select>
                           </td>
                         </>
                       )}
@@ -889,9 +1003,29 @@ const handleRowChange = (index, key, value) => {
                             onChange={(e) => handleRowChange(index, 'durationType', e.target.value)}
                             className="border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                           >
-                            <option value="full_day">Full Day</option>
-                            <option value="half_day">Half Day</option>
+                            {["full_day", "half_day"].map((type) => {
+                              const isDisabled = bookedSlots.some((slot) => {
+                                if (slot.date === (row.date?.toLocaleDateString("en-CA"))) {
+                                  if (type === "full_day") {
+                                    return true; 
+                                  }
+                                  if (type === "half_day") {
+                                    const bookedStart = new Date(`1970-01-01T${slot.start_time}`);
+                                    const bookedEnd = new Date(`1970-01-01T${slot.end_time}`);
+                                    return bookedStart < new Date(`1970-01-01T12:00 PM`) && bookedEnd > new Date(`1970-01-01T04:00 PM`);
+                                  }
+                                }
+                                return false;
+                              });
+
+                              return (
+                                <option key={type} value={type} disabled={isDisabled}>
+                                  {type === "full_day" ? "Full Day" : "Half Day"}
+                                </option>
+                              );
+                            })}
                           </select>
+
                         </td>
                       )}
                        <td className="px-6 py-4 whitespace-nowrap">
