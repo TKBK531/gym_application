@@ -17,32 +17,69 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="Court",
             fields=[
-                (
-                    "id",
-                    models.BigAutoField(
-                        auto_created=True,
-                        primary_key=True,
-                        serialize=False,
-                        verbose_name="ID",
-                    ),
-                ),
-                ("label", models.CharField(max_length=50)),
+                ("court_id", models.AutoField(primary_key=True, serialize=False)),
+                ("court_name", models.CharField(max_length=255)),
+                ("num_of_courts", models.PositiveIntegerField(default=1)),
+                ("max_players", models.PositiveIntegerField(null=True)),
+                ("status", models.CharField(default="open", max_length=10)),
+            ],
+        ),
+        migrations.CreateModel(
+            name="Facility",
+            fields=[
+                ("facility_id", models.AutoField(primary_key=True, serialize=False)),
+                ("facility_name", models.CharField(max_length=255)),
+                ("status", models.CharField(default="Active", max_length=255)),
             ],
         ),
         migrations.CreateModel(
             name="CourtRate",
             fields=[
+                ("court_rate_id", models.AutoField(primary_key=True, serialize=False)),
                 (
-                    "id",
-                    models.BigAutoField(
-                        auto_created=True,
-                        primary_key=True,
-                        serialize=False,
-                        verbose_name="ID",
+                    "activity",
+                    models.CharField(
+                        choices=[
+                            ("none", "None"),
+                            ("meting", "Meting"),
+                            ("turf", "Turf"),
+                            ("match", "Match"),
+                            ("tournament", "Tournament"),
+                            ("athletic_meet_hurdles", "Athletic Meet with Hurdles"),
+                            (
+                                "athletic_meet_no_hurdles",
+                                "Athletic Meet without Hurdles",
+                            ),
+                            ("team_practice", "Team Practice"),
+                            ("practice", "Practice"),
+                            ("day_workout", "Day Workout"),
+                            ("squad_practices", "Squad Practices"),
+                            ("university_team_practices", "University Team Practices"),
+                            ("competition", "Competition"),
+                            ("other", "Other"),
+                            ("any", "Any"),
+                        ],
+                        default="none",
+                        max_length=255,
                     ),
                 ),
-                ("hourley_rate", models.FloatField()),
-                ("daily_rate", models.FloatField()),
+                (
+                    "duration",
+                    models.CharField(
+                        choices=[
+                            ("per full day", "Per Full Day"),
+                            ("per half day", "Per Half Day"),
+                            ("per hour", "Per Hour"),
+                        ],
+                        default="per hour",
+                        max_length=255,
+                    ),
+                ),
+                ("is_competitive", models.BooleanField(default=False)),
+                ("is_foreign", models.BooleanField(default=False)),
+                ("is_school", models.BooleanField(default=False)),
+                ("is_gov", models.BooleanField(default=False)),
+                ("rate", models.FloatField()),
                 (
                     "court",
                     models.ForeignKey(
@@ -52,28 +89,54 @@ class Migration(migrations.Migration):
                 ),
             ],
         ),
+        migrations.AddField(
+            model_name="court",
+            name="facility",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="reservation.facility"
+            ),
+        ),
         migrations.CreateModel(
             name="Reservation",
             fields=[
+                ("reservation_id", models.AutoField(primary_key=True, serialize=False)),
+                ("email", models.EmailField(max_length=255)),
+                ("num_of_courts", models.PositiveIntegerField()),
+                ("activity", models.CharField(default="none", max_length=255)),
                 (
-                    "id",
-                    models.BigAutoField(
-                        auto_created=True,
-                        primary_key=True,
-                        serialize=False,
-                        verbose_name="ID",
+                    "rate_type",
+                    models.CharField(
+                        choices=[
+                            ("hourly_rate", "Hourly Rate"),
+                            ("day_rate", "Day Rate"),
+                        ],
+                        default="hourly",
+                        max_length=20,
                     ),
                 ),
-                ("start_time", models.DateTimeField()),
-                ("end_time", models.DateTimeField()),
-                ("date", models.DateField()),
-                ("team_name", models.CharField(max_length=50)),
                 ("requirement", models.TextField()),
+                ("is_school", models.BooleanField(default=False)),
+                ("is_gov", models.BooleanField(default=False)),
+                ("is_foreign", models.BooleanField(default=False)),
                 ("is_competitive", models.BooleanField(default=False)),
-                ("number_of_players", models.IntegerField()),
-                ("is_paid", models.BooleanField(default=False)),
-                ("is_canceled", models.BooleanField(default=False)),
-                ("is_finished", models.BooleanField(default=False)),
+                ("org_name", models.CharField(max_length=255)),
+                ("is_pdn", models.BooleanField(default=False)),
+                ("num_of_participants", models.PositiveIntegerField()),
+                ("is_payment_needed", models.BooleanField(default=True)),
+                ("amount", models.FloatField()),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("approved", "Approved"),
+                            ("confirmed", "Confirmed"),
+                            ("cancelled", "Cancelled"),
+                            ("rejected", "Rejected"),
+                        ],
+                        default="approved",
+                        max_length=10,
+                    ),
+                ),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("updated_at", models.DateTimeField(auto_now=True)),
                 (
@@ -95,6 +158,97 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="Payment",
             fields=[
+                ("payment_id", models.AutoField(primary_key=True, serialize=False)),
+                ("amount", models.FloatField()),
+                ("payment_date", models.DateTimeField(auto_now_add=True)),
+                ("payment_method", models.CharField(max_length=50)),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("pending", "Pending"),
+                            ("approved", "Approved"),
+                            ("rejected", "Rejected"),
+                        ],
+                        default="pending",
+                        max_length=10,
+                    ),
+                ),
+                ("proof_of_payment", models.FileField(upload_to="payment_proofs/")),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "reservation",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="payments_reservation",
+                        to="reservation.reservation",
+                    ),
+                ),
+            ],
+        ),
+        migrations.CreateModel(
+            name="ReservationRequest",
+            fields=[
+                ("res_req_id", models.AutoField(primary_key=True, serialize=False)),
+                ("email", models.EmailField(max_length=255)),
+                ("num_of_courts", models.PositiveIntegerField(default=1, null=True)),
+                ("activity", models.CharField(default="none", max_length=255)),
+                (
+                    "rate_type",
+                    models.CharField(
+                        choices=[
+                            ("hourly_rate", "Hourly Rate"),
+                            ("day_rate", "Day Rate"),
+                        ],
+                        default="hourly",
+                        max_length=20,
+                    ),
+                ),
+                ("requirement", models.TextField()),
+                ("is_school", models.BooleanField(default=False)),
+                ("is_gov", models.BooleanField(default=False)),
+                ("is_foreign", models.BooleanField(default=False)),
+                ("is_competitive", models.BooleanField(default=False)),
+                ("org_name", models.CharField(max_length=255)),
+                ("is_pdn", models.BooleanField(default=False)),
+                ("num_of_participants", models.PositiveIntegerField()),
+                ("admin_staff_id", models.CharField(max_length=255, null=True)),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("pending", "Pending"),
+                            ("approved", "Approved"),
+                            ("rejected", "Rejected"),
+                            ("cancelled", "Cancelled"),
+                        ],
+                        default="pending",
+                        max_length=10,
+                    ),
+                ),
+                ("is_payment_needed", models.BooleanField(default=True)),
+                ("amount", models.FloatField()),
+                ("applied_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "court",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="reservation.court",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+            ],
+        ),
+        migrations.CreateModel(
+            name="ReservationParticipant",
+            fields=[
                 (
                     "id",
                     models.BigAutoField(
@@ -104,19 +258,78 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("amount", models.FloatField()),
-                ("payment_date", models.DateTimeField(auto_now_add=True)),
-                ("payment_method", models.CharField(max_length=50)),
-                ("payment_status", models.CharField(max_length=50)),
-                ("created_at", models.DateTimeField(auto_now_add=True)),
-                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("name", models.CharField(max_length=255)),
+                ("nic", models.CharField(default="none", max_length=12)),
                 (
                     "reservation",
                     models.ForeignKey(
+                        null=True,
                         on_delete=django.db.models.deletion.CASCADE,
+                        related_name="reservation_participants",
                         to="reservation.reservation",
                     ),
                 ),
+                (
+                    "reservation_request",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="participants",
+                        to="reservation.reservationrequest",
+                    ),
+                ),
             ],
+        ),
+        migrations.CreateModel(
+            name="ReservationDate",
+            fields=[
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("date", models.DateField()),
+                ("start_time", models.TimeField(blank=True, null=True)),
+                ("end_time", models.TimeField(blank=True, null=True)),
+                (
+                    "duration_type",
+                    models.CharField(
+                        blank=True,
+                        choices=[("full_day", "Full Day"), ("half_day", "Half Day")],
+                        max_length=10,
+                        null=True,
+                    ),
+                ),
+                (
+                    "reservation",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="reservation_dates",
+                        to="reservation.reservation",
+                    ),
+                ),
+                (
+                    "reservation_request",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="dates",
+                        to="reservation.reservationrequest",
+                    ),
+                ),
+            ],
+        ),
+        migrations.AddField(
+            model_name="reservation",
+            name="res_req",
+            field=models.OneToOneField(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="reservation",
+                to="reservation.reservationrequest",
+            ),
         ),
     ]

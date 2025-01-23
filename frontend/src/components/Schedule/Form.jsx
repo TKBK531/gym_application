@@ -1,33 +1,109 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect  } from 'react';
 import { useNavigate } from 'react-router-dom';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import api from "../../api"
+
 
 const Form = ({ isOpen, onClose }) => {
-  const [selectedRequirement, setSelectedRequirement] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [email, setEmail] = useState('');
-  const [numOfParticipants, setNumOfParticipants] = useState('');
-  const [participantsData, setParticipantsData] = useState([]);
-  const [startTime, setStartTime] = useState("08:00");
-  const [endTime, setEndTime] = useState("09:00");
   const [applicantName, setApplicantName] = useState('');
+  const [email, setEmail] = useState('');
+  const [user, setUser]  = useState('');
+  const [emailError, setEmailError] = useState('');
   const [teamName, setTeamName] = useState('');
   const [address, setAddress] = useState('');
-  const [court, setCourt] = useState('');
-  const [requiredDate, setRequiredDate] = useState('');
-  const [emailError, setEmailError] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [phoneNumberError, setPhoneNumberError] = useState('');
+  const [requirement, setRequirement] = useState('');
+  const [selectedFacility, setSelectedFacility] = useState('');
+  const [court, setCourt] = useState('');
+  const [numOfCourts, setNumOfCourts] = useState('');
+  const [numOfCourtsError, setNumOfCourtsError] = useState('');
+  const [activity, setActivity] = useState('');
+  const [rateType, setRateType] = useState('hourly_rate');
+  const [formState, setFormState] = useState({
+    isSchool: false,
+    isGovernment: false,
+    isForeign: false,
+    isCompetitive: false,
+    isUOPUndergraduate: false,
+  });
+  const [numOfParticipants, setNumOfParticipants] = useState('');
+  const [participantsData, setParticipantsData] = useState([]);
+  const [tableData, setTableData] = useState([]);
+
+// --------------------------------------------------------------------
+  const [facilities, setFacilities] = useState([]);
+  const [allCourts, setAllCourts] = useState([]);
+  const [filteredCourts, setFilteredCourts] = useState([]);
+  const [maxCourts, setMaxCourts] = useState([]);
+  const [allCourtRates, setAllCourtRates] = useState([]);
+  const [filteredActivities, setFilteredActivities] = useState([]);
+  const [filteredRateTypes, setFilteredRateTypes] = useState([]);
+  const [fetchError, setFetchError] = useState('');
+
 
   const navigate = useNavigate();
 
-  const gymCourts = ['Whole Gym', 'Badminton', 'Basketball', 'Boxing', 'Carrom', 'Chess', 'Karate', 'Netball', 'Power Lifting', 'Table Tennis', 'Taekwondo', 'Volleyball', 'Weightlifting', 'Wrestling', 'Wushu'];
-  const groundCourts = ['Baseball', 'Basketball', 'Cricket (hard ball)', 'Elle', 'Football', 'Hockey', 'Netball', 'Rugger', 'Tennis', 'Track and Field', 'Volleyball'];
-  const poolCourts = ['Full Pool', 'Half the Pool'];
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await api.get('/user/profile/');
+        const firstName = response.data?.data?.user?.first_name || '';
+        const lastName = response.data?.data?.user?.last_name || '';
+        const name = `${firstName} ${lastName}`.trim();
+        const username = response.data?.data?.user?.username || '';
+        setApplicantName(name);
+        setEmail(username);
+        setUser(response.data?.data?.user);
+      } catch (error) {
+        console.error("Failed to fetch name:", error);
+        setFetchError('Failed to load user profile. Please try again.');
+      }
+    };
+
+    const fetchFacilities = async () => {
+      try {
+        const response = await api.get('/reservation/requestAllFacilities/');
+        setFacilities(response.data);
+      } catch (error) {
+        console.error("Failed to fetch facilities:", error);
+        setFetchError('Failed to load facilities. Please try again.');
+      }
+    };
+
+    const fetchCourts = async () => {
+      try {
+        const response = await api.get('/reservation/requestAllCourts/');
+        setAllCourts(response.data)
+      } catch (error) {
+        console.error("Failed to fetch courts:", error);
+        setFetchError('Failed to load courts. Please try again.');
+      }
+    };
+
+
+    const fetchCourtRates = async () => {
+      try {
+        const response = await api.get('/reservation/requestAllCourtRates/');
+        setAllCourtRates(response.data)
+      } catch (error) {
+        console.error("Failed to fetch court Rates:", error);
+        setFetchError('Failed to load court Rates. Please try again.');
+      }
+    };
+  
+    fetchUser();
+    fetchFacilities();
+    fetchCourts();
+    fetchCourtRates();
+  }, []);  
 
   const handlePhoneNumber = (event) => {
     const { value } = event.target;
     if (/^\d*$/.test(value)) {
       setPhoneNumber(value);
-  
+
       if (value.length === 10) {
         setPhoneNumberError('');
       } else {
@@ -35,7 +111,14 @@ const Form = ({ isOpen, onClose }) => {
       }
     }
   };
-  
+
+  const handleBooleanChange = (event) => {
+    const { name, checked } = event.target;
+    setFormState((prevState) => ({
+      ...prevState,
+      [name]: checked,
+    }));
+  };
 
   const handleEmailChange = (event) => {
     const { value } = event.target;
@@ -49,22 +132,139 @@ const Form = ({ isOpen, onClose }) => {
   };
 
   const handleRequirementChange = (event) => {
-    setSelectedRequirement(event.target.value);
+    setRequirement(event.target.value);
   };
 
-  let requiredCourts = [];
-  if (selectedRequirement === 'gym') {
-    requiredCourts = gymCourts;
-  } else if (selectedRequirement === 'ground') {
-    requiredCourts = groundCourts;
-  } else if (selectedRequirement === 'pool') {
-    requiredCourts = poolCourts;
-  }
+  const handleFacilityChange = (event) => {
+    const selected = event.target.value;
+    console.log("Selected Facility:", selected);
+  
+    if (selected !== selectedFacility) {
+      setSelectedFacility(selected);
+  
+      const selectedFacilityObject = facilities.find(
+        (facility) => facility.facility_name.toLowerCase() === selected.toLowerCase()
+      );
+  
+      if (selectedFacilityObject) {
+        const facilityId = selectedFacilityObject.facility_id;
+  
+        // Filter courts based on the matching facility_id
+        const filtered = allCourts.filter((court) => court.facility === facilityId);
+        console.log("Filtered Courts:", filtered);
+        setFilteredCourts(filtered);
+      } else {
+        console.warn("No matching facility found for the selected name.");
+        setFilteredCourts([]);
+      }
+    }
+  };
+  
 
-  const getTwoWeeksLaterDate = () => {
-    const today = new Date();
-    const twoWeeksLater = new Date(today.setDate(today.getDate() + 14));
-    return twoWeeksLater.toISOString().split('T')[0];
+  const handleCourtChange = (event) => {
+    const selectedCourtName = event.target.value;
+    setCourt(selectedCourtName);
+  
+    // Find the selected court object
+    const selectedCourtObject = filteredCourts.find(
+      (court) => court.court_name === selectedCourtName
+    );
+  
+    if (selectedCourtObject) {
+      const numCourts = selectedCourtObject.num_of_courts || 1; // Default to 1 if not specified
+      setNumOfCourts(""); // Reset the number of courts input
+      setMaxCourts(numCourts); // Update maxCourts state
+  
+      // Filter activities based on the selected court
+      const filteredRates = allCourtRates.filter(
+        (rate) => rate.court.court_id === selectedCourtObject.court_id
+      );
+  
+      const uniqueActivities = [
+        ...new Set(filteredRates.map((rate) => rate.activity)),
+      ];
+  
+      setFilteredActivities(uniqueActivities);
+    } else {
+      console.warn("No matching court found.");
+      setMaxCourts(1); // Default to 1 if no court is selected
+      setFilteredActivities([]); // Clear activities if no court is selected
+    }
+  };
+  
+  
+
+  const handleNumOfCourtsChange = (event) => {
+    const value = parseInt(event.target.value, 10);
+  
+    if (!maxCourts) {
+      setNumOfCourtsError("No court selected or maximum courts unavailable.");
+      return;
+    }
+  
+    if (value >= 0 && value <= maxCourts) {
+      setNumOfCourts(value);
+      setNumOfCourtsError("");
+    } else {
+      setNumOfCourtsError(`The maximum number of courts available is ${maxCourts}.`);
+    }
+  };
+  
+
+
+  const handleActivityChange = (event) => {
+    const selectedActivity = event.target.value;
+    setActivity(selectedActivity);
+  
+    // Find the selected court object
+    const selectedCourtObject = filteredCourts.find(
+      (courtItem) => courtItem.court_name === court
+    );
+  
+    if (selectedCourtObject) {
+      console.log("Selected Court ID:", selectedCourtObject.court_id);
+  
+      // Filter court rates based on selected court and activity
+      const filteredRates = allCourtRates.filter(
+        (rate) =>
+          rate.court.court_id === selectedCourtObject.court_id &&
+          rate.activity === selectedActivity
+      );
+  
+      console.log("Filtered Rates:", filteredRates);
+  
+      // Extract unique durations
+      const uniqueDurations = [
+        ...new Set(filteredRates.map((rate) => rate.duration)),
+      ];
+  
+      console.log("Unique Durations:", uniqueDurations);
+  
+      // Determine which rate types to display
+      const availableRateTypes = [];
+      if (
+        uniqueDurations.includes("per full day") ||
+        uniqueDurations.includes("per half day")
+      ) {
+        availableRateTypes.push("day_rate");
+      }
+      if (uniqueDurations.includes("per hour")) {
+        availableRateTypes.push("hourly_rate");
+      }
+  
+      setFilteredRateTypes(availableRateTypes);
+      console.log("Available Rate Types:", availableRateTypes);
+    } else {
+      console.warn("No matching court found for the selected activity.");
+      setFilteredRateTypes([]);
+    }
+  };
+  
+  
+
+  const handleRateTypeChange = (e) => {
+    setRateType(e.target.value);
+    setTableData([]);
   };
 
   const handleNumOfParticipantsChange = (event) => {
@@ -82,72 +282,197 @@ const Form = ({ isOpen, onClose }) => {
 
   const handleParticipantChange = (index, field, value) => {
     const updatedParticipants = [...participantsData];
+  
     updatedParticipants[index][field] = value;
     setParticipantsData(updatedParticipants);
   };
 
-  const timeOptions = [
-    { value: "08:00", label: "8 AM" },
-    { value: "09:00", label: "9 AM" },
-    { value: "10:00", label: "10 AM" },
-    { value: "11:00", label: "11 AM" },
-    { value: "12:00", label: "12 PM" },
-    { value: "13:00", label: "1 PM" },
-    { value: "14:00", label: "2 PM" },
-    { value: "15:00", label: "3 PM" },
-    { value: "16:00", label: "4 PM" },
-    { value: "17:00", label: "5 PM" },
-    { value: "18:00", label: "6 PM" },
-    { value: "19:00", label: "7 PM" },
-    { value: "20:00", label: "8 PM" },
-    { value: "21:00", label: "9 PM" },
+
+  const validTimes = [
+    "08:00 AM", "09:00 AM", "10:00 AM", "11:00 AM", "12:00 PM",
+    "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM",
+    "06:00 PM", "07:00 PM", "08:00 PM"
   ];
 
-  const handleStartTimeChange = (event) => {
-    const newStartTime = event.target.value;
-    setStartTime(newStartTime);
-    if (newStartTime >= endTime) {
-      const newEndTimeIndex = timeOptions.findIndex(
-        (option) => option.value === newStartTime
-      );
-      setEndTime(timeOptions[newEndTimeIndex + 1]?.value || newStartTime);
+  const handleAddRow = () => {
+    if (rateType === 'hourly_rate') {
+      setTableData([...tableData, { date: null, startTime: validTimes[0], endTime: validTimes[1], amount: '' }]);
+    } else {
+      setTableData([...tableData, { date: null, durationType: 'full_day', amount: '' }]);
     }
   };
+  
+  
+  
 
-  const handleEndTimeChange = (event) => {
-    setEndTime(event.target.value);
+  const handleRowChange = (index, key, value) => {
+    const updatedData = [...tableData];
+    if (key === 'amount') {
+      updatedData[index][key] = parseFloat(value) || ''; // Allow decimals or reset if invalid
+    } else {
+      updatedData[index][key] = value;
+    }
+    setTableData(updatedData);
   };
+  
+  
+  
 
-  const handleSubmit = (event) => {
+  
+  const getEligibleDate = () => {
+    const today = new Date();
+    let count = 0;
+    let eligibleDate = new Date(today);
+
+    while (count < 7) {
+      eligibleDate.setDate(eligibleDate.getDate() + 1);
+      if (eligibleDate.getDay() !== 0 && eligibleDate.getDay() !== 6) {
+        count++;
+      }
+    }
+    return eligibleDate;
+  };
+  
+  
+// ----------------------------------------------------------
+  const handleSubmit = async (event) => {
     event.preventDefault();
-
+  
+    const formattedTableData = tableData.map((row) => {
+      const formattedRow = {
+        date: row.date ? new Date(row.date).toISOString().split("T")[0] : null, // Format date to YYYY-MM-DD
+      };
+  
+      if (rateType === "hourly_rate") {
+        // Function to format time to HH:MM:SS (24-hour format)
+        const formatTime = (time) => {
+          if (!time) return null; // Handle null or undefined time
+  
+          // Parse the time string to 24-hour format
+          const timeParts = time
+            .replace(" AM:00", "")
+            .replace(" PM:00", "")
+            .replace(" AM", "")
+            .replace(" PM", "")
+            .trim();
+  
+          const parsedTime = new Date(`1970-01-01T${timeParts}:00`);
+          const hours = parsedTime.getHours().toString().padStart(2, "0");
+          const minutes = parsedTime.getMinutes().toString().padStart(2, "0");
+          const seconds = "00"; // Add seconds
+  
+          return `${hours}:${minutes}:${seconds}`;
+        };
+  
+        return {
+          ...formattedRow,
+          start_time: formatTime(row.startTime), // Format start time
+          end_time: formatTime(row.endTime), // Format end time
+        };
+      } else if (rateType === "day_rate") {
+        return {
+          ...formattedRow,
+          duration_type: row.durationType || null, // Rename durationType to duration_type
+        };
+      }
+  
+      return formattedRow; // Default case (if needed)
+    });
+  
+    const is_school = formState.isSchool;
+    const is_gov = formState.isGovernment;
+    const is_foreign = formState.isForeign;
+    const is_competitive = formState.isCompetitive;
+    const is_pdn = formState.isUOPUndergraduate;
+  
     const formData = {
-      applicantName,
       email,
-      teamName,
+      activity,
+      rate_type: rateType,
+      num_of_courts: numOfCourts,
+      user,
+      requirement,
+      is_school,
+      is_gov,
+      is_foreign,
+      is_competitive,
+      org_name: teamName,
+      is_pdn,
+      num_of_participants: numOfParticipants,
       address,
       phoneNumber,
-      selectedRequirement,
-      court,
+      facility_name: selectedFacility,
+      court_name: court,
       numOfParticipants,
-      participantsData,
-      requiredDate,
-      startTime,
-      endTime,
+      dates: formattedTableData,
     };
+  
+    console.log(JSON.stringify(formData, null, 2));
 
-    console.log('Form Data:', formData); // Logs the object directly
-    console.log('Form Data as JSON:', JSON.stringify(formData, null, 2)); // Logs the JSON stringified version
+    
+  //   setApplicantName('');
+  //   setEmail('');
+  //   setTeamName('');
+  //   setAddress('');
+  //   setPhoneNumber('');
+  //   setRequirement('');
+  //   setSelectedFacility('');
+  //   setCourt('');
+  //   setNumOfCourts('');
+  //   setActivity('');
+  //   setRateType('hourly_rate');
+  //   setNumOfParticipants('');
+  //   setParticipantsData([]);
+  //   setTableData([]);
+  //   setFormState({
+  //   isSchool: false,
+  //   isGovernment: false,
+  //   isForeign: false,
+  //   isCompetitive: false,
+  //   isUOPUndergraduate: false,
+  // });
+  
+    try {
+      // const response = await api.post(
+      //   "/reservation/addReservationRequest/",
+      //   JSON.stringify(formData, null, 2)
+      // );
 
-    // Close the form modal
+
+
+      const response = await api.post('/reservation/addReservationRequest/', formData, {
+        headers: {
+          'Content-Type': 'application/json',
+          // Authorization: `Bearer ${authToken}`,
+        },
+      });
+  
+      if (response.status === 200 || response.status === 201) {
+        console.log(
+          "Reservation request submitted successfully:",
+          response.data
+        );
+        alert("Reservation request submitted successfully!");
+      } else {
+        console.error("Failed to submit the reservation request:", response);
+        alert("Failed to submit the reservation request. Please try again.");
+      }
+    } catch (error) {
+      console.error(
+        "An error occurred while submitting the reservation request:",
+        error
+      );
+      alert("An error occurred. Please try again later.");
+    }
+  
     onClose();
-
-    // Navigate to the reservation page (replace '/reservations' with your desired route)
-    navigate('/reservations');
+    navigate("/reservations");
   };
+  
+  
 
   if (!isOpen) return null;
-
+// ----------------------------------------------------------
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white w-full max-w-2xl h-full max-h-[90vh] overflow-y-auto p-6 rounded-lg shadow-lg">
@@ -166,23 +491,12 @@ const Form = ({ isOpen, onClose }) => {
               <div className='name flex flex-col gap-2 mb-2'>
                 <label className="block font-medium">Applicant Name</label>
                 <div className='flex flex-row'>
-                  <select
-                    className="p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                    required
-                  >
-                    <option value="-"></option>
-                    <option value="Mr.">Mr.</option>
-                    <option value="Mrs.">Mrs.</option>
-                    <option value="Miss">Miss</option>
-                    <option value="Rev.">Rev.</option>
-                  </select>
                   <input
                     type="text"
                     name="applicantName"
                     className="p-2 border w-full border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
                     value={applicantName}
                     onChange={(e) => setApplicantName(e.target.value)}
-                    required
                   />
                 </div>
               </div>
@@ -237,41 +551,171 @@ const Form = ({ isOpen, onClose }) => {
                 {phoneNumberError && <span className="text-red-500">{phoneNumberError}</span>}
               </div>
 
-
-              {/* Additional fields */}
-              <div className='mb-2'>
-                <label className="block font-medium">Required Facility</label>
-                <select
+              <div className='requirement flex flex-col gap-2 mb-2'>
+                <label className="block font-medium">Requirement</label>
+                <input
+                  type="text"
                   name="requirement"
+                  value={requirement}
+                  onChange={handleRequirementChange} // Use the separate handler
                   className="p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                  value={selectedRequirement}
-                  onChange={handleRequirementChange}
+                />
+              </div>
+
+
+              <div className=" facility mb-2">
+                <label className="block font-medium">Facility</label>
+                <select
+                  name="facility"
+                  className="p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                  value={selectedFacility}
+                  onChange={handleFacilityChange}
                   required
                 >
-                  <option value=""></option>
-                  <option value="gym">Gym</option>
-                  <option value="ground">Ground</option>
-                  <option value="pool">Pool</option>
+                  {facilities.map((facility) => (
+                    <option key={facility.facility_id} value={facility.facility_name}>
+                      {facility.facility_name}
+                    </option>
+                  ))}
                 </select>
               </div>
 
-              <div className='mb-2'>
+              <div className='court mb-2'>
                 <label className="block font-medium">Required Court</label>
                 <select
                   name="court"
                   className="p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
                   value={court}
-                  onChange={(e) => setCourt(e.target.value)}
+                  onChange={handleCourtChange}
                   required
                 >
-                  <option value="-"></option>
-                  {requiredCourts.map((court, index) => (
-                    <option key={index} value={court}>{court}</option>
+                  {filteredCourts.map((court) => (
+                    <option key={court.court_id} value={court.court_name}>
+                      {court.court_name}
+                    </option>
                   ))}
                 </select>
               </div>
 
-              <div className='participants flex flex-col gap-2 mb-2'>
+              <div className="numOfCourts flex flex-col gap-2 mb-2">
+                <label className="block font-medium">Number of courts</label>
+                <input
+                  type="number"
+                  name="numOfCourts"
+                  value={numOfCourts}
+                  onChange={handleNumOfCourtsChange}
+                  className="p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                  required
+                />
+                {numOfCourtsError && <span className="text-red-500">{numOfCourtsError}</span>}
+              </div>
+
+              <div className='activity flex flex-col gap-2 mb-2'>
+                <label className="block font-medium">Activity</label>
+                <select
+                  name="activity"
+                  value={activity}
+                  onChange={handleActivityChange}
+                  className="p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                  disabled={filteredActivities.length === 0}
+                  required
+                >
+                  <option value=""> </option>
+                  {filteredActivities.map((activity, index) => (
+                    <option key={index} value={activity}>
+                      {activity}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="rateType flex items-center space-x-4 mb-4">
+                <label htmlFor="rateType" className="block font-medium">
+                  Rate Type:
+                </label>
+                <select
+                  id="rateType"
+                  name="rateType"
+                  value={rateType}
+                  onChange={handleRateTypeChange}
+                  className="border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2"
+                  disabled={filteredRateTypes.length === 0} // Disable if no rate types available
+                  required
+                >
+                  <option value="">Select Rate Type</option>
+                  {filteredRateTypes.map((type, index) => (
+                    <option key={index} value={type}>
+                      {type === "hourly_rate" ? "Hourly Rate" : "Day Rate"}
+                    </option>
+                  ))}
+                </select>
+                {filteredRateTypes.length === 0 && (
+                  <span className="text-red-500 text-sm">
+                    No rate types available for this selection.
+                  </span>
+                )}
+              </div>
+
+              <div className="ifCheckboxes flex flex-col gap-2 mb-4">
+                <label className="block font-medium">Select if yes</label>
+                <label className="isSchool flex items-center justify-between">
+                  <span className="mr-2">Are you a Government school?</span>
+                  <input
+                    type="checkbox"
+                    name="isSchool"
+                    checked={formState.isSchool}
+                    onChange={handleBooleanChange}
+                    className="w-4 h-4"
+                  />
+                </label>
+
+                <label className="isGovernment flex items-center justify-between">
+                  <span className="mr-2">Are you a Government Organization?</span>
+                  <input
+                    type="checkbox"
+                    name="isGovernment"
+                    checked={formState.isGovernment}
+                    onChange={handleBooleanChange}
+                    className="w-4 h-4"
+                  />
+                </label>
+
+                <label className="isForeign flex items-center justify-between">
+                  <span className="mr-2">Are you a foreign national?</span>
+                  <input
+                    type="checkbox"
+                    name="isForeign"
+                    checked={formState.isForeign}
+                    onChange={handleBooleanChange}
+                    className="w-4 h-4"
+                  />
+                </label>
+
+                <label className="isCompetitive flex items-center justify-between">
+                  <span className="mr-2">Is the event Competitive?</span>
+                  <input
+                    type="checkbox"
+                    name="isCompetitive"
+                    checked={formState.isCompetitive}
+                    onChange={handleBooleanChange}
+                    className="w-4 h-4"
+                  />
+                </label>
+
+                <label className="isUOPUndergraduate flex items-center justify-between">
+                  <span className="mr-2">Are you a UOP Undergraduate?</span>
+                  <input
+                    type="checkbox"
+                    name="isUOPUndergraduate"
+                    checked={formState.isUOPUndergraduate}
+                    onChange={handleBooleanChange}
+                    className="w-4 h-4"
+                  />
+                </label>
+              </div>
+
+  
+              <div className='numOfParticipants flex flex-col gap-2 mb-2'>
                 <label className="block font-medium">Number of Participants</label>
                 <input
                   type="number"
@@ -308,53 +752,119 @@ const Form = ({ isOpen, onClose }) => {
                 </div>
               ))}
 
-              <div className='required-date flex flex-col gap-2 mb-2'>
-                <label className="block font-medium">Required Date</label>
-                <input
-                  type="date"
-                  name="requiredDate"
-                  className="p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                  value={requiredDate}
-                  onChange={(e) => setRequiredDate(e.target.value)}
-                  min={getTwoWeeksLaterDate()}
-                  required
-                />
+              {/* ---------date table----------- */}
+              <table className="min-w-full divide-y divide-gray-200 border mt-4">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Date
+                    </th>
+                    {rateType === 'hourly_rate' && (
+                      <>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                          Start Time
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                          End Time
+                        </th>
+                      </>
+                    )}
+                    {rateType === 'day_rate' && (
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                        Duration Type
+                      </th>
+                    )}
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {tableData.map((row, index) => (
+                    <tr key={index}>
+                      {/* Date Column */}
+                      <td className="px-6 py-4 whitespace-nowrap">
+                      <DatePicker
+                          selected={row.date} // Ensure this binds to the correct value
+                          onChange={(date) => handleRowChange(index, 'date', date)} // Update on selection
+                          filterDate={(date) =>
+                            date >= getEligibleDate() && date.getDay() !== 0 && date.getDay() !== 6
+                          }
+                          dateFormat="yyyy-MM-dd" // Optional: Ensure a consistent display format
+                          className="border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        />
+                      </td>
+
+                      {/* Start Time and End Time Columns */}
+                      {rateType === 'hourly_rate' && (
+                        <>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <select
+                              value={row.startTime}
+                              onChange={(e) => handleRowChange(index, 'startTime', e.target.value)}
+                              className="border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            >
+                              {validTimes.map((time) => (
+                                <option key={time} value={time}>
+                                  {time}
+                                </option>
+                              ))}
+                            </select>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <select
+                              value={row.endTime}
+                              onChange={(e) => handleRowChange(index, 'endTime', e.target.value)}
+                              className="border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            >
+                              {validTimes.map((time) => (
+                                <option key={time} value={time}>
+                                  {time}
+                                </option>
+                              ))}
+                            </select>
+                          </td>
+                        </>
+                      )}
+
+                      {/* Duration Type Column */}
+                      {rateType === 'day_rate' && (
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <select
+                            value={row.durationType}
+                            onChange={(e) => handleRowChange(index, 'durationType', e.target.value)}
+                            className="border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                          >
+                            <option value="full_day">Full Day</option>
+                            <option value="half_day">Half Day</option>
+                          </select>
+                        </td>
+                      )}
+                       <td className="px-6 py-4 whitespace-nowrap">
+                        <input
+                          type="number"
+                          step="0.01" 
+                          value={row.amount}
+                          onChange={(e) => handleRowChange(index, 'amount', e.target.value)}
+                          className="p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                        />
+                       </td>
+
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+
+              <div className="dateTableButton">
+                <button
+                  type="button"
+                  onClick={handleAddRow}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md shadow-sm hover:bg-blue-500  mt-4 mb-4"
+                >
+                  Add Row
+                </button>
               </div>
 
-              <div className='required-time flex flex-col gap-2 mb-2'>
-                <label className="block font-medium">Required Time</label>
-                <div className="flex gap-2">
-                  <select
-                    name="startTime"
-                    value={startTime}
-                    onChange={handleStartTimeChange}
-                    className="p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                    required
-                  >
-                    {timeOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-
-                  <select
-                    name="endTime"
-                    value={endTime}
-                    onChange={handleEndTimeChange}
-                    className="p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                    required
-                  >
-                    {timeOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-md">
+              <button type="submit" className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-md">
                 Submit
               </button>
             </form>

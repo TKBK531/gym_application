@@ -1,197 +1,258 @@
-import React from 'react'
+import React, { useState, useEffect } from "react";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Tooltip,
-    Paper,
-  } from "@mui/material";
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Tooltip,
+  Paper,
+  TextField,
+} from "@mui/material";
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers';
+import dayjs from 'dayjs';
+import api from "../../api";
 
 function Schedule() {
+  const [filteredReservations, setFilteredReservations] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [courts, setCourts] = useState([]);
 
-    const bookings = [
-        { sport: "Badminton", time: "8 AM - 11 AM", bookedBy: "Akira Yamamoto", status: "Team Practices" },
-        { sport: "Baseball", time: "9 AM - 11 AM", bookedBy: "Sakura Tanaka", status: "Confirmed" },
-        { sport: "Tennis", time: "11 AM - 12 PM", bookedBy: "Aisha Khan", status: "Confirmed" },
-        { sport: "Tennis", time: "12 PM - 1 PM", bookedBy: "Aisha Khan", status: "Team Practices" },
-        { sport: "Rugby", time: "3 PM - 7 PM", bookedBy: "Alesia K", status: "Unavailable" },
-        { sport: "Soccer", time: "10 AM - 12 PM", bookedBy: "Mei Chen", status: "Pending" },
-        { sport: "Cricket", time: "3 PM - 4 PM", bookedBy: "Haruto Sato", status: "Unavailable" },
-        { sport: "Volleyball", time: "8 AM - 10 AM", bookedBy: "Alesia K", status: "Team Practices" },
-        { sport: "Swimming", time: "10 AM - 11 AM", bookedBy: "Akira Yamamoto", status: "Confirmed" },
-        { sport: "Swimming", time: "4 PM - 5 PM", bookedBy: "Sakura Tanaka", status: "Team Practices" },
-        { sport: "Table Tennis", time: "9 AM - 10 AM", bookedBy: "Mei Chen", status: "Pending" },
-        { sport: "Table Tennis", time: "3 PM - 4 PM", bookedBy: "Ravi Singh", status: "Unavailable" },
-      ];
-      
-      
-      const generateTimeSlots = () => {
-        const slots = [];
-        for (let hour = 8; hour < 21; hour++) {
-          const period = hour < 12 ? "AM" : "PM";
-          const adjustedHour = hour % 12 === 0 ? 12 : hour % 12;
-          const nextHour = (hour + 1) % 12 === 0 ? 12 : (hour + 1) % 12;
-          const nextPeriod = hour + 1 < 12 ? "AM" : hour + 1 === 12 ? "PM" : period;
-          slots.push(`${adjustedHour} ${period} - ${nextHour} ${nextPeriod}`);
-        }
-        return slots;
-      };
-      
-      const timeSlots = generateTimeSlots();
-      
-      
-      const getBookingInfo = (sport, timeSlot) => {
-        return bookings.find((b) => {
-          const [start, end] = b.time.split(" - ");
-          const [startHour, startPeriod] = start.split(" ");
-          const [endHour, endPeriod] = end.split(" ");
-          const [slotStart, slotEnd] = timeSlot.split(" - ");
-          const [slotStartHour, slotStartPeriod] = slotStart.split(" ");
-          const [slotEndHour, slotEndPeriod] = slotEnd.split(" ");
-      
-      
-          const bookingStart = parseTime(startHour, startPeriod);
-          const bookingEnd = parseTime(endHour, endPeriod);
-          const slotStartTime = parseTime(slotStartHour, slotStartPeriod);
-          const slotEndTime = parseTime(slotEndHour, slotEndPeriod);
-      
-        
-          return b.sport === sport && bookingStart <= slotStartTime && bookingEnd >= slotEndTime;
+  const generateTimeSlots = () => {
+    const slots = [];
+    for (let hour = 8; hour < 21; hour++) {
+      const startHour = hour.toString().padStart(2, "0"); // Ensure 2-digit hour
+      const endHour = (hour + 1).toString().padStart(2, "0");
+      slots.push(`${startHour}:00 - ${endHour}:00`);
+    }
+    return slots;
+  };
+  
+
+  const timeSlots = generateTimeSlots();
+
+  const fetchCourts = async () => {
+    try {
+      const [facilitiesResponse, courtsResponse] = await Promise.all([
+        api.get("/reservation/requestAllFacilities/"),
+        api.get("/reservation/requestAllCourts/"),
+      ]);
+  
+      const facilities = facilitiesResponse.data;
+      const courts = courtsResponse.data;
+  
+      // Create a map of facility IDs to facility names
+      const facilityMap = facilities.reduce((map, facility) => {
+        map[facility.facility_id] = facility.facility_name;
+        return map;
+      }, {});
+  
+      // Map each court to an object with facilityName and courtName
+      const mappedFacilityCourts = courts.map((court) => ({
+        facilityName: facilityMap[court.facility] || "Unknown Facility",
+        courtName: court.court_name,
+      }));
+  
+      setCourts(mappedFacilityCourts);
+    } catch (error) {
+      console.error("Failed to fetch facilities or courts:", error);
+    }
+  };
+  
+
+
+  const fetchReservationsByDate = async (date) => {
+    try {
+      const formattedDate = dayjs(date).format("YYYY-MM-DD");
+      const apiUrl = `/reservation/requestAllReservationDates/${formattedDate}/`;
+  
+      const response = await api.get(apiUrl)
+  
+      const data = response.data;
+      console.log(data);
+
+      setFilteredReservations(data);
+    } catch (error) {
+      console.error("Error fetching reservations by date:", error);
+    }
+  };
+  
+   
+
+  const handleDateChange = async (newValue) => {
+    try {
+      console.log("Raw value from DatePicker:", newValue);
+  
+      // Ensure newValue is a valid date (Day.js object)
+      if (!newValue || !dayjs(newValue).isValid()) {
+        console.error("Invalid date selected:", newValue);
+        return;
+      }
+  
+      // Convert Day.js object to native Date and update state
+      const selectedDate = dayjs(newValue).toDate();
+      console.log("Parsed and formatted Date:", selectedDate);
+  
+      setSelectedDate(selectedDate);
+      await fetchReservationsByDate(selectedDate);
+    } catch (error) {
+      console.error("Error handling date change:", error);
+    }
+  };
+
+  const matchReservationsToSlots = () => {
+    const matchedData = courts.map((court) => {
+      const timeSlotMatches = timeSlots.map((timeSlot) => {
+        const matchedReservation = filteredReservations.find((reservationDate) => {
+          const reservation = reservationDate.reservation;
+          if (!reservation) return false;
+  
+          // Determine start and end times based on duration_type if start_time or end_time is null
+          let startHour, endHour;
+          if (reservationDate.start_time && reservationDate.end_time) {
+            startHour = parseInt(reservationDate.start_time.slice(0, 2), 10); // Extract start hour
+            endHour = parseInt(reservationDate.end_time.slice(0, 2), 10); // Extract end hour
+          } else if (reservationDate.duration_type === "full_day") {
+            startHour = 8; // 8 AM
+            endHour = 16; // 4 PM
+          } else if (reservationDate.duration_type === "half_day") {
+            startHour = 12; // 12 PM
+            endHour = 16; // 4 PM
+          } else {
+            // If neither start/end time nor duration_type is provided, skip
+            return false;
+          }
+  
+          // Generate 1-hour time slots for this reservation
+          const reservationTimeSlots = [];
+          for (let hour = startHour; hour < endHour; hour++) {
+            const slotStart = hour.toString().padStart(2, "0") + ":00";
+            const slotEnd = (hour + 1).toString().padStart(2, "0") + ":00";
+            reservationTimeSlots.push(`${slotStart} - ${slotEnd}`);
+          }
+  
+          // Match court, facility, and time slot (case-insensitive)
+          return (
+            reservation.court.toLowerCase() === court.courtName.toLowerCase() &&
+            reservation.facility.toLowerCase() === court.facilityName.toLowerCase() &&
+            reservationTimeSlots.includes(timeSlot) // Match time slot
+          );
         });
-      };
-      
-      
-      const parseTime = (hour, period) => {
-        const parsedHour = parseInt(hour, 10);
-        return period === "PM" && parsedHour !== 12
-          ? parsedHour + 12
-          : period === "AM" && parsedHour === 12
-          ? 0
-          : parsedHour;
-      };
-      
-      
-      const statusColors = {
-        "Team Practices": "#1EA7FF",
-        "Confirmed": "#0ACF83",
-        "Pending": "#F6BC0C",
-        "Unavailable": "#D2D3F8",
-      };
-      
-      
-      const assignStatusColors = (status) => {
-        return statusColors[status] || "white";
-      };
-      
-      const sports = [
-        "Badminton",
-        "Basketball",
-        "Tennis",
-        "Soccer",
-        "Volleyball",
-        "Swimming",
-        "Baseball",
-        "Hockey",
-        "Rugby",
-        "Cricket",
-        "Golf",
-        "Table Tennis",
-        "Cycling",
-        "Handball",
-        "Track and Field",
-        "Elle",
-      
-      
-      ];
+  
+        // Log matched slots for debugging
+        // if (matchedReservation) {
+        //   console.log("Matched Slot:", {
+        //     court: court,
+        //     timeSlot: timeSlot,
+        //     reservation: matchedReservation,
+        //   });
+        // }
+  
+        return matchedReservation ? matchedReservation : null;
+      });
+  
+      return { court, timeSlotMatches };
+    });
+  
+    return matchedData;
+  };
+  
+  const matchedReservations = matchReservationsToSlots();  
+
+  useEffect(() => {
+      fetchReservationsByDate(selectedDate);
+  }, [selectedDate]);
+
+  useEffect(() => {
+    fetchCourts();
+  }, []);
 
   return (
-    <TableContainer component={Paper}  elevation={6} className="w-5/5"
-            style={{
-            maxHeight: 500, 
-            overflowY: 'auto', 
-            overflowX: 'auto', 
-            padding: "5px"
-          }}>
-        <Table>
+    <>
+      {/* New DatePicker */}
+      <div className="date-picker-today-holder" style={{ marginBottom: "10px" }}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            label="Select Date"
+            value={selectedDate ? dayjs(selectedDate) : null} // Ensure dayjs object for DatePicker
+            onChange={handleDateChange} // Update state on date selection
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </LocalizationProvider>
+      </div>
+
+      <TableContainer
+        component={Paper}
+        elevation={6}
+        className="w-full"
+        style={{
+          maxHeight: 500,
+          overflowY: "auto",
+          overflowX: "auto",
+          padding: "5px",
+        }}
+      >
+        <div style={{ minWidth: "1000px", overflowX: "auto" }}>
+          <Table>
             <TableHead>
-            <TableRow>
+              <TableRow>
                 <TableCell>Sport</TableCell>
                 {timeSlots.map((slot, index) => (
-                <TableCell key={index} align="center" style={{ padding: "6px" }}>
+                  <TableCell key={index} align="center" style={{ padding: "6px" }}>
                     {slot}
-                </TableCell>
+                  </TableCell>
                 ))}
-            </TableRow>
+              </TableRow>
             </TableHead>
 
             <TableBody>
-            {sports.map((sport, rowIndex) => (
+              {matchedReservations.map((matchedCourt, rowIndex) => (
                 <TableRow key={rowIndex} style={{ borderTop: "none" }}>
-                <TableCell style={{ padding: "6px" }}>{sport}</TableCell>
-                {timeSlots.map((timeSlot, colIndex) => {
-                    const booking = getBookingInfo(sport, timeSlot);
-                    const bookedBy = booking ? booking.bookedBy : null;
-                    const status = booking ? booking.status : null;
+                  {/* Display Facility and Court Name */}
+                  <TableCell>{`${matchedCourt.court.facilityName} - ${matchedCourt.court.courtName}`}</TableCell>
 
-                    
-                    const previousBooking = colIndex > 0 ? getBookingInfo(sport, timeSlots[colIndex - 1]) : null;
-                    const nextBooking = colIndex < timeSlots.length - 1 ? getBookingInfo(sport, timeSlots[colIndex + 1]) : null;
+                  {/* Render Time Slots */}
+                  {matchedCourt.timeSlotMatches.map((reservation, colIndex) => {
+                    const status = reservation ? reservation.reservation.status : null;
 
-                    const isStart =
-                    !previousBooking || 
-                    previousBooking.bookedBy !== bookedBy || 
-                    previousBooking.status !== status; 
-                    
-                    const isEnd =
-                    !nextBooking ||
-                    nextBooking.bookedBy !== bookedBy ||
-                    nextBooking.status !== status;
-
+                    // Define cell style based on booking status
                     const cellStyle = {
-                        backgroundColor: booking
-                        ? assignStatusColors(booking.status)
+                      backgroundColor: reservation
+                        ? status === "approved"
+                          ? "#0ACF83"
+                          : status === "pending"
+                          ? "#F6BC0C"
+                          : "#D2D3F8"
                         : "white",
-                        cursor: booking ? "pointer" : "default",
-                        padding: "4px",
-                        borderTop: "none",
-                        borderBottom: "none",
-                        minWidth: "70px",
-                        borderRadius: booking
-                        ? isStart && isEnd
-                            ? "100px"
-                            : isStart
-                            ? "100px 0 0 100px"
-                            : isEnd
-                            ? "0 100px 100px 0"
-                            : "0"
-                        : "0",
-                        borderLeft: "1px solid #e0e0e0",
-                        borderRight: "1px solid #e0e0e0",
-                        lineHeight: "1.2",
-                        height: "40px",
+                      cursor: reservation ? "pointer" : "default",
+                      padding: "4px",
+                      minWidth: "70px",
+                      height: "40px",
                     };
-                    
 
                     return (
-                    <Tooltip
+                      <Tooltip
                         key={colIndex}
-                        title={bookedBy ? `Status: ${status}` : "Available"}
-                    >
+                        title={reservation ? `Status: ${status}` : "Available"}
+                      >
                         <TableCell align="center" style={cellStyle}>
-                        {booking ? "Booked" : ""}
+                          {reservation ? "Booked" : ""}
                         </TableCell>
-                    </Tooltip>
+                      </Tooltip>
                     );
-                })}
+                  })}
                 </TableRow>
-            ))}
+              ))}
             </TableBody>
-        </Table>
-    </TableContainer>
-  )
+
+         </Table>
+        </div>
+      </TableContainer>
+    </>
+  );
 }
 
-export default Schedule
+export default Schedule;
