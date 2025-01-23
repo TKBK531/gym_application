@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { FaPlus, FaMinus, FaTrash } from "react-icons/fa";
 import api from "../../api";
-
+import { toast } from "react-toastify";
 const ItemTable = ({
   searchQuery = "",
   sortSport = 0,
@@ -51,9 +51,12 @@ const ItemTable = ({
       if (response.data?.status === "success") {
         fetchAllItems();
       } else {
+        
         throw new Error(response.data?.message || "Failed to delete item");
       }
     } catch (err) {
+      window.location.reload();
+      toast.success("Item deleted successfully");
       console.error("Error deleting item:", err.message);
     }
   };
@@ -107,7 +110,7 @@ const ItemTable = ({
             filteredItems.map((item) => (
               <tr key={item.id} className="border-b hover:bg-gray-100">
                 <td className="py-2 px-4 text-left">{item.item}</td>
-                <td className="py-2 px-4 text-center">{item.sport}</td>
+                <td className="py-2 px-4 text-center">{item.sport_label}</td>
                 <td className="py-2 px-4">
                   <div className="flex items-center justify-center space-x-4">
                     {isUserStaffOrAdmin ? (

@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import ItemTable from "../components/Item_Components/ItemTable";
 import api from "../api";
 import Slider from "@/components/Item_Components/slider";
-
+import { toast } from "react-toastify";
 const Items = () => {
+  const [allSports, setAllSports] = useState([]);
+  const [loggedInUserType, setLoggedInUserType] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortSport] = useState(true);
   const [sortCount] = useState("asc");
@@ -14,14 +16,11 @@ const Items = () => {
     count: 0,
   });
 
-  const sportsOptions = [
-    { id: 1, name: "Baseball" },
-    { id: 2, name: "Basketball" },
-    { id: 3, name: "Football" },
-    { id: 4, name: "Netball" },
-    { id: 5, name: "Wrestling" },
-    { id: 6, name: "Cricket" },
-  ];
+   const initialFetchComplete = useRef(false);
+
+   useEffect(() => {
+       fetchAllSports();
+     }, []);
 
   const userData = JSON.parse(localStorage.getItem("userData"));
   const isStaffOrAdmin =
@@ -53,9 +52,33 @@ const Items = () => {
 
       setShowModal(false);
       setNewItem({ item: "", sport: "", count: 0 });
+      toast.success("Item added successfully");
+      window.location.reload();
     } catch (error) {
       console.error("Error submitting form:", error.response?.data || error.message);
+      toast.error("Failed to add item");
     }
+  };
+
+  const fetchAllSports = async () => {
+    try {
+      const response = await api.get("/sport/all-sports/");
+      if (response.data.status === "success") {
+        setAllSports(response.data.data);
+        initialFetchComplete.current = true;
+        getLoggedInUserType();
+      }
+    } catch (error) {
+      console.error("Error fetching all profiles:", error.message);
+    }
+  };
+
+  const getLoggedInUserType = () => {
+    const storedUser = JSON.parse(localStorage.getItem("userData"));
+    const userType = storedUser.profile.user_type;
+    console.log("Stored user:", storedUser);
+    setLoggedInUserType(userType);
+    return userType;
   };
 
   
@@ -134,9 +157,9 @@ const Items = () => {
                   required
                 >
                   <option value="">Select Sport</option>
-                  {sportsOptions.map((sport) => (
+                  {allSports.map((sport) => (
                     <option key={sport.id} value={sport.id}>
-                      {sport.name}
+                      {sport.label}
                     </option>
                   ))}
                 </select>
