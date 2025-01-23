@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import InfoCard from "../components/Dashboard/InfoCard";
 import UpcomingEvents from "../components/Dashboard/UpcommingEvents";
+import LatestAnnouncements from "../components/Dashboard/LatestAnnouncements";
 import api from "../api";
 import { Card, CardContent } from "../components/ui/card";
 
@@ -9,6 +10,7 @@ const Home = () => {
   const [eventCountInNext30Days, setEventCountInNext30Days] = useState(0);
   const [eventDetails, setEventDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [latestAnnouncements, setLatestAnnouncements] = useState([]);
 
   const fetchTotalUserCount = async () => {
     try {
@@ -37,9 +39,22 @@ const Home = () => {
     }
   };
 
+  const fetchLatestAnnouncements = async () => {
+    try {
+      const response = await api.get("/sport/recent-announcements/");
+      if (response.data.status === "success") {
+        setLatestAnnouncements(response.data.data);
+        console.log("Latest announcements:", response.data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching latest announcements:", error.message);
+    }
+  };
+
   useEffect(() => {
     fetchTotalUserCount();
     fetchEventCountAndDetails();
+    fetchLatestAnnouncements();
   }, []);
 
   return (
@@ -81,15 +96,17 @@ const Home = () => {
               />
             </div>
           </section>
-
-
         </div>
       </div>
-      <div className="lg:w-1/2">
-        <UpcomingEvents events={eventDetails} isLoading={isLoading} />
+      <div className="grid grid-cols-2 gap-6">
+        <div className="lg:w-full">
+          <UpcomingEvents events={eventDetails} isLoading={isLoading} />
+        </div>
+        <div className="lg:w-full">
+          <LatestAnnouncements announcements={latestAnnouncements} isLoading={isLoading} />
+        </div>
       </div>
     </div>
-
   );
 };
 
