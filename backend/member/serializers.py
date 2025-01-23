@@ -230,7 +230,11 @@ class OutsidersMemberSerializer(serializers.ModelSerializer):
         member_data = validated_data.pop("members")
         family_data = validated_data.pop("family", None)
         user = self.context["request"].user
-        userProfile = user.userprofile
+        userProfile = UserProfile.objects.get(user=user)
+
+        # Remove user and userProfile from member_data to avoid conflict
+        member_data.pop("user", None)
+        member_data.pop("userProfile", None)
 
         # Create the Members instance
         member = Members.objects.create(

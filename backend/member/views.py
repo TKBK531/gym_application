@@ -232,20 +232,15 @@ class CreateOutsidersMemberView(generics.CreateAPIView):
         member_data["members"]["user"] = user.id
         member_data["members"]["userProfile"] = userProfile.id
 
+        family_members_data = member_data.pop("family", {}).get("family_members", [])
 
-        # Extract and remove family members data from the request
-        family_members_data = member_data.pop("family_members", [])
-
-        # print(member_data)
         serializer = self.get_serializer(data=member_data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
 
-        # Retrieve the created OutsidersMember instance and related Members instance
         outsider_instance = serializer.instance
         member_instance = outsider_instance.members
 
-        # Create Family and FamilyMembers if data is provided
         if family_members_data:
             family_instance = Family.objects.create(members=member_instance)
 
@@ -264,7 +259,7 @@ class CreateOutsidersMemberView(generics.CreateAPIView):
             "message": "Outsiders Member Created",
             "data": serializer.data,
         }
-        return JsonResponse(success_resp)
+        return JsonResponse(success_resp, status=201, headers=headers)
 
 
 class CreateAcademicStaffMemberView(generics.CreateAPIView):
