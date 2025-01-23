@@ -94,7 +94,7 @@ class ReservationRequest(models.Model):
     applied_at = models.DateTimeField(auto_now_add=True)  
 
     def __str__(self):
-        return f"{self.user.first_name} -on {self.date}  {self.start_time} to {self.end_time}"
+        return f"{self.user.first_name} "
 
 
 class Reservation(models.Model):
@@ -132,7 +132,7 @@ class Reservation(models.Model):
     updated_at = models.DateTimeField(auto_now=True)  
 
     def __str__(self):
-        return f"{self.user.first_name} -on {self.date} from {self.start_time} to {self.end_time} at {self.court.court_name}"
+        return f"{self.user.first_name}"
 
 
 class ReservationDate(models.Model):

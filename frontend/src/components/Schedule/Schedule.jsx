@@ -143,13 +143,13 @@ function Schedule() {
         });
   
         // Log matched slots for debugging
-        if (matchedReservation) {
-          console.log("Matched Slot:", {
-            court: court,
-            timeSlot: timeSlot,
-            reservation: matchedReservation,
-          });
-        }
+        // if (matchedReservation) {
+        //   console.log("Matched Slot:", {
+        //     court: court,
+        //     timeSlot: timeSlot,
+        //     reservation: matchedReservation,
+        //   });
+        // }
   
         return matchedReservation ? matchedReservation : null;
       });

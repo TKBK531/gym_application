@@ -8,6 +8,7 @@ import api from "../../api"
 const Form = ({ isOpen, onClose }) => {
   const [applicantName, setApplicantName] = useState('');
   const [email, setEmail] = useState('');
+  const [user, setUser]  = useState('');
   const [emailError, setEmailError] = useState('');
   const [teamName, setTeamName] = useState('');
   const [address, setAddress] = useState('');
@@ -54,7 +55,7 @@ const Form = ({ isOpen, onClose }) => {
         const username = response.data?.data?.user?.username || '';
         setApplicantName(name);
         setEmail(username);
-
+        setUser(response.data?.data?.user);
       } catch (error) {
         console.error("Failed to fetch name:", error);
         setFetchError('Failed to load user profile. Please try again.');
@@ -334,55 +335,131 @@ const Form = ({ isOpen, onClose }) => {
   
   
 // ----------------------------------------------------------
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
   
+    const formattedTableData = tableData.map((row) => {
+      const formattedRow = {
+        date: row.date ? new Date(row.date).toISOString().split("T")[0] : null, // Format date to YYYY-MM-DD
+      };
+  
+      if (rateType === "hourly_rate") {
+        // Function to format time to HH:MM:SS (24-hour format)
+        const formatTime = (time) => {
+          if (!time) return null; // Handle null or undefined time
+  
+          // Parse the time string to 24-hour format
+          const timeParts = time
+            .replace(" AM:00", "")
+            .replace(" PM:00", "")
+            .replace(" AM", "")
+            .replace(" PM", "")
+            .trim();
+  
+          const parsedTime = new Date(`1970-01-01T${timeParts}:00`);
+          const hours = parsedTime.getHours().toString().padStart(2, "0");
+          const minutes = parsedTime.getMinutes().toString().padStart(2, "0");
+          const seconds = "00"; // Add seconds
+  
+          return `${hours}:${minutes}:${seconds}`;
+        };
+  
+        return {
+          ...formattedRow,
+          start_time: formatTime(row.startTime), // Format start time
+          end_time: formatTime(row.endTime), // Format end time
+        };
+      } else if (rateType === "day_rate") {
+        return {
+          ...formattedRow,
+          duration_type: row.durationType || null, // Rename durationType to duration_type
+        };
+      }
+  
+      return formattedRow; // Default case (if needed)
+    });
+  
+    const is_school = formState.isSchool;
+    const is_gov = formState.isGovernment;
+    const is_foreign = formState.isForeign;
+    const is_competitive = formState.isCompetitive;
+    const is_pdn = formState.isUOPUndergraduate;
+  
     const formData = {
-      applicantName,
       email,
-      teamName,
+      activity,
+      rate_type: rateType,
+      num_of_courts: numOfCourts,
+      user,
+      requirement,
+      is_school,
+      is_gov,
+      is_foreign,
+      is_competitive,
+      org_name: teamName,
+      is_pdn,
+      num_of_participants: numOfParticipants,
       address,
       phoneNumber,
-      requirement, 
-      selectedFacility,
-      court,
-      numOfCourts,
-      activity,
-      rateType,
-      formState, 
+      facility_name: selectedFacility,
+      court_name: court,
       numOfParticipants,
-      participantsData,
-      tableData,  
+      dates: formattedTableData,
     };
-
-    setApplicantName('');
-    setEmail('');
-    setTeamName('');
-    setAddress('');
-    setPhoneNumber('');
-    setRequirement('');
-    setSelectedFacility('');
-    setCourt('');
-    setNumOfCourts('');
-    setActivity('');
-    setRateType('hourly_rate');
-    setNumOfParticipants('');
-    setParticipantsData([]);
-    setTableData([]);
-    setFormState({
-    isSchool: false,
-    isGovernment: false,
-    isForeign: false,
-    isCompetitive: false,
-    isUOPUndergraduate: false,
-  });
   
-    console.log('Form Data:', formData);
-    console.log('Form Data as JSON:', JSON.stringify(formData, null, 2));
+    console.log(JSON.stringify(formData, null, 2));
+
+    
+  //   setApplicantName('');
+  //   setEmail('');
+  //   setTeamName('');
+  //   setAddress('');
+  //   setPhoneNumber('');
+  //   setRequirement('');
+  //   setSelectedFacility('');
+  //   setCourt('');
+  //   setNumOfCourts('');
+  //   setActivity('');
+  //   setRateType('hourly_rate');
+  //   setNumOfParticipants('');
+  //   setParticipantsData([]);
+  //   setTableData([]);
+  //   setFormState({
+  //   isSchool: false,
+  //   isGovernment: false,
+  //   isForeign: false,
+  //   isCompetitive: false,
+  //   isUOPUndergraduate: false,
+  // });
+  
+    try {
+      const response = await api.post(
+        "/reservation/addReservationRequest",
+        JSON.stringify(formData, null, 2)
+      );
+  
+      if (response.status === 200 || response.status === 201) {
+        console.log(
+          "Reservation request submitted successfully:",
+          response.data
+        );
+        alert("Reservation request submitted successfully!");
+      } else {
+        console.error("Failed to submit the reservation request:", response);
+        alert("Failed to submit the reservation request. Please try again.");
+      }
+    } catch (error) {
+      console.error(
+        "An error occurred while submitting the reservation request:",
+        error
+      );
+      alert("An error occurred. Please try again later.");
+    }
   
     onClose();
-    navigate('/reservations');
+    navigate("/reservations");
   };
+  
   
 
   if (!isOpen) return null;
