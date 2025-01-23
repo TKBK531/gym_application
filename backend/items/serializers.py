@@ -1,9 +1,5 @@
 from rest_framework import serializers
-<<<<<<< HEAD
 from .models import Item, Equipment
-=======
-from .models import Item , Equipment
->>>>>>> ab26698 (Update the endpoints)
 
 
 class ItemSerializer(serializers.ModelSerializer):
