@@ -144,8 +144,8 @@ function Schedule2() {
 
   const statusColors = {
     "Team Practices": "#1EA7FF",
-    Confirmed: "#0ACF83",
-    approved: "#F6BC0C",
+    approved: "#0ACF83",
+    pending: "#F6BC0C",
     Unavailable: "#D2D3F8",
   };
   const assignStatusColors = (status) => statusColors[status] || "white";

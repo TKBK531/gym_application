@@ -815,6 +815,8 @@ class ReservationDatesByCourtView(APIView):
             # Parse the start and end dates
             start_date = parse_date(start_date)
             end_date = parse_date(end_date)
+            print(facility, court,start_date,end_date)
+
 
             if not start_date or not end_date:
                 raise ValueError("Invalid date format. Use 'start_date' and 'end_date' in YYYY-MM-DD format.")
@@ -824,10 +826,11 @@ class ReservationDatesByCourtView(APIView):
 
             # Filter ReservationDates by court, facility, and date range
             reservation_dates = ReservationDate.objects.filter(
-                reservation__court__court_name__iexact=court,
-                reservation__court__facility__facility_name__iexact=facility,
+                reservation_request__court__court_name__iexact=court,
+                reservation_request__court__facility__facility_name__iexact=facility,
                 date__range=(start_date, end_date)
             )
+            print(reservation_dates)
 
             if not reservation_dates.exists():
                 return Response([])
@@ -835,7 +838,7 @@ class ReservationDatesByCourtView(APIView):
             # Serialize the filtered ReservationDates
             response_data = []
             for reservation_date in reservation_dates:
-                reservation = reservation_date.reservation
+                reservation = reservation_date.reservation_request
                 response_data.append({
                     "reservation_date_id": reservation_date.id,
                     "date": reservation_date.date,

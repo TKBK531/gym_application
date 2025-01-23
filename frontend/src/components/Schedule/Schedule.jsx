@@ -221,9 +221,9 @@ function Schedule() {
                     // Define cell style based on booking status
                     const cellStyle = {
                       backgroundColor: reservation
-                        ? status === "confirmed"
+                        ? status === "approved"
                           ? "#0ACF83"
-                          : status === "approved"
+                          : status === "pending"
                           ? "#F6BC0C"
                           : "#D2D3F8"
                         : "white",
