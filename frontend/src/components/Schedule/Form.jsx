@@ -302,23 +302,81 @@ const Form = ({ isOpen, onClose }) => {
     }
   };
   
+  const calculateAmount = (row, rateType, filteredCourts, court, activity, allCourtRates) => {
+    if (rateType === "hourly_rate" && row.startTime && row.endTime) {
+      const startHour = parseInt(row.startTime.split(":"), 10);
+      const endHour = parseInt(row.endTime.split(":"), 10);
   
+      if (endHour > startHour) {
+        const selectedCourtObject = filteredCourts.find(
+          (courtItem) => courtItem.court_name === court
+        );
   
-
-  const handleRowChange = (index, key, value) => {
-    const updatedData = [...tableData];
-    if (key === 'amount') {
-      updatedData[index][key] = parseFloat(value) || ''; // Allow decimals or reset if invalid
-    } else {
-      updatedData[index][key] = value;
+        if (selectedCourtObject) {
+          const filteredRates = allCourtRates.filter(
+            (rate) =>
+              rate.court.court_id === selectedCourtObject.court_id &&
+              rate.activity === activity &&
+              rate.duration === "per hour"
+          );
+  
+          if (filteredRates.length > 0) {
+            const rate = filteredRates[0].rate;
+            const hours = endHour - startHour;
+            return (rate * hours).toFixed(2);
+          }
+        }
+      }
+      return ""; // Return empty if validation fails
     }
-    setTableData(updatedData);
+  
+    if (rateType === "day_rate" && row.durationType) {
+      const selectedCourtObject = filteredCourts.find(
+        (courtItem) => courtItem.court_name === court
+      );
+  
+      if (selectedCourtObject) {
+        const filteredRates = allCourtRates.filter(
+          (rate) =>
+            rate.court.court_id === selectedCourtObject.court_id &&
+            rate.activity === activity &&
+            rate.duration ===
+              (row.durationType === "full_day" ? "per full day" : "per half day")
+        );
+  
+        if (filteredRates.length > 0) {
+          return filteredRates[0].rate.toFixed(2);
+        }
+      }
+    }
+  
+    return ""; // Default empty string if no conditions are met
   };
-  
-  
+
+  // Updated handleRowChange method
+const handleRowChange = (index, key, value) => {
+  const updatedData = [...tableData];
+  updatedData[index][key] = value;
+
+  // Recalculate the amount when relevant fields are changed
+  if (
+    (rateType === "hourly_rate" && (key === "startTime" || key === "endTime")) ||
+    (rateType === "day_rate" && key === "durationType")
+  ) {
+    updatedData[index].amount = calculateAmount(
+      updatedData[index],
+      rateType,
+      filteredCourts,
+      court,
+      activity,
+      allCourtRates
+    );
+  }
+
+  setTableData(updatedData);
+};
   
 
-  
   const getEligibleDate = () => {
     const today = new Date();
     let count = 0;
@@ -340,15 +398,14 @@ const Form = ({ isOpen, onClose }) => {
   
     const formattedTableData = tableData.map((row) => {
       const formattedRow = {
-        date: row.date ? new Date(row.date).toISOString().split("T")[0] : null, // Format date to YYYY-MM-DD
+        date: row.date ? new Date(row.date).toISOString().split("T")[0] : null, 
       };
   
       if (rateType === "hourly_rate") {
         // Function to format time to HH:MM:SS (24-hour format)
         const formatTime = (time) => {
-          if (!time) return null; // Handle null or undefined time
+          if (!time) return null; 
   
-          // Parse the time string to 24-hour format
           const timeParts = time
             .replace(" AM:00", "")
             .replace(" PM:00", "")
@@ -359,24 +416,23 @@ const Form = ({ isOpen, onClose }) => {
           const parsedTime = new Date(`1970-01-01T${timeParts}:00`);
           const hours = parsedTime.getHours().toString().padStart(2, "0");
           const minutes = parsedTime.getMinutes().toString().padStart(2, "0");
-          const seconds = "00"; // Add seconds
-  
+          const seconds = "00"; 
           return `${hours}:${minutes}:${seconds}`;
         };
   
         return {
           ...formattedRow,
-          start_time: formatTime(row.startTime), // Format start time
-          end_time: formatTime(row.endTime), // Format end time
+          start_time: formatTime(row.startTime), 
+          end_time: formatTime(row.endTime), 
         };
       } else if (rateType === "day_rate") {
         return {
           ...formattedRow,
-          duration_type: row.durationType || null, // Rename durationType to duration_type
+          duration_type: row.durationType || null, 
         };
       }
   
-      return formattedRow; // Default case (if needed)
+      return formattedRow; 
     });
   
     const is_school = formState.isSchool;
@@ -410,27 +466,27 @@ const Form = ({ isOpen, onClose }) => {
     console.log(JSON.stringify(formData, null, 2));
 
     
-  //   setApplicantName('');
-  //   setEmail('');
-  //   setTeamName('');
-  //   setAddress('');
-  //   setPhoneNumber('');
-  //   setRequirement('');
-  //   setSelectedFacility('');
-  //   setCourt('');
-  //   setNumOfCourts('');
-  //   setActivity('');
-  //   setRateType('hourly_rate');
-  //   setNumOfParticipants('');
-  //   setParticipantsData([]);
-  //   setTableData([]);
-  //   setFormState({
-  //   isSchool: false,
-  //   isGovernment: false,
-  //   isForeign: false,
-  //   isCompetitive: false,
-  //   isUOPUndergraduate: false,
-  // });
+    setApplicantName('');
+    setEmail('');
+    setTeamName('');
+    setAddress('');
+    setPhoneNumber('');
+    setRequirement('');
+    setSelectedFacility('');
+    setCourt('');
+    setNumOfCourts('');
+    setActivity('');
+    setRateType('hourly_rate');
+    setNumOfParticipants('');
+    setParticipantsData([]);
+    setTableData([]);
+    setFormState({
+    isSchool: false,
+    isGovernment: false,
+    isForeign: false,
+    isCompetitive: false,
+    isUOPUndergraduate: false,
+  });
   
     try {
       // const response = await api.post(
@@ -639,7 +695,7 @@ const Form = ({ isOpen, onClose }) => {
                   value={rateType}
                   onChange={handleRateTypeChange}
                   className="border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2"
-                  disabled={filteredRateTypes.length === 0} // Disable if no rate types available
+                  disabled={filteredRateTypes.length === 0} 
                   required
                 >
                   <option value="">Select Rate Type</option>
@@ -783,12 +839,12 @@ const Form = ({ isOpen, onClose }) => {
                       {/* Date Column */}
                       <td className="px-6 py-4 whitespace-nowrap">
                       <DatePicker
-                          selected={row.date} // Ensure this binds to the correct value
-                          onChange={(date) => handleRowChange(index, 'date', date)} // Update on selection
+                          selected={row.date} 
+                          onChange={(date) => handleRowChange(index, 'date', date)} 
                           filterDate={(date) =>
                             date >= getEligibleDate() && date.getDay() !== 0 && date.getDay() !== 6
                           }
-                          dateFormat="yyyy-MM-dd" // Optional: Ensure a consistent display format
+                          dateFormat="yyyy-MM-dd" 
                           className="border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                         />
                       </td>
