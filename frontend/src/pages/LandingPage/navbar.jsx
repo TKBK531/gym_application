@@ -33,7 +33,7 @@ const Navbar = ({ scrollToFacilities }) => {
             <div className="flex items-center space-x-2">
                 <div>
                     <img
-                        src={logo} 
+                        src={logo}
                         alt="UniLogo"
                         className="w-44 h-full object-cover"
                     />
@@ -54,7 +54,7 @@ const Navbar = ({ scrollToFacilities }) => {
                 >
                     Facilities
                 </button>
-                <Link to="/contact" className="text-gray-600 hover:text-primary-red">
+                <Link to="" className="text-gray-600 hover:text-primary-red">
                     Contact
                 </Link>
                 {isLoggedIn && (

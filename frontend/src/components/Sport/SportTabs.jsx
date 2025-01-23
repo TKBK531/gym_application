@@ -3,11 +3,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import PropTypes from "prop-types";
 import Announcements from "./Tabs/Announcements";
 import Team from "./Tabs/Team";
-// import Schedule from "./Tabs/Schedule";
+import Schedule from "./Tabs/Schedule";
+import practiceTimes from "./practicetimes";
 
 function SportTabs({ sportData }) {
   const [activeTab, setActiveTab] = useState("announcements");
-
+  const sportLabel = sportData.label.toLowerCase().replace(/\s+/g, "");
   const handleTabChange = useCallback((value) => {
     // Prevent default behavior
     const handleClick = (e) => {
@@ -22,6 +23,10 @@ function SportTabs({ sportData }) {
       cancelable: true,
     });
 
+    const getSportLabel = () => {
+      return sportData.label.toLowerCase().replace(/\s+/g, "");
+    };
+
     Object.defineProperty(event, "preventDefault", {
       value: () => {
         // Do nothing, effectively preventing the default behavior
@@ -33,6 +38,7 @@ function SportTabs({ sportData }) {
 
   return (
     <Tabs defaultValue="announcements" onValueChange={handleTabChange}>
+      {console.log(sportData.label)}
       <TabsList className="grid w-full grid-cols-3">
         <TabsTrigger value="announcements">Announcements</TabsTrigger>
         <TabsTrigger value="team">Team</TabsTrigger>
@@ -46,7 +52,9 @@ function SportTabs({ sportData }) {
       <TabsContent value="team">
         {activeTab === "team" && <Team sportId={sportData.id} />}
       </TabsContent>
-      <TabsContent value="schedule">{/* <Schedule /> */}</TabsContent>
+      <TabsContent value="schedule">
+        {activeTab === "schedule" && <Schedule sportLabel={sportLabel} />}
+      </TabsContent>
     </Tabs>
   );
 }
@@ -54,6 +62,7 @@ function SportTabs({ sportData }) {
 SportTabs.propTypes = {
   sportData: PropTypes.shape({
     id: PropTypes.number.isRequired,
+    label: PropTypes.string.isRequired,
   }).isRequired,
 };
 
