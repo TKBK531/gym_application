@@ -394,13 +394,21 @@ class AllReservationRequestsView(APIView):
         serializer = ReservationRequestSerializer(reservation_requests, many=True)
         return Response(serializer.data)
 
+# logger = logging.getLogger(__name__)
 #Add reservationRequest
 class AddReservationRequestView(APIView):
+    # permission_classes = [IsAuthenticated]
     def post(self, request):
         data = request.data
 
+        # Log the incoming request data
+        print("Incoming reservation request data: %s", data)
+  
+
         # Extract and normalize rate_type
-        rate_type = data.get('rate_type', '').strip().lower().replace(' ', '_')
+        # rate_type = data.get('rate_type', '').strip().lower().replace(' ', '_')
+        rate_type = data.get('rate_type')
+        print("Rate type received:", rate_type)
         if rate_type not in dict(ReservationRequest.RATE_TYPE_CHOICES):
             return Response(
                 {"error": f"Invalid rate_type '{rate_type}'. Expected 'hourly_rate' or 'day_rate'."},

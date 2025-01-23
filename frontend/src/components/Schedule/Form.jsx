@@ -433,10 +433,14 @@ const Form = ({ isOpen, onClose }) => {
   // });
   
     try {
-      const response = await api.post(
-        "/reservation/addReservationRequest",
-        JSON.stringify(formData, null, 2)
-      );
+      // const response = await api.post(
+      //   "/reservation/addReservationRequest/",
+      //   JSON.stringify(formData, null, 2)
+      // );
+
+
+
+      const response = await api.post('/reservation/addReservationRequest/', formData);
   
       if (response.status === 200 || response.status === 201) {
         console.log(

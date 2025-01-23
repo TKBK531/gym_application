@@ -187,3 +187,40 @@ ALLOWED_DOMAINS = [
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+
+LOGGING = {
+    'version': 1,  # The version of the logging configuration
+    'disable_existing_loggers': False,  # Keep Django's default logging
+    'formatters': {  # Define log message formats
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {  # Define where logs are written
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'debug.log'),  # Log file location
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {  # Define which parts of Django log and at what level
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'custom_logger': {  # Your custom logger
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}
+
