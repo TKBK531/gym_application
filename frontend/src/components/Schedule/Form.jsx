@@ -440,7 +440,12 @@ const Form = ({ isOpen, onClose }) => {
 
 
 
-      const response = await api.post('/reservation/addReservationRequest/', formData);
+      const response = await api.post('/reservation/addReservationRequest/', formData, {
+        headers: {
+          'Content-Type': 'application/json',
+          // Authorization: `Bearer ${authToken}`,
+        },
+      });
   
       if (response.status === 200 || response.status === 201) {
         console.log(
