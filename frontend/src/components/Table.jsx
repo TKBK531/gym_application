@@ -18,8 +18,8 @@ const Table = ({ userRole, selectedCategory }) => {
     category: selectedCategory,
   });
   const [events, setEvents] = useState([]);
-  const [eventToDelete, setEventToDelete] = useState(null); 
-  const [sportsList, setSportsList] = useState([]); 
+  const [eventToDelete, setEventToDelete] = useState(null);
+  const [sportsList, setSportsList] = useState([]);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [eventToEdit, setEventToEdit] = useState(null);
 
@@ -94,7 +94,7 @@ const Table = ({ userRole, selectedCategory }) => {
       event_type: selectedCategory.toLowerCase().replace(' ', '_'),
       event: {
         event: {
-          name: newEvent.eventName, 
+          name: newEvent.eventName,
           place: newEvent.place,
           time: newEvent.time,
           date: newEvent.date,
@@ -140,7 +140,7 @@ const Table = ({ userRole, selectedCategory }) => {
     try {
       const response = await api.delete(`/event/delete-event/${eventToDelete.event.id}/`);
       if (response.data.status === 'success') {
-        fetchEvents(); 
+        fetchEvents();
         setEventToDelete(null);
         toast.success('Event deleted successfully');
       }
@@ -154,7 +154,8 @@ const Table = ({ userRole, selectedCategory }) => {
     item =>
       item.event.place.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.event.time.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.event.status.toLowerCase().includes(searchTerm.toLowerCase())
+      item.event.status.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.event.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const getColumnName = (category) => {
@@ -260,7 +261,7 @@ const Table = ({ userRole, selectedCategory }) => {
     try {
       const response = await api.put(`/event/update-event/${eventToEdit.event.id}/`, eventToEdit);
       if (response.data.status === 'success') {
-        fetchEvents(); 
+        fetchEvents();
         setIsEditModalOpen(false);
         setEventToEdit(null);
         toast.success('Event updated successfully');
