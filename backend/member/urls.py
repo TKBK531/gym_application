@@ -1,17 +1,14 @@
 from django.urls import path
 from .views import (
-    # CreateMemberView,
+    AllMembersCountView,
+    AllMembersListView,
     CreatePostgraduateMemberView,
     CreateAcademicStaffMemberView,
     CreateOutsidersMemberView,
-    # CreateFamilyView,
-    # CreateFamilyMemberView,
-    # MemberListView,
     DeleteMemberView,
 )
 
 urlpatterns = [
-    # path("members/create/", CreateMemberView.as_view(), name="create-member"),
     path(
         "postgraduate-members/create/",
         CreatePostgraduateMemberView.as_view(),
@@ -22,9 +19,6 @@ urlpatterns = [
         CreateAcademicStaffMemberView.as_view(),
         name="create-academic-staff-member",
     ),
-    # path("families/create/", CreateFamilyView.as_view(), name="create-family"),
-    # path("family-members/create/", CreateFamilyMemberView.as_view(), name="create-family-member"),
-    # path("list-members/", MemberListView.as_view(), name="Member List"),
     path(
         "outsiders-members/create/",
         CreateOutsidersMemberView.as_view(),
@@ -34,5 +28,13 @@ urlpatterns = [
         "delete-member/<int:pk>/",
         DeleteMemberView.as_view(),
         name="delete-member",
+    ),
+    path("all-members/", 
+         AllMembersListView.as_view(), 
+         name="all-members",
+    ),
+    path("all-membersCount/", 
+         AllMembersCountView.as_view(), 
+         name="all-members",
     ),
 ]

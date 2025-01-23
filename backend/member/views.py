@@ -34,188 +34,6 @@ from .serializers import (
     FamilyMembersSerializer,
 )
 
-
-# # -------------CreateMemberView-------------
-# class CreateMemberView(generics.CreateAPIView):
-#     queryset = Members.objects.all()
-#     serializer_class = MembersSerializer
-#     permission_classes = [IsAuthenticated]
-
-#     def create(self, request, *args, **kwargs):
-#         user = request.user
-
-#         # Fetch user profile details
-#         user_profile = UserProfile.objects.get(user=user)
-#         data = {
-#             "user": user.id,
-#             "age": user_profile.date_of_birth,
-#             "household": request.data.get("household", ""),
-#             "membership": request.data.get("membership", ""),
-#             "residence": user_profile.address,
-#             "price": request.data.get("price", 0),
-#         }
-
-#         serializer = self.get_serializer(data=data)
-#         serializer.is_valid(raise_exception=True)
-#         member = serializer.save()
-
-#         return JsonResponse(
-#             {
-#                 "status": "success",
-#                 "message": "Member Info Added Successfully",
-#                 "data": serializer.data,
-#             },
-#             status=status.HTTP_201_CREATED,
-#         )
-
-
-# # -------------CreatePostgraduateMemberView-------------
-# class CreatePostgraduateMemberView(generics.CreateAPIView):
-#     queryset = PostgraduateMember.objects.all()
-#     serializer_class = PostgraduateMemberSerializer
-#     permission_classes = [IsAuthenticated]
-
-#     def create(self, request, *args, **kwargs):
-#         member_data = request.data
-#         user = request.user
-
-#         if user.is_anonymous:
-#             return JsonResponse(
-#                 {"status": "error", "message": "Authentication required"},
-#                 status=status.HTTP_401_UNAUTHORIZED,
-#             )
-#         member_data["user"] = user.id
-
-#         print(member_data)
-#         serializer = self.get_serializer(data=member_data, context={"request": request})
-#         serializer.is_valid(raise_exception=True)
-#         self.perform_create(serializer)
-
-#         return JsonResponse(
-#             {
-#                 "status": "success",
-#                 "message": "Postgraduate Member Info Added Successfully",
-#                 "data": serializer.data,
-#             },
-#             status=status.HTTP_201_CREATED,
-#         )
-
-
-# # -------------CreateAcademicStaffMemberView-------------
-# class CreateAcademicStaffMemberView(generics.CreateAPIView):
-#     queryset = AcademicStaffMember.objects.all()
-#     serializer_class = AcademicStaffMemberSerializer
-#     permission_classes = [IsAuthenticated]
-
-#     def create(self, request, *args, **kwargs):
-#         serializer = self.get_serializer(
-#             data=request.data, context={"request": request}
-#         )
-#         serializer.is_valid(raise_exception=True)
-#         self.perform_create(serializer)
-
-#         return JsonResponse(
-#             {
-#                 "status": "success",
-#                 "message": "Academic Staff Member Info Added Successfully",
-#                 "data": serializer.data,
-#             },
-#             status=status.HTTP_201_CREATED,
-#         )
-
-
-# # -------------CreateOutsidersMemberView-------------
-# class CreateOutsidersMemberView(generics.CreateAPIView):
-#     queryset = OutsidersMember.objects.all()
-#     serializer_class = OutsidersMemberSerializer
-#     permission_classes = [IsAuthenticated]
-
-#     def create(self, request, *args, **kwargs):
-#         serializer = self.get_serializer(
-#             data=request.data, context={"request": request}
-#         )
-#         serializer.is_valid(raise_exception=True)
-#         self.perform_create(serializer)
-
-#         return JsonResponse(
-#             {
-#                 "status": "success",
-#                 "message": "Outsiders Member Info Added Successfully",
-#                 "data": serializer.data,
-#             },
-#             status=status.HTTP_201_CREATED,
-#         )
-
-
-# # -------------CreateFamilyView-------------
-# class CreateFamilyView(generics.CreateAPIView):
-#     queryset = Family.objects.all()
-#     serializer_class = FamilySerializer
-#     permission_classes = [IsAuthenticated]
-
-#     def create(self, request, *args, **kwargs):
-#         serializer = self.get_serializer(
-#             data=request.data, context={"request": request}
-#         )
-#         serializer.is_valid(raise_exception=True)
-#         self.perform_create(serializer)
-
-#         return JsonResponse(
-#             {
-#                 "status": "success",
-#                 "message": "Family Info Added Successfully",
-#                 "data": serializer.data,
-#             },
-#             status=status.HTTP_201_CREATED,
-#         )
-
-
-# class MemberListView(generics.ListAPIView):
-#     def get(self, request, *args, **kwargs):
-#         try:
-#             members = Members.objects.all()
-
-#             # Handle the case where no members exist
-#             if not members.exists():
-#                 return Response(
-#                     {"message": "No members found."}, status=status.HTTP_404_NOT_FOUND
-#                 )
-
-#             serializer = MembersSerializer(members, many=True)
-#             return Response(serializer.data, status=status.HTTP_200_OK)
-
-#         except Exception as e:
-#             # Handle unexpected server errors
-#             return Response(
-#                 {
-#                     "error": "An error occurred while fetching members.",
-#                     "details": str(e),
-#                 },
-#                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-#             )
-
-
-# # -------------CreateFamilyMemberView-------------
-# class CreateFamilyMemberView(generics.CreateAPIView):
-#     queryset = FamilyMembers.objects.all()
-#     serializer_class = FamilyMembersSerializer
-#     permission_classes = [IsAuthenticated]
-
-#     def create(self, request, *args, **kwargs):
-#         serializer = self.get_serializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         self.perform_create(serializer)
-
-#         return JsonResponse(
-#             {
-#                 "status": "success",
-#                 "message": "Family Member Info Added Successfully",
-#                 "data": serializer.data,
-#             },
-#             status=status.HTTP_201_CREATED,
-#         )
-
-
 class CreateOutsidersMemberView(generics.CreateAPIView):
     queryset = OutsidersMember.objects.all()
     serializer_class = OutsidersMemberSerializer
@@ -332,3 +150,52 @@ class DeleteMemberView(generics.DestroyAPIView):
             "message": "Member Deleted",
         }
         return JsonResponse(success_resp, status=status.HTTP_204_NO_CONTENT)
+    
+
+class AllMembersListView(APIView):
+    def get(self, request):
+        members = Members.objects.all()
+        members_data = MembersSerializer(members, many=True).data.count()
+
+        postgraduate_members = PostgraduateMember.objects.all()
+        postgraduate_data = PostgraduateMemberSerializer(postgraduate_members, many=True).data
+
+        academic_staff_members = AcademicStaffMember.objects.all()
+        academic_staff_data = AcademicStaffMemberSerializer(academic_staff_members, many=True).data
+
+        outsiders_members = OutsidersMember.objects.all()
+        outsiders_data = OutsidersMemberSerializer(outsiders_members, many=True).data
+
+        return Response(
+            {
+                "members": members_data,
+                "postgraduate_members": postgraduate_data,
+                "academic_staff_members": academic_staff_data,
+                "outsiders_members": outsiders_data,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+class AllMembersCountView(APIView):
+    def get(self, request):
+        total_members_count = Members.objects.count()
+
+        postgraduate_members_count = PostgraduateMember.objects.count()
+
+        academic_staff_members_count = AcademicStaffMember.objects.count()
+
+        outsiders_members_count = OutsidersMember.objects.count()
+
+        return Response(
+            {
+                "status": "success",
+                "data": {
+                    "total_members_count": total_members_count,
+                    "postgraduate_members_count": postgraduate_members_count,
+                    "academic_staff_members_count": academic_staff_members_count,
+                    "outsiders_members_count": outsiders_members_count,
+                }
+            },
+            status=status.HTTP_200_OK,
+        )

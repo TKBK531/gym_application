@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import api from "../api";
 import Card from "../components/Members/Card";
 import StatWidge from "../components/Members/StatWidge";
 import {
@@ -17,6 +19,24 @@ const Members = () => {
     "https://i.pinimg.com/736x/fc/d4/9d/fcd49d7f861d117271bcd9fb7078fd06.jpg";
   const userData = JSON.parse(localStorage.getItem("userData"));
 
+  const [memCount, setMemCount] = useState();
+
+  useEffect(() => {
+
+    const memberCount = async() =>{
+      try{
+        const request = await api.get("/member/all-membersCount/");
+        setMemCount(request.data.data.total_members_count);
+      }
+      catch(error){
+        console.error("Error saving member count :", error.message);
+      }
+    
+    };
+    memberCount();
+  }, []);
+
+
   return (
     <div className="container mx-auto">
       <div>
@@ -27,15 +47,15 @@ const Members = () => {
 
       {/* Stat Widgets Section */}
       <div className="flex flex-col md:flex-row gap-6 pb-6">
-        <StatWidge name="Overall membership" count="1250" iconName={faUsers} />
+        <StatWidge name="Overall membership" count={memCount} iconName={faUsers} />
         <StatWidge
-          name="Pool access members"
+          name="Staff members"
           count="450"
           iconName={faSwimmer}
         />
-        <StatWidge name="Indoor area access" count="520" iconName={faRunning} />
+        <StatWidge name="PG members" count="520" iconName={faRunning} />
         <StatWidge
-          name="Outdoor area access"
+          name="Outside members"
           count="400"
           iconName={faWalking}
         />
